@@ -1,18 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:locie/helper/firestore_storage.dart';
+import 'package:locie/models/account.dart';
 // import 'package:firebase_core/firebase_core.dart';
 
 class PhoneAuthentication {
-  final String phoneNumber;
-  final String otp;
+  String phoneNumber;
+  String otp;
   final FirebaseAuth auth = FirebaseAuth.instance;
+  String verificationId;
+  int resendToken;
   final firestore = FirebaseFirestore.instance.collection('accounts');
   User user;
-  PhoneAuthentication({@required this.phoneNumber, @required this.otp});
+  PhoneAuthentication({@required this.phoneNumber});
 
-  void sendOTP(String phoneNumber, PhoneCodeSent codeSent,
-      PhoneVerificationFailed verificationFailed) {
+  void sendOTP() {
     if (!phoneNumber.contains('+')) phoneNumber = '+91' + phoneNumber;
     auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
@@ -29,20 +32,41 @@ class PhoneAuthentication {
     await auth.signInWithCredential(credential).then((UserCredential value) {
       this.user = value.user;
     });
-    //Save data to firebase firestore
-    await firestore.doc(user.uid).set({
-      'uid': user.uid,
-      'isDataUpdate': false,
-      'phoneNumber': phoneNumber,
-    });
+  }
+
+  static Future<Account> createAccount(Account account) async {
+    if (account.imageFile != null) {
+      CloudStorage storage = CloudStorage();
+      var task = storage.uploadFile(account.imageFile);
+      account.avatar = await storage.getDownloadUrl(task);
+      account.imageFile = null;
+    }
+    await FirebaseFirestore.instance
+        .collection('accounts')
+        .doc(account.uid)
+        .set(account.toJson());
+    return account;
+  }
+
+  Future<DocumentSnapshot> getAccountSnapshot() async {
+    var queryResult = await firestore.doc(user.uid).get();
+    return queryResult;
+  }
+
+  bool accountExist(DocumentSnapshot snap) {
+    return snap.exists;
   }
 
   verificationFailed(FirebaseAuthException e) {
-    if (e.code == 'invalid-phone-number') {}
+    throw e;
   }
 
-  Future<void> codeSent(
-      String verificationId, int resendToken, String otp) async {
+  Future<void> codeSent(String verificationId, int resendToken) async {
+    this.verificationId = verificationId;
+    this.resendToken = resendToken;
+  }
+
+  Future<void> verifyOtp(String otp) async {
     PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
         verificationId: verificationId, smsCode: otp);
     await signInWithPhoneNumber(phoneAuthCredential);
