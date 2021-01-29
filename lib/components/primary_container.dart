@@ -16,7 +16,7 @@ class PrimaryContainer extends StatelessWidget {
     return Container(
       width: screen.horizontal(100),
       height: screen.vertical(1000),
-      color: Color(0xff1F1E2C),
+      color: Color(0xff1f1e2c),
       child: widget,
     );
   }
