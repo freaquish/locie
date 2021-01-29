@@ -4,7 +4,7 @@ import 'package:locie/components/primary_container.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/text_field.dart';
-import 'package:locie/pages/verify_otp.dart';
+import 'package:locie/views/verify_otp.dart';
 
 class PhoneAuthenticationWidget extends StatefulWidget {
   @override
