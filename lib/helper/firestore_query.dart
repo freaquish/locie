@@ -50,6 +50,11 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     throw UnimplementedError();
   }
 
+  /*
+   * Create Store function takes store and user as inout and 
+   * creates store after uploading image and feeding all the requried data
+   */
+
   @override
   Future<Store> createStore(Store store, Account user) async {
     store.owner = user.uid;
