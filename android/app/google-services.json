@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "137228739986",
+    "project_id": "locie-7f696",
+    "storage_bucket": "locie-7f696.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:137228739986:android:63259648d78356f9104d4b",
+        "android_client_info": {
+          "package_name": "com.bytatigris.locie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "137228739986-vgfueotqps0b1v602a9jree0835pbv2r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bytatigris.locie",
+            "certificate_hash": "3e193170e17fbc9535f846c5a7d340509193f8ba"
+          }
+        },
+        {
+          "client_id": "137228739986-kfdlbl7trl0bnbrs8ol2b38uadbop610.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxXD1Fon9kpyqVhfOIRYK2v-HMUC4ayas"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "137228739986-kfdlbl7trl0bnbrs8ol2b38uadbop610.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
