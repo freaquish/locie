@@ -25,7 +25,9 @@ class PhoneAuthentication {
         },
         verificationFailed: verificationFailed,
         codeSent: codeSent,
-        codeAutoRetrievalTimeout: null);
+        codeAutoRetrievalTimeout: (verificationId) {
+          this.verificationId = verificationId;
+        });
   }
 
   Future<void> signInWithPhoneNumber(PhoneAuthCredential credential) async {

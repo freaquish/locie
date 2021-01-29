@@ -1,7 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:locie/helper/firestore_auth.dart';
-import 'package:locie/pages/phone_authentication.dart';
-import 'package:locie/pages/verify_otp.dart';
+import 'package:locie/pages/authentication.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,7 +11,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: PhoneAuthenticationWidget(),
+      home: MainPage(),
+    );
+  }
+}
+
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  @override
+  void initState() {
+    Firebase.initializeApp();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: AuthenticationWidget(),
     );
   }
 }

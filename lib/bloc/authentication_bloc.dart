@@ -156,8 +156,10 @@ class AuthenticationBloc
       yield AuthenticatingUser();
       try {
         await event.authentication.verifyOtp(event.otp);
+        // yield InitialState();
         this..add(FetchCurrentAccount(event.authentication));
       } catch (e) {
+        print(e);
         yield AuthenticationFailed();
       }
     } else if (event is CancelPhoneAuthentication) {

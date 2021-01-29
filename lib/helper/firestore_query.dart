@@ -58,6 +58,7 @@ class FireStoreQuery implements AbstractFireStoreQuery {
   @override
   Future<Store> createStore(Store store, Account user) async {
     store.owner = user.uid;
+
     store.contact = user.phoneNumber;
     store.created = DateTime.now();
     if (storage == null) {

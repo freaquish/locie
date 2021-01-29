@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:locie/bloc/authentication_bloc.dart';
+import 'package:locie/components/country_codes.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/text_field.dart';
-import 'package:locie/pages/verify_otp.dart';
+import 'package:locie/views/verify_otp.dart';
 
 class PhoneAuthenticationWidget extends StatefulWidget {
+  final AuthenticationBloc bloc;
+  PhoneAuthenticationWidget({this.bloc});
   @override
-  _PhoneAuthenticationWidgetState createState() => _PhoneAuthenticationWidgetState();
+  _PhoneAuthenticationWidgetState createState() =>
+      _PhoneAuthenticationWidgetState();
 }
 
 class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
   String phoneNumber;
   final _formKey = GlobalKey<FormState>();
   TextEditingController textEditingController = TextEditingController();
+  String countryCode = "91";
 
   @override
   void dispose() {
@@ -68,12 +74,28 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
                         preffixWidget: Padding(
                           padding: EdgeInsets.only(
                               left: screen.horizontal(3),
+                              right: screen.horizontal(3),
                               top: screen.horizontal(2.91),
                               bottom: screen.horizontal(2.91)),
-                          child: LatoText(
-                            '+91',
-                            size: 18,
-                            fontColor: Colors.grey,
+                          child: InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => CountryCodeModel(
+                                        onChange: (value) {
+                                          setState(() {
+                                            countryCode = value;
+                                          });
+
+                                          Navigator.of(context).pop();
+                                        },
+                                      ));
+                            },
+                            child: LatoText(
+                              '+$countryCode',
+                              size: 18,
+                              fontColor: Colors.grey,
+                            ),
                           ),
                         ),
                         validator: (phoneNumber) {
@@ -87,20 +109,24 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
                         textController: textEditingController,
                         hintText: 'Phone Number',
                         keyboard: TextInputType.phone,
-                        textAlignment: TextAlign.center,
+                        textAlignment: TextAlign.start,
                       ),
                       SizedBox(
                         height: screen.vertical(40),
                       ),
                       SubmitButton(
-                         //TODO run a function for send OTP
+                        //TODO run a function for send OTP
                         onPressed: () {
-                          if(_formKey.currentState.validate()){
+                          if (_formKey.currentState.validate()) {
                             debugPrint('submit');
+                            var phoneNumber = textEditingController.value.text;
+
                             textEditingController.clear();
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => VerifyOtpScreen()));
+                            // print(countryCode + phoneNumber);
+                            widget.bloc
+                              ..add(ProceedToOtpPage(
+                                  '+$countryCode$phoneNumber'));
                           }
-                          
                         },
                         buttonName: 'Continue',
                         buttonColor: Color(0xff355cfd),
