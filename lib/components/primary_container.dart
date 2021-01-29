@@ -16,17 +16,7 @@ class PrimaryContainer extends StatelessWidget {
     return Container(
       width: screen.horizontal(100),
       height: screen.vertical(1000),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            // Color(0xff323232),
-            Colors.grey[900],
-            Colors.black,
-          ],
-        ),
-      ),
+      color: Color(0xff1f1e2c),
       child: widget,
     );
   }
