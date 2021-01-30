@@ -10,14 +10,21 @@ class TextBox extends StatelessWidget {
   final textAlignment;
   final TextInputType keyboard;
   final Widget preffixWidget;
-
+  final String label;
+  final int maxLines;
+  final int maxLength;
+  final int minLines;
   TextBox(
       {@required this.textAlignment,
+      this.maxLines = 1,
+      this.maxLength = 14,
+      this.minLines = 1,
       this.preffixWidget,
       this.helperText,
       @required this.hintText,
       @required this.textController,
       this.validator,
+      this.label,
       @required this.keyboard});
 
   @override
@@ -25,14 +32,19 @@ class TextBox extends StatelessWidget {
     return TextFormField(
       keyboardType: keyboard,
       textAlign: textAlignment,
+      maxLength: maxLength,
+      maxLines: maxLines,
+      minLines: minLines,
       validator: validator,
       controller: textController,
       cursorColor: Colors.white,
       autofocus: false,
-      style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+      style: GoogleFonts.lato(
+          fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
       decoration: InputDecoration(
         prefixIcon: preffixWidget,
-        prefixStyle:  GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.grey),
+        prefixStyle: GoogleFonts.lato(
+            fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
         filled: true,
         fillColor: Color(0xff5c5c5c),
         border: OutlineInputBorder(
@@ -58,10 +70,13 @@ class TextBox extends StatelessWidget {
             style: BorderStyle.none,
           ),
         ),
+        labelText: label,
+        labelStyle: GoogleFonts.lato(
+            fontSize: 16, fontWeight: FontWeight.normal, color: Colors.grey),
         hintText: hintText,
-        hintStyle: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.bold,color: Colors.grey),
+        hintStyle: GoogleFonts.lato(
+            fontSize: 16, fontWeight: FontWeight.normal, color: Colors.grey),
       ),
-      
     );
   }
 }
