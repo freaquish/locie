@@ -32,11 +32,13 @@ abstract class AbstractFireStoreQuery {
   // Fetches all the units from the server
   Future<List<String>> fetchUnits();
 
-  // Fetch PreviousExamples of given store id 
-  Future<List<PreviousExamples>> getExamples(String sid);
+  // Fetch PreviousExamples of given store id
+  Future<PreviousExamples> getExamples(String sid);
 
-  // Add previous example to store 
-  Future<PreviousExamples> insertExamples({String sid, PreviousExamples examples}); 
+  // Add previous example to store
+  Future<PreviousExample> insertExamples({String sid, PreviousExample example});
+  // Remove previous example from stores previous eexample
+  Future<void> removeExample({String sid, PreviousExample example});
 }
 
 class FireStoreQuery implements AbstractFireStoreQuery {
@@ -104,17 +106,19 @@ class FireStoreQuery implements AbstractFireStoreQuery {
   }
 
   @override
-  Future<PreviousExamples> insertExamples({String sid, PreviousExamples examples}) async {
-    CollectionReference storeReference = firestore.collection('stores');
-    storeReference.doc(sid).update({
-      "previous_examples": FieldValue.arrayUnion([examples.toJson()])
+  Future<PreviousExample> insertExamples(
+      {String sid, PreviousExample example}) async {
+    CollectionReference exampleReference =
+        firestore.collection('previous_examples');
+    exampleReference.doc(sid).update({
+      "examples": FieldValue.arrayUnion([example.toJson()])
     });
     LocalStorage storage = LocalStorage();
-    return examples;
+    return example;
   }
 
   @override
-  Future<Store> editStore(Store newStore) async{
+  Future<Store> editStore(Store newStore) async {
     LocalStorage localStorage = LocalStorage();
     Store stateStore = await localStorage.getStore();
     Map<String, dynamic> changes = stateStore.compare(newStore);
@@ -124,8 +128,20 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     return newStore;
   }
 
-  @override 
-  Future<List<PreviousExamples>> getExamples(String sid) async {}
+  @override
+  Future<PreviousExamples> getExamples(String sid) async {
+    CollectionReference exampleReference =
+        firestore.collection('previous_exmaples');
+    DocumentSnapshot snapshot = await exampleReference.doc(sid).get();
+    return PreviousExamples.fromJson(snapshot.data());
+  }
 
-
+  @override
+  Future<void> removeExample({String sid, PreviousExample example}) async {
+    CollectionReference exampleReference =
+        firestore.collection('previous_exmaples');
+    exampleReference.doc(sid).update({
+      "examples": FieldValue.arrayRemove([example.toJson()])
+    });
+  }
 }

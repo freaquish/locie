@@ -136,13 +136,13 @@ class Address {
   }
 }
 
-class PreviousExamples {
+class PreviousExample {
   String text;
   String image;
 
-  PreviousExamples({this.text, this.image});
+  PreviousExample({this.text, this.image});
 
-  PreviousExamples.fromJson(Map<String, dynamic> json) {
+  PreviousExample.fromJson(Map<String, dynamic> json) {
     text = json['text'];
     image = json['image'];
   }
@@ -151,6 +151,28 @@ class PreviousExamples {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['text'] = this.text;
     data['image'] = this.image;
+    return data;
+  }
+}
+
+class PreviousExamples {
+  String sid;
+  List<PreviousExample> examples;
+
+  PreviousExamples({this.sid, this.examples});
+
+  PreviousExamples.fromJson(Map<String, dynamic> json) {
+    sid = json['sid'];
+    examples = [];
+    (json['examples'] as List).forEach((element) { 
+      examples.add(element);
+    });
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['sid'] = this.sid;
+    data['examples'] = this.examples.map((e) => e.toJson());
     return data;
   }
 }

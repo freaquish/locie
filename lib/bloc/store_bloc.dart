@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/helper/firestore_query.dart';
+import 'package:locie/helper/local_storage.dart';
 import 'package:locie/models/account.dart';
 import 'package:locie/models/store.dart';
 
@@ -29,7 +30,7 @@ class ShowingMetaDataPage extends StoreState {
 class FetchingPreviousExamples extends StoreState {}
 
 class FetchedPreviousExamples extends StoreState {
-  final List<PreviousExamples> examples;
+  final PreviousExamples examples;
   FetchedPreviousExamples(this.examples);
 }
 
@@ -81,16 +82,16 @@ class EditStore extends StoreEvent {
 class PreviousExamplesEvent extends StoreEvent {}
 
 class FetchPreviousExamples extends PreviousExamplesEvent {
-  final Store store;
-  FetchPreviousExamples(this.store);
+  // final Store store;
+  FetchPreviousExamples();
 }
 
 class InitiateAddPreviousExample extends PreviousExamplesEvent {}
 
 // Add Previous example to the store using FieldValue
 class AddPreviousExample extends PreviousExamplesEvent {
-  final PreviousExamples examples;
-  AddPreviousExample(this.examples);
+  final PreviousExample example;
+  AddPreviousExample(this.example);
 }
 
 // Start fetching my store uisng uid in owner
@@ -107,6 +108,9 @@ class FetchStoreUsingSid extends StoreEvent {
 
 class CreateStoreBloc extends Bloc<StoreEvent, StoreState> {
   CreateStoreBloc() : super(InitializingCreateOrEditStore());
+
+  FireStoreQuery storeQuery = FireStoreQuery();
+  LocalStorage localStorage = LocalStorage();
 
   @override
   Stream<StoreState> mapEventToState(StoreEvent event) async* {
@@ -138,17 +142,37 @@ class CreateStoreBloc extends Bloc<StoreEvent, StoreState> {
       yield ShowingAddressPage(event.store);
     } else if (event is ProceedToMetaDataPage) {
       yield ShowingMetaDataPage(event.store);
+    }else if(event is PreviousExamplesEvent){
+      yield* mapAddPreviousExample(event);
     }
   }
-
+  PreviousExamples examples;
   Stream<StoreState> mapAddPreviousExample(PreviousExamplesEvent event) async* {
     if (event is FetchPreviousExamples) {
       yield FetchingPreviousExamples();
-     // TODO: Need to do some fetching
+      if(!localStorage.prefs.containsKey("sid")){
+        this..add(InitializeCreateOrEditStore());
+      }
+      var sid = localStorage.prefs.getString("sid");
+      
+      examples = await storeQuery.getExamples(sid);
+      yield FetchedPreviousExamples(examples);
     } else if (event is InitiateAddPreviousExample) {
       yield ShowingAddExamplesPage();
     } else if (event is AddPreviousExample) {
+      var sid = localStorage.prefs.getString("sid");
+      var example = await storeQuery.insertExamples(
+        sid: sid,
+        example: event.example
+        );
+      if(examples == null){
+        examples = await storeQuery.getExamples(sid);
+      }else{
+        examples.examples.add(example);
+      }
 
+      yield FetchedPreviousExamples(examples);
+      
     }
   }
 }
