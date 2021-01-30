@@ -17,7 +17,7 @@ class TextBox extends StatelessWidget {
   TextBox(
       {@required this.textAlignment,
       this.maxLines = 1,
-      this.maxLength = 14,
+      this.maxLength,
       this.minLines = 1,
       this.preffixWidget,
       this.helperText,

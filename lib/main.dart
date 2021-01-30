@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:locie/views/Add%20Item/item_meta_data.dart';
 import 'package:locie/views/Create%20Store/avatar_name.dart';
 
 void main() {
@@ -31,7 +32,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CreateStoreWidget(),
+      body: ItemMetaDataWidget(),
     );
   }
 }
