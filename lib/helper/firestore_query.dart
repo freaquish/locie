@@ -7,6 +7,7 @@ import 'package:locie/helper/minions.dart';
 import 'package:locie/models/account.dart';
 import 'package:locie/models/category.dart';
 import 'package:locie/models/store.dart';
+import 'package:locie/models/unit.dart';
 
 abstract class AbstractFireStoreQuery {
   FirebaseFirestore firestore;
@@ -32,7 +33,7 @@ abstract class AbstractFireStoreQuery {
   Future<Category> createNewCategory(Category category);
 
   // Fetches all the units from the server
-  Future<List<String>> fetchUnits();
+  Future<List<Unit>> fetchUnits();
 
   // Fetch PreviousExamples of given store id
   Future<PreviousExamples> getExamples(String sid);
@@ -113,18 +114,37 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     localStorage.setAccount(user);
     return store;
   }
+  /**
+   * This Function will handle these cases of query
+   * 1. when current is provided and has to search all categories within and store
+   * 2. categories is provided it will fetch categories in the list
+   * 3. otherwise return null
+   */
 
   @override
   Future<List<Category>> fetchCategories(
-      {String current, String store, List<String> categories}) {
-    // TODO: implement fetchCategories
-    throw UnimplementedError();
+      {String current, String store, List<String> categories}) async {
+    CollectionReference ref = firestore.collection('category');
+    QuerySnapshot snapshot;
+    if (current != null && store != null) {
+      snapshot = await ref
+          .where("parent", isEqualTo: current)
+          .where("store", isEqualTo: store)
+          .get();
+    } else if (categories != null && categories.isNotEmpty) {
+      snapshot = await ref.where("id", whereIn: categories).get();
+    } else {
+      snapshot = await ref.where("is_default", isEqualTo: true).get();
+    }
+    var docs = snapshot.docs;
+    return docs.map((e) => Category.fromJson(e.data()));
   }
 
   @override
-  Future<List<String>> fetchUnits() {
-    // TODO: implement fetchUnits
-    throw UnimplementedError();
+  Future<List<Unit>> fetchUnits() async {
+    CollectionReference ref = firestore.collection('unit');
+    var snapshot = await ref.get();
+    return snapshot.docs.map((e) => Unit.fromJson(e.data()));
   }
 
   @override
