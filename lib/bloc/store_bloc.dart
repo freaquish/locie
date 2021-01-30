@@ -26,6 +26,22 @@ class ShowingMetaDataPage extends StoreState {
   ShowingMetaDataPage(this.store);
 }
 
+class FetchingPreviousExamples extends StoreState {}
+
+class FetchedPreviousExamples extends StoreState {
+  final List<PreviousExamples> examples;
+  FetchedPreviousExamples(this.examples);
+}
+
+class ShowingAddExamplesPage extends StoreState {}
+
+class FetchingStore extends StoreState {}
+
+class StorePageView extends StoreState {
+  final Store store;
+  StorePageView(this.store);
+}
+
 // The store is created and the user will be transfered to MyStore View
 class ShowMyStorePage extends StoreState {
   final Store store;
@@ -57,16 +73,36 @@ class CreateStore extends StoreEvent {
   CreateStore({this.store, this.account});
 }
 
-
 class EditStore extends StoreEvent {
   final Store store;
   EditStore(this.store);
+}
+
+class PreviousExamplesEvent extends StoreEvent {}
+
+class FetchPreviousExamples extends PreviousExamplesEvent {
+  final Store store;
+  FetchPreviousExamples(this.store);
+}
+
+class InitiateAddPreviousExample extends PreviousExamplesEvent {}
+
+// Add Previous example to the store using FieldValue
+class AddPreviousExample extends PreviousExamplesEvent {
+  final PreviousExamples examples;
+  AddPreviousExample(this.examples);
 }
 
 // Start fetching my store uisng uid in owner
 class FetchMyStore extends StoreEvent {
   final String uid;
   FetchMyStore(this.uid);
+}
+
+// Fetch Store using sid for someone elses store
+class FetchStoreUsingSid extends StoreEvent {
+  final String sid;
+  FetchStoreUsingSid(this.sid);
 }
 
 class CreateStoreBloc extends Bloc<StoreEvent, StoreState> {
@@ -92,7 +128,8 @@ class CreateStoreBloc extends Bloc<StoreEvent, StoreState> {
       FireStoreQuery storeQuery = FireStoreQuery();
       Store store = await storeQuery.createStore(event.store, event.account);
       yield ShowMyStorePage(store);
-    }else if(event is EditStore){
+    } else if (event is EditStore) {
+      // Fetch store data using shared prefs
       yield UploadingStore();
       FireStoreQuery storeQuery = FireStoreQuery();
       Store store = await storeQuery.editStore(event.store);
@@ -101,6 +138,17 @@ class CreateStoreBloc extends Bloc<StoreEvent, StoreState> {
       yield ShowingAddressPage(event.store);
     } else if (event is ProceedToMetaDataPage) {
       yield ShowingMetaDataPage(event.store);
+    }
+  }
+
+  Stream<StoreState> mapAddPreviousExample(PreviousExamplesEvent event) async* {
+    if (event is FetchPreviousExamples) {
+      yield FetchingPreviousExamples();
+     // TODO: Need to do some fetching
+    } else if (event is InitiateAddPreviousExample) {
+      yield ShowingAddExamplesPage();
+    } else if (event is AddPreviousExample) {
+
     }
   }
 }

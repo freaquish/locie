@@ -1,7 +1,4 @@
 import 'dart:io';
-
-import 'package:locie/models/category.dart';
-
 class StoreLocation {
   double lat;
   double long;
@@ -29,7 +26,7 @@ class Store {
   String image;
   List<String> categories;
   String description;
-  List<PreviousExamples> previousExamples;
+  // List<PreviousExamples> previousExamples;
   String owner;
   DateTime created;
   String gstin;
@@ -44,7 +41,7 @@ class Store {
       this.image,
       this.categories,
       this.description,
-      this.previousExamples,
+      // this.previousExamples,
       this.owner,
       this.created,
       this.gstin,
@@ -63,12 +60,12 @@ class Store {
       });
     }
     description = json['description'];
-    if (json['previous_examples'] != null) {
-      previousExamples = new List<PreviousExamples>();
-      json['previous_examples'].forEach((v) {
-        previousExamples.add(new PreviousExamples.fromJson(v));
-      });
-    }
+    // if (json['previous_examples'] != null) {
+    //   previousExamples = new List<PreviousExamples>();
+    //   json['previous_examples'].forEach((v) {
+    //     previousExamples.add(new PreviousExamples.fromJson(v));
+    //   });
+    // }
     owner = json['owner'];
     created = json['created'].toDate();
     gstin = json['gstin'];
@@ -91,10 +88,10 @@ class Store {
       data['categories'] = this.categories;
     }
     data['description'] = this.description;
-    if (this.previousExamples != null) {
-      data['previous_examples'] =
-          this.previousExamples.map((v) => v.toJson()).toList();
-    }
+    // if (this.previousExamples != null) {
+    //   data['previous_examples'] =
+    //       this.previousExamples.map((v) => v.toJson()).toList();
+    // }
     data['owner'] = this.owner;
     data['created'] = this.created;
     data['gstin'] = this.gstin;

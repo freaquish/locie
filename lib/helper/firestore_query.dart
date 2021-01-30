@@ -31,6 +31,12 @@ abstract class AbstractFireStoreQuery {
 
   // Fetches all the units from the server
   Future<List<String>> fetchUnits();
+
+  // Fetch PreviousExamples of given store id 
+  Future<List<PreviousExamples>> getExamples(String sid);
+
+  // Add previous example to store 
+  Future<PreviousExamples> insertExamples({String sid, PreviousExamples examples}); 
 }
 
 class FireStoreQuery implements AbstractFireStoreQuery {
@@ -98,6 +104,16 @@ class FireStoreQuery implements AbstractFireStoreQuery {
   }
 
   @override
+  Future<PreviousExamples> insertExamples({String sid, PreviousExamples examples}) async {
+    CollectionReference storeReference = firestore.collection('stores');
+    storeReference.doc(sid).update({
+      "previous_examples": FieldValue.arrayUnion([examples.toJson()])
+    });
+    LocalStorage storage = LocalStorage();
+    return examples;
+  }
+
+  @override
   Future<Store> editStore(Store newStore) async{
     LocalStorage localStorage = LocalStorage();
     Store stateStore = await localStorage.getStore();
@@ -107,4 +123,9 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     localStorage.setStore(newStore);
     return newStore;
   }
+
+  @override 
+  Future<List<PreviousExamples>> getExamples(String sid) async {}
+
+
 }
