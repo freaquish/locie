@@ -27,7 +27,7 @@ class Store {
   String contact;
   Address address;
   String image;
-  List<Category> categories;
+  List<String> categories;
   String description;
   List<PreviousExamples> previousExamples;
   String owner;
@@ -58,9 +58,8 @@ class Store {
         json['address'] != null ? new Address.fromJson(json['address']) : null;
     image = json['image'];
     if (json['categories'] != null) {
-      categories = new List<Category>();
       json['categories'].forEach((v) {
-        categories.add(new Category.fromJson(v));
+        categories.add(v);
       });
     }
     description = json['description'];
@@ -89,7 +88,7 @@ class Store {
     data['image'] = this.image;
     data['categories'] = [];
     if (this.categories != null) {
-      data['categories'] = this.categories.map((v) => v.toJson()).toList();
+      data['categories'] = this.categories;
     }
     data['description'] = this.description;
     if (this.previousExamples != null) {
@@ -102,6 +101,18 @@ class Store {
     if (location != null) {
       data['location'] = this.location.toJson();
     }
+    return data;
+  }
+
+  Map<String, dynamic> compare(Store store) {
+    Map<String, dynamic> json = store.toJson();
+    Map<String, dynamic> myJson = this.toJson();
+    Map<String, dynamic> data = Map<String, dynamic>();
+    json.forEach((key, value) { 
+      if(!myJson.containsKey(key) || myJson[key] != value){
+        data[key] = value;
+      }
+    });
     return data;
   }
 }

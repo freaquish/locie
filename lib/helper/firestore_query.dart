@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:locie/helper/firestore_storage.dart';
+import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/minions.dart';
 import 'package:locie/models/account.dart';
 import 'package:locie/models/category.dart';
@@ -10,6 +11,9 @@ abstract class AbstractFireStoreQuery {
 
   // Feeds data such as owner, contacts and creates store on the server
   Future<Store> createStore(Store store, Account user);
+
+  // Edits the store which is different from preferences in the android
+  Future<Store> editStore(Store newStore);
 
   // Adds Defaukt Category to stores categories
   // called in createNewCategory and createItem,
@@ -75,6 +79,8 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     store.id = generateId(text: 'store_${user.phoneNumber}');
     CollectionReference storeReference = firestore.collection('stores');
     storeReference.doc(store.id).set(store.toJson());
+    LocalStorage localStorage = LocalStorage();
+    localStorage.setStore(store);
     return store;
   }
 
@@ -89,5 +95,16 @@ class FireStoreQuery implements AbstractFireStoreQuery {
   Future<List<String>> fetchUnits() {
     // TODO: implement fetchUnits
     throw UnimplementedError();
+  }
+
+  @override
+  Future<Store> editStore(Store newStore) async{
+    LocalStorage localStorage = LocalStorage();
+    Store stateStore = await localStorage.getStore();
+    Map<String, dynamic> changes = stateStore.compare(newStore);
+    CollectionReference storeReference = firestore.collection('stores');
+    storeReference.doc(stateStore.id).update(changes);
+    localStorage.setStore(newStore);
+    return newStore;
   }
 }
