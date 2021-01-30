@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:locie/components/bottom_sheet.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
@@ -18,6 +17,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String avatar;
   TextEditingController textEditingController = TextEditingController();
   final pickImage = PickImage();
+  var image;
 
   @override
   void dispose() {
@@ -58,8 +58,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         CircleAvatar(
                           radius: screen.horizontal(20),
                           backgroundColor: Colors.white,
-                          //TODO set a ternary operator for showing the image choosed
-                          backgroundImage: AssetImage('assets/images/user.png'),
+                          backgroundImage: image == null
+                              ? AssetImage('assets/images/user.png')
+                              : FileImage(image),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -68,7 +69,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 height: screen.horizontal(15),
                                 width: screen.horizontal(39),
                                 decoration: BoxDecoration(
-                                  color: Color.fromRGBO(0, 0, 0, 0.2),
+                                  color: Color.fromRGBO(31, 30, 44, 0.5),
                                   borderRadius: BorderRadius.only(
                                     bottomLeft:
                                         Radius.circular(screen.horizontal(22)),
@@ -78,14 +79,103 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 ),
                                 child: GestureDetector(
                                   onTap: () {
-                                    // print('tap');
-                                    final bottomSheet = BottomModalSheet(
-                                        parentContext: context,
-                                        height: screen.vertical(150),
-                                        width: screen.horizontal(4),
-                                        functionForCamera: pickImage.getImageFromCamera(),
-                                        functionForGallery: pickImage.getImageFromGallery(),);
-                                        bottomSheet.openBottomSheet();
+                                    showModalBottomSheet(
+                                        enableDrag: false,
+                                        context: context,
+                                        builder: (builder) {
+                                          return new Container(
+                                            height: screen.vertical(250),
+                                            color: Color(
+                                                0xff1f1e2c), //Color(0xff111117),
+                                            child: new Container(
+                                              decoration: new BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    new BorderRadius.only(
+                                                  topLeft: Radius.circular(16),
+                                                  topRight: Radius.circular(16),
+                                                ),
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Padding(
+                                                        padding: EdgeInsets.all(
+                                                            screen
+                                                                .horizontal(3)),
+                                                        child: Text(
+                                                          'Select Image',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 18,
+                                                              fontFamily:
+                                                                  'Mulish'),
+                                                        ),
+                                                      ),
+                                                      IconButton(
+                                                        icon: Icon(Icons.close,
+                                                            color: Colors.red),
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      )
+                                                    ],
+                                                  ),
+                                                  ListTile(
+                                                    onTap: () async {
+                                                      var pickedimage =
+                                                          await pickImage
+                                                              .getImageFromCamera();
+                                                      setState(() {
+                                                        image = pickedimage;
+                                                      });
+                                                      Navigator.pop(context);
+                                                    },
+                                                    title: Text(
+                                                      'Camera',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.grey[900],
+                                                          fontSize: 14),
+                                                    ),
+                                                    leading: Icon(
+                                                        Icons.camera_alt,
+                                                        color:
+                                                            Colors.grey[900]),
+                                                  ),
+                                                  ListTile(
+                                                    onTap: () async {
+                                                      var pickedimage =
+                                                          await pickImage
+                                                              .getImageFromGallery();
+
+                                                      setState(() {
+                                                        image = pickedimage;
+                                                      });
+                                                      Navigator.pop(context);
+                                                    },
+                                                    title: Text(
+                                                      'Gallery',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.grey[900],
+                                                          fontSize: 14),
+                                                    ),
+                                                    leading: Icon(Icons.image,
+                                                        color:
+                                                            Colors.grey[900]),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        });
                                   },
                                   child: Padding(
                                     padding:
