@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:locie/helper/firestore_storage.dart';
 import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/minions.dart';
@@ -48,6 +50,20 @@ class FireStoreQuery implements AbstractFireStoreQuery {
 
   FireStoreQuery() {
     firestore = FirebaseFirestore.instance;
+  }
+
+  Future<void> securityCheck() async {
+    Firebase.initializeApp();
+  }
+
+  Future<DocumentSnapshot> getAccountSnapshot({User user, String uid}) async {
+    var docId = user == null ? uid : user.uid;
+    var queryResult = await firestore.collection('accounts').doc(docId).get();
+    return queryResult;
+  }
+
+  bool accountExist(DocumentSnapshot snap) {
+    return snap.exists;
   }
 
   @override

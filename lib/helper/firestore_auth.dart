@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:locie/helper/firestore_storage.dart';
+import 'package:locie/helper/local_storage.dart';
 import 'package:locie/models/account.dart';
 // import 'package:firebase_core/firebase_core.dart';
 
@@ -37,6 +38,14 @@ class PhoneAuthentication {
   }
 
   static Future<Account> createAccount(Account account) async {
+    // Injecting uid and phone number in account if null
+    LocalStorage localStorage = LocalStorage();
+    if (account.uid == null || account.phoneNumber == null) {
+      await localStorage.init();
+      account.uid = localStorage.prefs.getString("uid");
+      account.phoneNumber = localStorage.prefs.getString("phone_number");
+    }
+
     if (account.imageFile != null) {
       CloudStorage storage = CloudStorage();
       var task = storage.uploadFile(account.imageFile);
@@ -47,17 +56,18 @@ class PhoneAuthentication {
         .collection('accounts')
         .doc(account.uid)
         .set(account.toJson());
+    localStorage.setAccount(account);
     return account;
   }
 
-  Future<DocumentSnapshot> getAccountSnapshot() async {
-    var queryResult = await firestore.doc(user.uid).get();
-    return queryResult;
-  }
+  // Future<DocumentSnapshot> getAccountSnapshot() async {
+  //   var queryResult = await firestore.doc(user.uid).get();
+  //   return queryResult;
+  // }
 
-  bool accountExist(DocumentSnapshot snap) {
-    return snap.exists;
-  }
+  // bool accountExist(DocumentSnapshot snap) {
+  //   return snap.exists;
+  // }
 
   verificationFailed(FirebaseAuthException e) {
     throw e;

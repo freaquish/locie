@@ -106,8 +106,8 @@ class FetchStoreUsingSid extends StoreEvent {
   FetchStoreUsingSid(this.sid);
 }
 
-class CreateStoreBloc extends Bloc<StoreEvent, StoreState> {
-  CreateStoreBloc() : super(InitializingCreateOrEditStore());
+class CreateOrEditStoreBloc extends Bloc<StoreEvent, StoreState> {
+  CreateOrEditStoreBloc() : super(InitializingCreateOrEditStore());
 
   FireStoreQuery storeQuery = FireStoreQuery();
   LocalStorage localStorage = LocalStorage();
@@ -142,37 +142,35 @@ class CreateStoreBloc extends Bloc<StoreEvent, StoreState> {
       yield ShowingAddressPage(event.store);
     } else if (event is ProceedToMetaDataPage) {
       yield ShowingMetaDataPage(event.store);
-    }else if(event is PreviousExamplesEvent){
+    } else if (event is PreviousExamplesEvent) {
       yield* mapAddPreviousExample(event);
     }
   }
+
   PreviousExamples examples;
   Stream<StoreState> mapAddPreviousExample(PreviousExamplesEvent event) async* {
     if (event is FetchPreviousExamples) {
       yield FetchingPreviousExamples();
-      if(!localStorage.prefs.containsKey("sid")){
+      if (!localStorage.prefs.containsKey("sid")) {
         this..add(InitializeCreateOrEditStore());
       }
       var sid = localStorage.prefs.getString("sid");
-      
+
       examples = await storeQuery.getExamples(sid);
       yield FetchedPreviousExamples(examples);
     } else if (event is InitiateAddPreviousExample) {
       yield ShowingAddExamplesPage();
     } else if (event is AddPreviousExample) {
       var sid = localStorage.prefs.getString("sid");
-      var example = await storeQuery.insertExamples(
-        sid: sid,
-        example: event.example
-        );
-      if(examples == null){
+      var example =
+          await storeQuery.insertExamples(sid: sid, example: event.example);
+      if (examples == null) {
         examples = await storeQuery.getExamples(sid);
-      }else{
+      } else {
         examples.examples.add(example);
       }
 
       yield FetchedPreviousExamples(examples);
-      
     }
   }
 }

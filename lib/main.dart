@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:locie/bloc/store_bloc.dart';
 import 'package:locie/models/store.dart';
 import 'package:locie/pages/authentication.dart';
-import 'package:locie/views/Create%20Store/meta_data.dart';
+import 'package:locie/views/Create_Store/meta_data.dart';
 import 'package:locie/views/registration_screen.dart';
 
 void main() {
@@ -28,14 +28,24 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   void initState() {
-    Firebase.initializeApp();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MetaDataWidget(),
+      body: FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return AuthenticationWidget();
+          }
+        },
+      ),
     );
   }
 }

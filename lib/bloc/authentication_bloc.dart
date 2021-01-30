@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/helper/firestore_auth.dart';
+import 'package:locie/helper/firestore_query.dart';
 import 'package:locie/helper/local_storage.dart';
 import 'package:locie/models/account.dart';
 
@@ -87,8 +88,8 @@ class AuthenticateUser extends LoginEvent {
 // This event will try to fetch user with given uid in accounts collection
 // if returned query is empty then trigger register user
 class FetchCurrentAccount extends AuthenticationEvent {
-  PhoneAuthentication authentication;
-  FetchCurrentAccount(this.authentication);
+  // PhoneAuthentication authentication;
+  FetchCurrentAccount();
 }
 
 class RegisteringEvents extends AuthenticationEvent {}
@@ -106,10 +107,13 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   LocalStorage localStorage = LocalStorage();
   AuthenticationBloc() : super(InitialState());
+  FireStoreQuery storeQuery = FireStoreQuery();
 
   @override
   Stream<AuthenticationState> mapEventToState(
       AuthenticationEvent event) async* {
+    await localStorage.init();
+    // await storeQuery.securityCheck();
     if (event is TriggerSplashScreen) {
       // Show splash screen untill we check internet connection
       // verify that account exist and then redirect to home
@@ -128,8 +132,11 @@ class AuthenticationBloc
       // If no users exist than trigger registration process
       // else redirect to Home
       yield FetchingCurrentAccount();
-      var snapshot = await event.authentication.getAccountSnapshot();
-      bool exist = event.authentication.accountExist(snapshot);
+      var uid = localStorage.prefs.getString("uid");
+      var snapshot = await storeQuery.getAccountSnapshot(uid: uid);
+
+      bool exist = storeQuery.accountExist(snapshot);
+      print('$snapshot $exist');
       if (exist) {
         Account account = Account.fromJson(snapshot.data());
         localStorage.setAccount(account);
@@ -146,7 +153,11 @@ class AuthenticationBloc
     // Handler will manage from page transition to authentication
     // and later end the process either to fetching current account or Failed
     if (event is InitiateLogin) {
-      yield ShowingPhoneAuthenticationPage();
+      if (localStorage.prefs.containsKey("uid")) {
+        this..add(FetchCurrentAccount());
+      } else {
+        yield ShowingPhoneAuthenticationPage();
+      }
     } else if (event is ProceedToOtpPage) {
       PhoneAuthentication auth =
           PhoneAuthentication(phoneNumber: event.phoneNumber);
@@ -156,8 +167,12 @@ class AuthenticationBloc
       yield AuthenticatingUser();
       try {
         await event.authentication.verifyOtp(event.otp);
+        print('authenticated..');
         // yield InitialState();
-        this..add(FetchCurrentAccount(event.authentication));
+        localStorage.prefs.setString("uid", event.authentication.user.uid);
+        localStorage.prefs
+            .setString("phone_number", event.authentication.phoneNumber);
+        this..add(FetchCurrentAccount());
       } catch (e) {
         print(e);
         yield AuthenticationFailed();
@@ -170,7 +185,12 @@ class AuthenticationBloc
   Stream<AuthenticationState> mapAccountRegistration(
       RegisteringEvents event) async* {
     if (event is InitiateRegistration) {
-      yield ShowingRegistrationPage();
+      if (localStorage.prefs.containsKey("uid") &&
+          localStorage.prefs.containsKey("name")) {
+        yield RedirectingToHome();
+      } else {
+        yield ShowingRegistrationPage();
+      }
     } else if (event is RegisterAccount) {
       yield RegisteringAccount();
       Account account = await PhoneAuthentication.createAccount(event.account);

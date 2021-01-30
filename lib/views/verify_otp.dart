@@ -16,7 +16,6 @@ class VerifyOtpScreen extends StatefulWidget {
 }
 
 class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
-
   String otp;
   bool resendOtp;
   final _formKey = GlobalKey<FormState>();
@@ -34,7 +33,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     return Scaffold(
       backgroundColor: Color(0xff1f1e2c),
       body: GestureDetector(
-        onTap: (){
+        onTap: () {
           FocusScope.of(context).unfocus();
         },
         child: PrimaryContainer(
@@ -55,17 +54,17 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                         height: screen.vertical(20),
                       ),
                       IconButton(
-                        iconSize : screen.horizontal(7),
-                        padding: EdgeInsets.all(0),
-                        alignment: Alignment.centerLeft,
-                        onPressed: (){
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(
-                          Icons.keyboard_backspace,
-                          color: Colors.white,
-                        )
-                      ),
+                          iconSize: screen.horizontal(7),
+                          padding: EdgeInsets.all(0),
+                          alignment: Alignment.centerLeft,
+                          onPressed: () {
+                            // Navigator.pop(context);
+                            widget.bloc..add(InitiateLogin());
+                          },
+                          icon: Icon(
+                            Icons.keyboard_backspace,
+                            color: Colors.white,
+                          )),
                       SizedBox(
                         height: screen.vertical(140),
                       ),
@@ -86,14 +85,19 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                         height: screen.vertical(40),
                       ),
                       TextBox(
-                         validator: (otp) {
+                        validator: (otp) {
                           if (otp == null || otp.isEmpty) {
                             return 'Please Enter OTP';
-                          } else if (otp.length > 6 ||
-                              otp.length < 6) {
+                          } else if (otp.length > 6 || otp.length < 6) {
                             return 'Enter valid OTP';
                           }
                         },
+                        preffixWidget: (widget.auth.verificationId == null)
+                            ? Padding(
+                                padding: EdgeInsets.all(10),
+                                child: CircularProgressIndicator(),
+                              )
+                            : null,
                         textController: textEditingController,
                         hintText: 'Enter OTP',
                         keyboard: TextInputType.phone,
@@ -105,16 +109,16 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                       SubmitButton(
                         //TODO run a function for verifying
                         onPressed: () {
-                          if(_formKey.currentState.validate()){
+                          if (_formKey.currentState.validate() &&
+                              widget.auth.verificationId != null) {
                             setState(() {
                               resendOtp = false;
                             });
-                          
+
                             debugPrint('submit');
-                            widget.bloc..add(
-                              AuthenticateUser(widget.auth,textEditingController.value.text)
-                            );
-                            
+                            widget.bloc
+                              ..add(AuthenticateUser(widget.auth,
+                                  textEditingController.value.text));
                           }
                         },
                         buttonName: 'Verify',
