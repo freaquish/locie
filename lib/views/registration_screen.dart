@@ -67,7 +67,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               return 'Please Enter Name';
                             } else if (name.length < 3) {
                               return 'Name must be greator than 3 charactars';
+<<<<<<< HEAD
                             } else if (name.length > 15) {
+=======
+                            }
+                            else if (name.length > 15) {
+>>>>>>> d0324830039951dde0cffbb32284eab19e21b228
                               return 'Name must be less than 15 charactars';
                             }
                           },
@@ -76,9 +81,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           keyboard: TextInputType.text,
                           textAlignment: TextAlign.start,
                         ),
+<<<<<<< HEAD
                         SizedBox(
                           height: screen.vertical(40),
                         ),
+=======
+                         SizedBox(
+                        height: screen.vertical(40),
+                      ),
+>>>>>>> d0324830039951dde0cffbb32284eab19e21b228
                         SubmitButton(
                           //TODO run a function to avatar and username to db
                           onPressed: () {
