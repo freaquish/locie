@@ -1,10 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:locie/bloc/store_bloc.dart';
-import 'package:locie/models/store.dart';
-import 'package:locie/pages/authentication.dart';
-import 'package:locie/views/Create_Store/meta_data.dart';
-import 'package:locie/views/registration_screen.dart';
+import 'package:locie/pages/store_widgets.dart';
 
 void main() {
   runApp(MyApp());
@@ -42,7 +38,7 @@ class _MainPageState extends State<MainPage> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return AuthenticationWidget();
+            return CreateOrEditStoreWidget();
           }
         },
       ),

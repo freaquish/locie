@@ -60,15 +60,6 @@ class PhoneAuthentication {
     return account;
   }
 
-  // Future<DocumentSnapshot> getAccountSnapshot() async {
-  //   var queryResult = await firestore.doc(user.uid).get();
-  //   return queryResult;
-  // }
-
-  // bool accountExist(DocumentSnapshot snap) {
-  //   return snap.exists;
-  // }
-
   verificationFailed(FirebaseAuthException e) {
     throw e;
   }

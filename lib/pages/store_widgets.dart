@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/store_bloc.dart';
 import 'package:locie/components/primary_container.dart';
+import 'package:locie/views/Create_Store/address.dart';
+import 'package:locie/views/Create_Store/avatar_name.dart';
+import 'package:locie/views/Create_Store/meta_data.dart';
 
-class CreateOrEditStore extends StatelessWidget {
+class CreateOrEditStoreWidget extends StatelessWidget {
   final CreateOrEditStoreBloc bloc = CreateOrEditStoreBloc();
 
   @override
@@ -27,7 +30,20 @@ class CreateOrEditStoreBuilder extends StatelessWidget {
       widget: BlocBuilder<CreateOrEditStoreBloc, StoreState>(
         cubit: bloc,
         builder: (context, state) {
-          return CircularProgressIndicator();
+          if (state is InitializingCreateOrEditStore) {
+            return CreateStoreWidget(
+              bloc: bloc,
+              store: state.store,
+            );
+          } else if (state is ShowingAddressPage) {
+            return AddressWidget(bloc: bloc, store: state.store);
+          } else if (state is ShowingMetaDataPage) {
+            return MetaDataWidget(
+              bloc: bloc,
+              store: state.store,
+            );
+          }
+          return Center(child: CircularProgressIndicator());
         },
       ),
     );

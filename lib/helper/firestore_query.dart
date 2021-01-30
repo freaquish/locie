@@ -103,8 +103,14 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     store.id = generateId(text: 'store_${user.phoneNumber}');
     CollectionReference storeReference = firestore.collection('stores');
     storeReference.doc(store.id).set(store.toJson());
+    firestore
+        .collection('accounts')
+        .doc(user.uid)
+        .update({"is_store_owner": true});
+    user.isStoreOwner = true;
     LocalStorage localStorage = LocalStorage();
     localStorage.setStore(store);
+    localStorage.setAccount(user);
     return store;
   }
 

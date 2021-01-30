@@ -70,8 +70,8 @@ class ProceedToMetaDataPage extends StoreEvent {
 // The final page will send Store and account in the bloc state
 class CreateStore extends StoreEvent {
   final Store store;
-  final Account account;
-  CreateStore({this.store, this.account});
+  // final Account account;
+  CreateStore({this.store});
 }
 
 class EditStore extends StoreEvent {
@@ -114,6 +114,7 @@ class CreateOrEditStoreBloc extends Bloc<StoreEvent, StoreState> {
 
   @override
   Stream<StoreState> mapEventToState(StoreEvent event) async* {
+    // await localStorage.init();
     if (event is InitializeCreateOrEditStore) {
       /**
        * [InitiakizeCreateOrEditStore] will handle Store Creation or editing
@@ -130,7 +131,8 @@ class CreateOrEditStoreBloc extends Bloc<StoreEvent, StoreState> {
       // CreateStore commands set store data in the database
       yield UploadingStore();
       FireStoreQuery storeQuery = FireStoreQuery();
-      Store store = await storeQuery.createStore(event.store, event.account);
+      var account = await localStorage.getAccount();
+      Store store = await storeQuery.createStore(event.store, account);
       yield ShowMyStorePage(store);
     } else if (event is EditStore) {
       // Fetch store data using shared prefs

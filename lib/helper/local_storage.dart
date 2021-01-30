@@ -23,7 +23,7 @@ class LocalStorage {
     prefs.setString("phone_number", account.phoneNumber);
   }
 
-  Future<void> getAccount() async {
+  Future<Account> getAccount() async {
     if (prefs == null) {
       await this.init();
     }
