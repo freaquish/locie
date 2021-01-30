@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:locie/pages/authentication.dart';
+import 'package:locie/views/registration_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -31,7 +32,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AuthenticationWidget(),
+      body: RegistrationScreen(),
     );
   }
 }
