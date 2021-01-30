@@ -6,7 +6,7 @@ class PickImage {
   final picker = ImagePicker();
   File image;
 
-  Future getImageFromGallery() async {
+  Future<dynamic> getImageFromGallery() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       image = File(pickedFile.path);
@@ -14,7 +14,7 @@ class PickImage {
     return image;
   }
 
-  Future getImageFromCamera() async {
+  Future<dynamic> getImageFromCamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
     if (pickedFile != null) {
       image = File(pickedFile.path);
