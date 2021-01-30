@@ -7,32 +7,33 @@ import 'package:locie/components/text_field.dart';
 import 'package:locie/helper/pick_image.dart';
 import 'package:locie/helper/screen_size.dart';
 
-class CreateStoreWidget extends StatefulWidget {
+class AddItemWidget extends StatefulWidget {
   @override
-  _CreateStoreWidgetState createState() => _CreateStoreWidgetState();
+  _AddItemWidgetState createState() => _AddItemWidgetState();
 }
 
-class _CreateStoreWidgetState extends State<CreateStoreWidget> {
+class _AddItemWidgetState extends State<AddItemWidget> {
   final TextEditingController textEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController textEditingControllerDescription =
+      TextEditingController();
   final pickImage = PickImage();
   var image;
-  
   @override
   void dispose() {
     textEditingController.dispose();
+    textEditingControllerDescription.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
-
     return Scaffold(
       appBar: Appbar().appbar(
         context: context,
         title: LatoText(
-          'Create Store',
+          '',
           size: 22,
           weight: FontWeight.bold,
         ),
@@ -55,27 +56,27 @@ class _CreateStoreWidgetState extends State<CreateStoreWidget> {
                       height: screen.vertical(390),
                       width: screen.horizontal(100),
                       decoration: BoxDecoration(
-                          image: image != null ? DecorationImage(
-                            image: FileImage(image),
-                            fit: BoxFit.fill
+                          image: image != null ?  DecorationImage(
+                            image:FileImage(image),
+                            fit : BoxFit.fill
                           ) : null,
                           color: Color(0xff1f1e2c),
                           borderRadius: BorderRadius.all(
                               Radius.circular(screen.horizontal(4)))),
                     ),
                     Positioned(
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                            size: screen.horizontal(8),
-                          ),
-                          onPressed: () {
-                            showModalBottomSheet(
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: screen.horizontal(8),
+                        ),
+                        onPressed: () {
+                          showModalBottomSheet(
                                         enableDrag: false,
                                         context: context,
                                         builder: (builder) {
@@ -172,8 +173,9 @@ class _CreateStoreWidgetState extends State<CreateStoreWidget> {
                                             ),
                                           );
                                         });
-                          },
-                        ))
+                        },
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(
@@ -181,7 +183,7 @@ class _CreateStoreWidgetState extends State<CreateStoreWidget> {
                 ),
                 TextBox(
                     textAlignment: TextAlign.left,
-                    hintText: 'Store Name',
+                    hintText: 'Item Name',
                     textController: textEditingController,
                      validator: (value) {
                         if (value.isEmpty || value == null) {
@@ -189,8 +191,24 @@ class _CreateStoreWidgetState extends State<CreateStoreWidget> {
                         }
                       },
                     keyboard: TextInputType.name),
+                    SizedBox(
+                    height: screen.vertical(10),
+                  ),
+                  TextBox(
+                      textAlignment: TextAlign.left,
+                      hintText: 'Description *',
+                      maxLength: 150,
+                      minLines: 5,
+                      maxLines: 5,
+                      textController: textEditingControllerDescription,
+                      validator: (value) {
+                        if (value.isEmpty || value == null) {
+                          return 'Required field';
+                        }
+                      },
+                      keyboard: TextInputType.multiline),
                 SizedBox(
-                  height: screen.vertical(200),
+                  height: screen.vertical(50),
                 ),
                 SubmitButton(
                   //TODO run a function for next page
@@ -199,7 +217,7 @@ class _CreateStoreWidgetState extends State<CreateStoreWidget> {
                       debugPrint('submit');
                     }
                   },
-                  buttonName: 'Continue',
+                  buttonName: 'Next',
                   buttonColor: Color(0xff355cfd),
                 )
               ],
