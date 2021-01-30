@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:locie/bloc/authentication_bloc.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
+import 'package:locie/helper/firestore_auth.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/components/text_field.dart';
 
 class VerifyOtpScreen extends StatefulWidget {
+  final AuthenticationBloc bloc;
+  final PhoneAuthentication auth;
+  VerifyOtpScreen({this.auth, this.bloc});
   @override
   _VerifyOtpScreenState createState() => _VerifyOtpScreenState();
 }
@@ -106,6 +111,9 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                             });
                           
                             debugPrint('submit');
+                            widget.bloc..add(
+                              AuthenticateUser(widget.auth,textEditingController.value.text)
+                            );
                             
                           }
                         },
