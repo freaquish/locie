@@ -10,6 +10,7 @@ class TextBox extends StatelessWidget {
   final textAlignment;
   final TextInputType keyboard;
   final Widget preffixWidget;
+
   final String label;
   final int maxLines;
   final int maxLength;

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:locie/bloc/authentication_bloc.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/helper/pick_image.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/components/text_field.dart';
+import 'package:locie/models/account.dart';
 
 class RegistrationScreen extends StatefulWidget {
+  final AuthenticationBloc bloc;
+  RegistrationScreen({this.bloc});
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
@@ -219,11 +223,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           height: screen.vertical(40),
                         ),
                         SubmitButton(
-                          //TODO run a function to avatar and username to db
                           onPressed: () {
-                            if (_formKey.currentState.validate()) {
+                            if (_formKey.currentState.validate() &&
+                                image != null) {
                               debugPrint('submit');
+                              var name = textEditingController.value.text;
                               textEditingController.clear();
+                              Account account =
+                                  Account(name: name, isStoreOwner: false);
+                              account.imageFile = image;
+                              widget.bloc..add(RegisterAccount(account));
                             }
                           },
                           buttonName: 'Continue',

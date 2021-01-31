@@ -19,11 +19,11 @@ class LocalStorage {
     prefs.setString("uid", account.uid);
     prefs.setString("avatar", account.avatar);
     prefs.setString("name", account.name);
-    prefs.setBool("isStoreOwner", account.isStoreOwner);
-    prefs.setString("phoneNumber", account.phoneNumber);
+    prefs.setBool("is_store_owner", account.isStoreOwner);
+    prefs.setString("phone_number", account.phoneNumber);
   }
 
-  Future<void> getAccount() async {
+  Future<Account> getAccount() async {
     if (prefs == null) {
       await this.init();
     }
@@ -31,8 +31,8 @@ class LocalStorage {
     data["uid"] = prefs.getString("uid");
     data["avatar"] = prefs.getString("avatar");
     data["name"] = prefs.getString("name");
-    data["is_store_owner"] = prefs.getBool("isStoreOwner");
-    data["phone_number"] = prefs.getString("phoneNumber");
+    data["is_store_owner"] = prefs.getBool("is_store_owner");
+    data["phone_number"] = prefs.getString("phone_number");
     return Account.fromJson(data);
   }
 
@@ -62,12 +62,11 @@ class LocalStorage {
     store.id = prefs.getString('sid');
     store.name = prefs.getString('store_name');
     store.contact = prefs.getString('store_contact');
-    if(prefs.containsKey("address_body")){
+    if (prefs.containsKey("address_body")) {
       store.address = Address(
-        body: prefs.getString("address_body"),
-        city: prefs.getString("address_city"),
-        pinCode: prefs.getString("address_pin_code")
-      );
+          body: prefs.getString("address_body"),
+          city: prefs.getString("address_city"),
+          pinCode: prefs.getString("address_pin_code"));
     }
     store.image = prefs.getString('store_image');
     if (prefs.getString('categories') != null) {

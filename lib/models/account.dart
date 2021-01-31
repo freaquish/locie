@@ -40,5 +40,6 @@ class Account {
     data['avatar'] = avatar;
     data['is_store_owner'] = isStoreOwner;
     data['phone_number'] = phoneNumber;
+    return data;
   }
 }

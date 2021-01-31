@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:locie/views/Add%20Item/item_meta_data.dart';
-import 'package:locie/views/Create%20Store/avatar_name.dart';
+import 'package:locie/pages/store_widgets.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,14 +24,24 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   void initState() {
-    Firebase.initializeApp();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ItemMetaDataWidget(),
+      body: FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot){
+          if(!snapshot.hasData){
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }else{
+            return CreateOrEditStoreWidget();
+          }
+        },
+      ),
     );
   }
 }
