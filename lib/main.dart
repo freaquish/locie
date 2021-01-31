@@ -40,7 +40,7 @@ class _MainPageState extends State<MainPage> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return InvoiceWidget();
+            return ItemMetaDataWidget();
           }
         },
       ),

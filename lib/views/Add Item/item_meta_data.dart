@@ -103,10 +103,10 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
                       height: screen.vertical(50),
                     ),
                     Container(
-                      height: screen.vertical(110),
+                      height: screen.vertical(50),
                       width: screen.horizontal(100),
                       decoration: BoxDecoration(
-                          color: Color(0xff5c5c5c),
+                          color: Colour.bgColor,
                           borderRadius: BorderRadius.all(
                               Radius.circular(screen.horizontal(4)))),
                       child: Row(
