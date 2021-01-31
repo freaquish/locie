@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:locie/bloc/authentication_bloc.dart';
+import 'package:locie/components/color.dart';
 import 'package:locie/components/country_codes.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/primary_container.dart';
@@ -32,7 +33,7 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
   Widget build(BuildContext context) {
     final screen = Scale(context);
     return Scaffold(
-      backgroundColor: Color(0xff1f1e2c),
+      backgroundColor: Colour.bgColor,
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();

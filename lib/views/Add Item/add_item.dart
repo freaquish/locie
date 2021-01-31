@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:locie/components/appBar.dart';
+import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
@@ -49,7 +50,7 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                 horizontal: screen.horizontal(8)),
             child: Form(
               key: _formKey,
-                          child: ListView(
+              child: ListView(
                 physics: BouncingScrollPhysics(),
                 children: [
                   Stack(
@@ -58,11 +59,11 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                         height: screen.vertical(390),
                         width: screen.horizontal(100),
                         decoration: BoxDecoration(
-                            image: image != null ?  DecorationImage(
-                              image:FileImage(image),
-                              fit : BoxFit.fill
-                            ) : null,
-                            color: Color(0xff1f1e2c),
+                            image: image != null
+                                ? DecorationImage(
+                                    image: FileImage(image), fit: BoxFit.fill)
+                                : null,
+                            color: Colour.bgColor,
                             borderRadius: BorderRadius.all(
                                 Radius.circular(screen.horizontal(4)))),
                       ),
@@ -79,102 +80,88 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                           ),
                           onPressed: () {
                             showModalBottomSheet(
-                                          enableDrag: false,
-                                          context: context,
-                                          builder: (builder) {
-                                            return new Container(
-                                              height: screen.vertical(250),
-                                              color: Color(
-                                                  0xff1f1e2c), //Color(0xff111117),
-                                              child: new Container(
-                                                decoration: new BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      new BorderRadius.only(
-                                                    topLeft: Radius.circular(16),
-                                                    topRight: Radius.circular(16),
-                                                  ),
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Padding(
-                                                          padding: EdgeInsets.all(
-                                                              screen
-                                                                  .horizontal(3)),
-                                                          child: Text(
-                                                            'Select Image',
-                                                            style: TextStyle(
-                                                                color:
-                                                                    Colors.black,
-                                                                fontSize: 18,
-                                                                fontFamily:
-                                                                    'Mulish'),
-                                                          ),
-                                                        ),
-                                                        IconButton(
-                                                          icon: Icon(Icons.close,
-                                                              color: Colors.red),
-                                                          onPressed: () {
-                                                            Navigator.of(context)
-                                                                .pop();
-                                                          },
-                                                        )
-                                                      ],
-                                                    ),
-                                                    ListTile(
-                                                      onTap: () async {
-                                                        var pickedimage =
-                                                            await pickImage
-                                                                .getImageFromCamera();
-                                                        setState(() {
-                                                          image = pickedimage;
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      title: Text(
-                                                        'Camera',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.grey[900],
-                                                            fontSize: 14),
-                                                      ),
-                                                      leading: Icon(
-                                                          Icons.camera_alt,
-                                                          color:
-                                                              Colors.grey[900]),
-                                                    ),
-                                                    ListTile(
-                                                      onTap: () async {
-                                                        var pickedimage =
-                                                            await pickImage
-                                                                .getImageFromGallery();
-
-                                                        setState(() {
-                                                          image = pickedimage;
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      title: Text(
-                                                        'Gallery',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.grey[900],
-                                                            fontSize: 14),
-                                                      ),
-                                                      leading: Icon(Icons.image,
-                                                          color:
-                                                              Colors.grey[900]),
-                                                    ),
-                                                  ],
+                                enableDrag: false,
+                                context: context,
+                                builder: (builder) {
+                                  return new Container(
+                                    height: screen.vertical(250),
+                                    color: Colour.bgColor, //Color(0xff111117),
+                                    child: new Container(
+                                      decoration: new BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: new BorderRadius.only(
+                                          topLeft: Radius.circular(16),
+                                          topRight: Radius.circular(16),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.all(
+                                                    screen.horizontal(3)),
+                                                child: Text(
+                                                  'Select Image',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 18,
+                                                      fontFamily: 'Mulish'),
                                                 ),
                                               ),
-                                            );
-                                          });
+                                              IconButton(
+                                                icon: Icon(Icons.close,
+                                                    color: Colors.red),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              )
+                                            ],
+                                          ),
+                                          ListTile(
+                                            onTap: () async {
+                                              var pickedimage = await pickImage
+                                                  .getImageFromCamera();
+                                              setState(() {
+                                                image = pickedimage;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            title: Text(
+                                              'Camera',
+                                              style: TextStyle(
+                                                  color: Colors.grey[900],
+                                                  fontSize: 14),
+                                            ),
+                                            leading: Icon(Icons.camera_alt,
+                                                color: Colors.grey[900]),
+                                          ),
+                                          ListTile(
+                                            onTap: () async {
+                                              var pickedimage = await pickImage
+                                                  .getImageFromGallery();
+
+                                              setState(() {
+                                                image = pickedimage;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            title: Text(
+                                              'Gallery',
+                                              style: TextStyle(
+                                                  color: Colors.grey[900],
+                                                  fontSize: 14),
+                                            ),
+                                            leading: Icon(Icons.image,
+                                                color: Colors.grey[900]),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                });
                           },
                         ),
                       ),
@@ -187,28 +174,28 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                       textAlignment: TextAlign.left,
                       hintText: 'Item Name',
                       textController: textEditingController,
-                       validator: (value) {
-                          if (value.isEmpty || value == null) {
-                            return 'Required field';
-                          }
-                        },
+                      validator: (value) {
+                        if (value.isEmpty || value == null) {
+                          return 'Required field';
+                        }
+                      },
                       keyboard: TextInputType.name),
-                      SizedBox(
-                      height: screen.vertical(10),
-                    ),
-                    TextBox(
-                        textAlignment: TextAlign.left,
-                        hintText: 'Description *',
-                        maxLength: 150,
-                        minLines: 5,
-                        maxLines: 5,
-                        textController: textEditingControllerDescription,
-                        validator: (value) {
-                          if (value.isEmpty || value == null) {
-                            return 'Required field';
-                          }
-                        },
-                        keyboard: TextInputType.multiline),
+                  SizedBox(
+                    height: screen.vertical(10),
+                  ),
+                  TextBox(
+                      textAlignment: TextAlign.left,
+                      hintText: 'Description *',
+                      maxLength: 150,
+                      minLines: 5,
+                      maxLines: 5,
+                      textController: textEditingControllerDescription,
+                      validator: (value) {
+                        if (value.isEmpty || value == null) {
+                          return 'Required field';
+                        }
+                      },
+                      keyboard: TextInputType.multiline),
                   SizedBox(
                     height: screen.vertical(50),
                   ),
@@ -220,7 +207,7 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                       }
                     },
                     buttonName: 'Next',
-                    buttonColor: Color(0xff355cfd),
+                    buttonColor: Colour.submitButtonColor,
                   )
                 ],
               ),

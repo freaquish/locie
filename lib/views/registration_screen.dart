@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:locie/bloc/authentication_bloc.dart';
+import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
@@ -37,7 +38,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: Color(0xff1f1e2c),
+        backgroundColor: Colour.bgColor,
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();

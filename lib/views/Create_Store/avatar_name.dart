@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:locie/bloc/store_bloc.dart';
 import 'package:locie/components/appBar.dart';
+import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
@@ -84,7 +85,7 @@ class _CreateStoreWidgetState extends State<CreateStoreWidget> {
                                 ? DecorationImage(
                                     image: imageProvider(), fit: BoxFit.fill)
                                 : null,
-                            color: Color(0xff1f1e2c),
+                            color: Colour.bgColor,
                             borderRadius: BorderRadius.all(
                                 Radius.circular(screen.horizontal(4)))),
                       ),
