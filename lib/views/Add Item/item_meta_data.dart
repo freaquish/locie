@@ -7,7 +7,9 @@ import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/components/switch_button.dart';
 import 'package:locie/components/text_field.dart';
+import 'package:locie/components/units_dialog.dart';
 import 'package:locie/helper/screen_size.dart';
+import 'package:locie/models/unit.dart';
 
 class ItemMetaDataWidget extends StatefulWidget {
   @override
@@ -18,10 +20,11 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController textEditingControllerMax = TextEditingController();
   TextEditingController textEditingControllerMin = TextEditingController();
-  List units = [];
+  List<Unit> units = [];
   String unit = 'kg';
   bool _enable = true;
   bool isListLoaded = false;
+
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
@@ -103,6 +106,38 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
                       height: screen.vertical(50),
                     ),
                     Container(
+                      child: InkWell(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) =>
+                                    UnitDialog(onChange: (unitModel) {
+                                      setState(() {
+                                        this.unit = unitModel.sign;
+                                      });
+                                      Navigator.of(context).pop();
+                                    }));
+                          },
+                          child: Container(
+                              width: screen.horizontal(100),
+                              // height: screen.vertical(80),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: screen.vertical(30),
+                                  horizontal: screen.horizontal(6)),
+                              decoration: BoxDecoration(
+                                  color: Colour.textfieldColor,
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(screen.horizontal(4)))),
+                              child: LatoText(
+                                unit,
+                                size: 18,
+                                weight: FontWeight.bold,
+                              ))),
+                    ),
+                    SizedBox(
+                      height: screen.vertical(50),
+                    ),
+                    Container(
                       height: screen.vertical(50),
                       width: screen.horizontal(100),
                       decoration: BoxDecoration(
@@ -138,7 +173,7 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
                       ),
                     ),
                     SizedBox(
-                      height: screen.vertical(280),
+                      height: screen.vertical(270),
                     ),
                     SubmitButton(
                       //TODO run a function for next page

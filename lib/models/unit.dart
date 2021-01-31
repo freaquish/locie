@@ -5,6 +5,7 @@ class Unit {
   Unit({this.name, this.sign});
 
   Unit.fromJson(Map<String, dynamic> json) {
+    // print('s ${json["name"]}');
     name = json['name'];
     sign = json['sign'];
   }
@@ -14,5 +15,10 @@ class Unit {
     data['name'] = this.name;
     data['sign'] = this.sign;
     return data;
+  }
+
+  @override
+  String toString() {
+    return 'Unit(name: $name, sign: $sign)';
   }
 }

@@ -142,9 +142,14 @@ class FireStoreQuery implements AbstractFireStoreQuery {
 
   @override
   Future<List<Unit>> fetchUnits() async {
-    CollectionReference ref = firestore.collection('unit');
+    CollectionReference ref = firestore.collection('units');
     var snapshot = await ref.get();
-    return snapshot.docs.map((e) => Unit.fromJson(e.data()));
+    List<QueryDocumentSnapshot> snaps = snapshot.docs;
+    print(snaps[0].data());
+    return snaps.map((e) {
+      // print('sd ${e.data()["name"]}');
+      return Unit.fromJson(e.data());
+    }).toList();
   }
 
   @override

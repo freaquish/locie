@@ -80,4 +80,18 @@ class LocalStorage {
     store.gstin = prefs.getString('store_gstin');
     return store;
   }
+
+  // Future<bool> isFetchingUnitViable() async {
+  //   if (prefs.containsKey("last_unit_fetch")) {
+  //     var lastUnitFetch = prefs.getString("last_unit_fetch");
+  //     DateTime dateTime = DateTime.parse(lastUnitFetch);
+  //     return (DateTime.now().difference(dateTime)).inDays >= 1;
+  //   } else {
+  //     return true;
+  //   }
+  // }
+
+  // Future<void> insertLastUnitFetch() async {
+  //   prefs.setString("last_unit_fetch", DateTime.now().toIso8601String());
+  // }
 }
