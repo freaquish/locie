@@ -82,7 +82,7 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                   Stack(
                     children: [
                       Container(
-                        height: screen.vertical(390),
+                        height: screen.vertical(400),
                         width: screen.horizontal(100),
                         decoration: BoxDecoration(
                             image: image != null
@@ -226,7 +226,7 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                       },
                       keyboard: TextInputType.multiline),
                   SizedBox(
-                    height: screen.vertical(50),
+                    height: screen.vertical(10),
                   ),
                   SubmitButton(
                     onPressed: () {

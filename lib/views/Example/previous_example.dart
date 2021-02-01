@@ -56,7 +56,7 @@ class _PreviousExampleWidgetState extends State<PreviousExampleWidget> {
                   Stack(
                     children: [
                       Container(
-                        height: screen.vertical(390),
+                        height: screen.vertical(400),
                         width: screen.horizontal(100),
                         decoration: BoxDecoration(
                             image: image != null
