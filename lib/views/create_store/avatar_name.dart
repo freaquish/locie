@@ -212,7 +212,9 @@ class _CreateStoreWidgetState extends State<CreateStoreWidget> {
                   SubmitButton(
                     //TODO run a function for next page
                     onPressed: () {
-                      if (_formKey.currentState.validate() && image != null) {
+                      if (_formKey.currentState.validate() &&
+                          image != null &&
+                          textEditingController.text.length > 3) {
                         debugPrint('submit');
                         Store store = Store();
                         if (widget.store != null) {

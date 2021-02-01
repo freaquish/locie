@@ -126,7 +126,7 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     store.id = generateId(text: 'store_${user.phoneNumber}');
     CollectionReference storeReference = firestore.collection('stores');
     Map<String, dynamic> json = store.toJson();
-    json['n_gram'] = nGram(store.name);
+    json['n_gram'] = nGram(store.name).sublist(3);
 
     storeReference.doc(store.id).set(json);
     firestore

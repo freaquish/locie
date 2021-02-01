@@ -1,11 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:locie/bloc/listing_bloc.dart';
 import 'package:locie/bloc/previous_examples_bloc.dart';
 import 'package:locie/models/category.dart';
+import 'package:locie/models/listing.dart';
 import 'package:locie/pages/category.dart';
 import 'package:locie/pages/listing_widget.dart';
 import 'package:locie/pages/previous_examples.dart';
 import 'package:locie/views/Example/previous_example.dart';
+import 'package:locie/views/add_item/my_items.dart';
 
 void main() {
   runApp(MyApp());
@@ -43,8 +46,8 @@ class _MainPageState extends State<MainPage> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return PreviousExampleProvider(
-              event: null,
+            return ListingOperationViewProvider(
+              event: FetchItems(),
             );
           }
         },

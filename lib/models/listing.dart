@@ -16,7 +16,7 @@ class Listing {
   DateTime created;
   bool inStock;
   File imageFile;
-  List<String> nGram;
+  List nGram;
   Category category;
 
   Listing(

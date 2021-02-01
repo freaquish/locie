@@ -20,6 +20,17 @@ class ShowingMetaDataPage extends ListingState {
 
 class CreatingListing extends ListingState {}
 
+class ShowingMyListings extends ListingState {
+  final List<Listing> listings;
+  ShowingMyListings(this.listings);
+}
+
+class ShowingStoreListings extends ListingState {
+  final String sid;
+  final List<Listing> listings;
+  ShowingStoreListings({this.sid, this.listings});
+}
+
 class CreatedListing extends ListingState {}
 
 class CreationErrorState extends ListingState {}
@@ -43,6 +54,11 @@ class CreateListing extends ListingEvent {
   CreateListing(this.listing);
 }
 
+class FetchItems extends ListingEvent {
+  final String sid;
+  FetchItems({this.sid});
+}
+
 class ListingBloc extends Bloc<ListingEvent, ListingState> {
   ListingBloc() : super(InitializingState());
   ListingQuery listingQuery = ListingQuery();
@@ -58,8 +74,18 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
         yield CreatingListing();
         listingQuery.createOrEditListing(event.listing);
         yield CreatedListing();
+      } else if (event is FetchItems) {
+        List<Listing> listings =
+            await listingQuery.fetchListings(sid: event.sid);
+        // print(listings);
+        if (event.sid == null) {
+          yield ShowingMyListings(listings);
+        } else {
+          yield ShowingStoreListings(sid: event.sid, listings: listings);
+        }
       }
     } catch (e) {
+      // print(e);
       yield CreationErrorState();
     }
   }

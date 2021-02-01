@@ -230,14 +230,18 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                   ),
                   SubmitButton(
                     onPressed: () {
-                      if (_formKey.currentState.validate()) {
+                      if (_formKey.currentState.validate() &&
+                          textEditingController.text.length > 3) {
                         debugPrint('submit');
                         Listing listing = Listing(
-                            name: textEditingController.value.text,
-                            description: textEditingController.value.text,
-                            parent: widget.category.id,
-                            category: widget.category,
-                            parentName: widget.category.name);
+                          name: textEditingController.value.text,
+                          description: textEditingController.value.text,
+                        );
+                        if (widget.category != null) {
+                          listing.parent = widget.category.id;
+                          listing.parentName = widget.category.name;
+                          listing.category = widget.category;
+                        }
                         widget.bloc..add(ProceedToMetaDataPage(listing));
                       }
                     },
