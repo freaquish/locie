@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/store_bloc.dart';
 import 'package:locie/components/primary_container.dart';
-import 'package:locie/views/Create_Store/address.dart';
-import 'package:locie/views/Create_Store/avatar_name.dart';
-import 'package:locie/views/Create_Store/meta_data.dart';
+import 'package:locie/views/create_store/address.dart';
+import 'package:locie/views/create_store/avatar_name.dart';
+import 'package:locie/views/create_store/meta_data.dart';
 
 class CreateOrEditStoreWidget extends StatelessWidget {
   final CreateOrEditStoreBloc bloc = CreateOrEditStoreBloc();

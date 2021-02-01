@@ -68,15 +68,34 @@ class FireStoreQuery implements AbstractFireStoreQuery {
   }
 
   @override
-  Future<void> addDefaultCategoryToStore(Store store, Category category) {
-    // TODO: implement addDefaultCategoryToStore
-    throw UnimplementedError();
+  Future<void> addDefaultCategoryToStore(Store store, Category category) async {
+    CollectionReference storeReference = firestore.collection("stores");
+    var nGrams = nGram(category.name);
+    await storeReference.doc(store.id).update({
+      "categories": FieldValue.arrayUnion([category.id]),
+      "n_gram": FieldValue.arrayUnion(nGrams)
+    });
   }
 
   @override
-  Future<Category> createNewCategory(Category category) {
-    // TODO: implement createNewCategory
-    throw UnimplementedError();
+  Future<Category> createNewCategory(Category category) async {
+    if (category.imageFile != null) {
+      CloudStorage storage = CloudStorage();
+      var task = storage.uploadFile(category.imageFile);
+      category.image = await storage.getDownloadUrl(task);
+      category.imageFile = null;
+    }
+    CollectionReference categoryReference = firestore.collection('category');
+    var localstorage = LocalStorage();
+    await localstorage.init();
+    Store store = await localstorage.getStore();
+    var cid = generateId(text: 'category-${category.name}-${store.name}');
+    category.id = cid;
+    var json = category.toJson();
+    json["n_gram"] = nGram(category.name);
+    await categoryReference.doc(cid).set(json);
+
+    return category;
   }
 
   /*

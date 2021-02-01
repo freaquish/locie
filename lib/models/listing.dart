@@ -1,8 +1,11 @@
+import 'dart:io';
+
 class Listing {
   String id;
   String name;
   String image;
   String parent;
+  String parentName;
   String store;
   String unit;
   double priceMin;
@@ -10,10 +13,13 @@ class Listing {
   String description;
   DateTime created;
   bool inStock;
+  File imageFile;
+  List<String> nGram;
 
   Listing(
       {this.id,
       this.name,
+      this.imageFile,
       this.image,
       this.parent,
       this.store,
@@ -21,6 +27,7 @@ class Listing {
       this.priceMin,
       this.priceMax,
       this.description,
+      this.parentName,
       this.created,
       this.inStock});
 
@@ -36,6 +43,7 @@ class Listing {
     description = json['description'];
     created = json['created'].toDate();
     inStock = json['in_stock'];
+    nGram = json['n_gram'];
   }
 
   Map<String, dynamic> toJson() {
@@ -49,8 +57,9 @@ class Listing {
     data['price_min'] = this.priceMin;
     data['price_max'] = this.priceMax;
     data['description'] = this.description;
-    data['created'] = this.created;
+    data['created'] = this.created != null ? this.created : DateTime.now();
     data['in_stock'] = this.inStock;
+    data['n_gram'] = this.nGram;
     return data;
   }
 }

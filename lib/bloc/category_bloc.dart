@@ -113,7 +113,11 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     } else if (event is CreateCategory) {
       yield CreatingCategegory();
       Category category = await storeQuery.createNewCategory(event.category);
-      categoriesAcrossPages[categoriesAcrossPages.length - 1].add(category);
+      var parentExist = categoriesAcrossPages[categoriesAcrossPages.length - 1]
+          .any((element) => category.parent == element.id);
+      if (!parentExist) {
+        categoriesAcrossPages[categoriesAcrossPages.length - 1].add(category);
+      }
       yield ShowingCategorySelectionPage(
           category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
     } else if (event is CreateNewToSelection) {

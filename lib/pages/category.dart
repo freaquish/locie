@@ -25,7 +25,7 @@ class CategoryBuilder extends StatelessWidget {
       widget: BlocBuilder<CategoryBloc, CategoryState>(
         cubit: bloc,
         builder: (context, state) {
-          if (state is InitialState || state is FetchingCategory) {
+          if (state is LoadingStates) {
             return Center(
               child: Container(
                 child: CircularProgressIndicator(),

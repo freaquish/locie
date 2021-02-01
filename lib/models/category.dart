@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class Category {
   String name;
   String image;
@@ -5,6 +7,7 @@ class Category {
   String parent;
   bool isDefault;
   String store;
+  File imageFile;
 
   Category(
       {this.name,
@@ -12,6 +15,7 @@ class Category {
       this.id,
       this.parent = "",
       this.store = "",
+      this.imageFile,
       this.isDefault = false});
 
   Category.fromJson(Map<String, dynamic> json) {
