@@ -169,7 +169,7 @@ class _PreviousExampleWidgetState extends State<PreviousExampleWidget> {
                   ),
                   Form(
                     key: _formKey,
-                    child: TextBox(
+                    child: CustomTextField(
                         textAlignment: TextAlign.left,
                         hintText: 'Description *',
                         maxLength: 150,

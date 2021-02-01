@@ -205,7 +205,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         SizedBox(
                           height: screen.vertical(50),
                         ),
-                        TextBox(
+                        CustomTextField(
                           validator: (name) {
                             if (name == null || name.isEmpty) {
                               return 'Please Enter Name';

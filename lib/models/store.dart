@@ -1,4 +1,5 @@
 import 'dart:io';
+
 class StoreLocation {
   double lat;
   double long;
@@ -94,7 +95,7 @@ class Store {
     // }
     data['owner'] = this.owner;
     data['created'] = this.created;
-    data['gstin'] = this.gstin;
+    data['gstin'] = this.gstin == null ? '' : this.gstin;
     if (location != null) {
       data['location'] = this.location.toJson();
     }
@@ -105,8 +106,8 @@ class Store {
     Map<String, dynamic> json = store.toJson();
     Map<String, dynamic> myJson = this.toJson();
     Map<String, dynamic> data = Map<String, dynamic>();
-    json.forEach((key, value) { 
-      if(!myJson.containsKey(key) || myJson[key] != value){
+    json.forEach((key, value) {
+      if (!myJson.containsKey(key) || myJson[key] != value) {
         data[key] = value;
       }
     });
@@ -164,7 +165,7 @@ class PreviousExamples {
   PreviousExamples.fromJson(Map<String, dynamic> json) {
     sid = json['sid'];
     examples = [];
-    (json['examples'] as List).forEach((element) { 
+    (json['examples'] as List).forEach((element) {
       examples.add(element);
     });
   }

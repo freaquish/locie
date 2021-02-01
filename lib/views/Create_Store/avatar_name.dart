@@ -196,7 +196,7 @@ class _CreateStoreWidgetState extends State<CreateStoreWidget> {
                   SizedBox(
                     height: screen.vertical(50),
                   ),
-                  TextBox(
+                  CustomTextField(
                       textAlignment: TextAlign.left,
                       hintText: 'Store Name',
                       textController: textEditingController,

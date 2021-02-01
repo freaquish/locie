@@ -63,6 +63,8 @@ class ProceedToNextCategoryPage extends CategoryEvent {
   ProceedToNextCategoryPage(this.current);
 }
 
+class CreateNewToSelection extends CategoryEvent {}
+
 class ProceedToLastCategoryPage extends CategoryEvent {}
 
 class CreateCategory extends CategoryEvent {
@@ -112,6 +114,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       yield CreatingCategegory();
       Category category = await storeQuery.createNewCategory(event.category);
       categoriesAcrossPages[categoriesAcrossPages.length - 1].add(category);
+      yield ShowingCategorySelectionPage(
+          category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
+    } else if (event is CreateNewToSelection) {
       yield ShowingCategorySelectionPage(
           category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
     }

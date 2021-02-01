@@ -170,7 +170,7 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                   SizedBox(
                     height: screen.vertical(50),
                   ),
-                  TextBox(
+                  CustomTextField(
                       textAlignment: TextAlign.left,
                       hintText: 'Item Name',
                       textController: textEditingController,
@@ -183,7 +183,7 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                   SizedBox(
                     height: screen.vertical(10),
                   ),
-                  TextBox(
+                  CustomTextField(
                       textAlignment: TextAlign.left,
                       hintText: 'Description *',
                       maxLength: 150,

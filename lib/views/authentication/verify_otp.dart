@@ -85,7 +85,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                       SizedBox(
                         height: screen.vertical(40),
                       ),
-                      TextBox(
+                      CustomTextField(
                         validator: (otp) {
                           if (otp == null || otp.isEmpty) {
                             return 'Please Enter OTP';

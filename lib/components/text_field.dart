@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:locie/components/color.dart';
 
-class TextBox extends StatelessWidget {
+class CustomTextField extends StatelessWidget {
   final TextEditingController textController;
   final Function validator;
   final String hintText;
@@ -16,7 +16,7 @@ class TextBox extends StatelessWidget {
   final int maxLines;
   final int maxLength;
   final int minLines;
-  TextBox(
+  CustomTextField(
       {@required this.textAlignment,
       this.maxLines = 1,
       this.maxLength,

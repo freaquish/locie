@@ -39,3 +39,11 @@ String generateId({String text}) {
   }
   return uuid.v4();
 }
+
+List<String> nGram(String data) {
+  List<String> grams = List<String>();
+  for (var index = 0; index < data.length; index++) {
+    grams.add(data.substring(0, index + 1));
+  }
+  return grams;
+}

@@ -80,7 +80,7 @@ class _AddressWidgetState extends State<AddressWidget> {
                   SizedBox(
                     height: screen.vertical(30),
                   ),
-                  TextBox(
+                  CustomTextField(
                       textAlignment: TextAlign.left,
                       validator: (value) {
                         if (value.isEmpty || value == null) {
@@ -99,7 +99,7 @@ class _AddressWidgetState extends State<AddressWidget> {
                   SizedBox(
                     height: screen.vertical(10),
                   ),
-                  // TextBox(
+                  // CustomTextField(
                   //     textAlignment: TextAlign.left,
                   //     hintText: 'Address Line 2',
                   //     maxLength: 100,
@@ -110,7 +110,7 @@ class _AddressWidgetState extends State<AddressWidget> {
                   SizedBox(
                     height: screen.vertical(10),
                   ),
-                  TextBox(
+                  CustomTextField(
                       textAlignment: TextAlign.left,
                       validator: (value) {
                         if (value.isEmpty || value == null) {
@@ -127,7 +127,7 @@ class _AddressWidgetState extends State<AddressWidget> {
                   SizedBox(
                     height: screen.vertical(10),
                   ),
-                  TextBox(
+                  CustomTextField(
                       textAlignment: TextAlign.left,
                       validator: (value) {
                         if (value.isEmpty || value == null) {

@@ -71,7 +71,7 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
                       SizedBox(
                         height: screen.vertical(35),
                       ),
-                      TextBox(
+                      CustomTextField(
                         preffixWidget: Padding(
                           padding: EdgeInsets.only(
                               left: screen.horizontal(3),

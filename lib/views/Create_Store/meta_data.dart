@@ -84,7 +84,7 @@ class _MetaDataWidgetState extends State<MetaDataWidget> {
                   SizedBox(
                     height: screen.vertical(30),
                   ),
-                  TextBox(
+                  CustomTextField(
                       textAlignment: TextAlign.left,
                       // validator: (value) {
                       //   if (value.isEmpty || value == null) {
@@ -98,7 +98,7 @@ class _MetaDataWidgetState extends State<MetaDataWidget> {
                   SizedBox(
                     height: screen.vertical(10),
                   ),
-                  TextBox(
+                  CustomTextField(
                       textAlignment: TextAlign.left,
                       hintText: 'Description *',
                       maxLength: 150,

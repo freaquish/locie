@@ -71,7 +71,7 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
                         children: [
                           Container(
                             width: screen.horizontal(40),
-                            child: TextBox(
+                            child: CustomTextField(
                                 validator: (value) {
                                   if (value.isEmpty || value == null) {
                                     return 'Required field';
@@ -86,7 +86,7 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
                           ),
                           Container(
                             width: screen.horizontal(40),
-                            child: TextBox(
+                            child: CustomTextField(
                                 validator: (value) {
                                   if (value.isEmpty || value == null) {
                                     return 'Required field';

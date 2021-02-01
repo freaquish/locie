@@ -26,16 +26,38 @@ class _CategorySelectionState extends State<CategorySelection> {
     });
   }
 
-  void onClickForwardArrow(Category category) {}
+  void onClickForwardArrow(Category category) {
+    widget.bloc..add(ProceedToNextCategoryPage(category.id));
+  }
 
-  void onAddClick() {}
+  void onAddClick(BuildContext context) {
+    if (groupValue == null) {
+      showNoCategorySelectedError(context);
+    } else {
+      widget.bloc..add(InitiateAddNewCategory(groupValue.id));
+    }
+  }
 
-  void onNext() {}
+  void onBackClick() {
+    if (widget.bloc.categoriesAcrossPages.length > 1) {
+      widget.bloc..add(ProceedToLastCategoryPage());
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
+
+  void onNext() {
+    // Navigate to create item builder but do not bloc jump
+  }
 
   void showNoCategorySelectedError(BuildContext context) {
     showDialog(
-      context: context,
-    );
+        context: context,
+        builder: (context) => AlertDialog(
+              backgroundColor: Colour.bgColor,
+              content:
+                  Container(child: RailwayText("You must select one category")),
+            ));
   }
 
   @override
@@ -43,19 +65,22 @@ class _CategorySelectionState extends State<CategorySelection> {
     Scale scale = Scale(context);
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
-        child: Container(
-          color: Colour.bgColor,
-          width: scale.horizontal(100),
-          height: scale.vertical(120),
-          padding: EdgeInsets.symmetric(
-              vertical: scale.vertical(20), horizontal: scale.horizontal(4)),
-          child: SubmitButton(
-            onPressed: () {
-              onNext();
-              showNoCategorySelectedError(context);
-            },
-            buttonName: 'Continue',
-            buttonColor: Colour.submitButtonColor,
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Container(
+            color: Colour.bgColor,
+            width: scale.horizontal(100),
+            height: scale.vertical(120),
+            padding: EdgeInsets.symmetric(
+                vertical: scale.vertical(20), horizontal: scale.horizontal(4)),
+            child: SubmitButton(
+              onPressed: () {
+                onNext();
+                showNoCategorySelectedError(context);
+              },
+              buttonName: 'Continue',
+              buttonColor: Colour.submitButtonColor,
+            ),
           ),
         ),
       ),
@@ -71,9 +96,13 @@ class _CategorySelectionState extends State<CategorySelection> {
                   Icons.add,
                   color: Colors.white,
                 ),
-                onPressed: null)
+                onPressed: () {
+                  onAddClick(context);
+                })
           ],
-          onTap: () {}),
+          onTap: () {
+            onBackClick();
+          }),
       body: PrimaryContainer(
         widget: Container(
           child: (widget.categories == null)
