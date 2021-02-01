@@ -1,6 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:locie/bloc/previous_examples_bloc.dart';
+import 'package:locie/models/category.dart';
 import 'package:locie/pages/category.dart';
+import 'package:locie/pages/listing_widget.dart';
+import 'package:locie/pages/previous_examples.dart';
 import 'package:locie/views/Example/previous_example.dart';
 
 void main() {
@@ -39,7 +43,9 @@ class _MainPageState extends State<MainPage> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return CategoryProvider();
+            return PreviousExampleProvider(
+              event: null,
+            );
           }
         },
       ),

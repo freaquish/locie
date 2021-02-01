@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:locie/bloc/previous_examples_bloc.dart';
 import 'package:locie/components/appBar.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
@@ -7,8 +8,11 @@ import 'package:locie/components/primary_container.dart';
 import 'package:locie/helper/pick_image.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/components/text_field.dart';
+import 'package:locie/models/store.dart';
 
 class PreviousExampleWidget extends StatefulWidget {
+  final PreviousExamplesBloc bloc;
+  PreviousExampleWidget({this.bloc});
   @override
   _PreviousExampleWidgetState createState() => _PreviousExampleWidgetState();
 }
@@ -192,8 +196,12 @@ class _PreviousExampleWidgetState extends State<PreviousExampleWidget> {
                   SubmitButton(
                     //TODO run a function for next page
                     onPressed: () {
-                      if (_formKey.currentState.validate()) {
+                      if (_formKey.currentState.validate() && image != null) {
                         debugPrint('submit');
+                        widget.bloc
+                          ..add(AddPreviousExample(PreviousExample(
+                              text: textEditingControllerDescription.value.text,
+                              imageFile: image)));
                       }
                     },
                     buttonName: 'Continue',

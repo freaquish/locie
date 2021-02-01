@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/helper/firestore_query.dart';
 import 'package:locie/helper/local_storage.dart';
-import 'package:locie/models/account.dart';
 import 'package:locie/models/store.dart';
 
 class StoreState {}

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -48,6 +50,7 @@ class FireStoreQuery implements AbstractFireStoreQuery {
   @override
   FirebaseFirestore firestore;
   CloudStorage storage;
+  LocalStorage localStorage;
 
   FireStoreQuery() {
     firestore = FirebaseFirestore.instance;
@@ -86,9 +89,9 @@ class FireStoreQuery implements AbstractFireStoreQuery {
       category.imageFile = null;
     }
     CollectionReference categoryReference = firestore.collection('category');
-    var localstorage = LocalStorage();
-    await localstorage.init();
-    Store store = await localstorage.getStore();
+    // var localstorage = LocalStorage();
+    await localStorage.init();
+    Store store = await localStorage.getStore();
     var cid = generateId(text: 'category-${category.name}-${store.name}');
     category.id = cid;
     var json = category.toJson();
@@ -130,6 +133,10 @@ class FireStoreQuery implements AbstractFireStoreQuery {
         .collection('accounts')
         .doc(user.uid)
         .update({"is_store_owner": true});
+    firestore
+        .collection("works")
+        .doc(store.id)
+        .set({"sid": store.id, "examples": []});
     user.isStoreOwner = true;
     LocalStorage localStorage = LocalStorage();
     localStorage.setStore(store);
@@ -164,14 +171,33 @@ class FireStoreQuery implements AbstractFireStoreQuery {
 
   @override
   Future<List<Unit>> fetchUnits() async {
-    CollectionReference ref = firestore.collection('units');
-    var snapshot = await ref.get();
-    List<QueryDocumentSnapshot> snaps = snapshot.docs;
-    print(snaps[0].data());
-    return snaps.map((e) {
-      // print('sd ${e.data()["name"]}');
-      return Unit.fromJson(e.data());
-    }).toList();
+    if (localStorage == null) {
+      localStorage = LocalStorage();
+      await localStorage.init();
+    }
+    if (localStorage.prefs.containsKey("last_unit_fetch") &&
+        DateTime.now()
+                .difference(DateTime.parse(
+                    localStorage.prefs.getString("last_unit_fetch")))
+                .inDays <=
+            1) {
+      var decoded = jsonDecode(localStorage.prefs.getString("units")) as List;
+      // print(decoded);
+      return decoded.map((e) => Unit.fromJson(e)).toList();
+    } else {
+      // print("endocded");
+      CollectionReference ref = firestore.collection('units');
+      var snapshot = await ref.get();
+      List<QueryDocumentSnapshot> snaps = snapshot.docs;
+      localStorage.prefs
+          .setString("units", jsonEncode(snaps.map((e) => e.data()).toList()));
+      localStorage.prefs
+          .setString("last_unit_fetch", DateTime.now().toIso8601String());
+      return snaps.map((e) {
+        // print('sd ${e.data()["name"]}');
+        return Unit.fromJson(e.data());
+      }).toList();
+    }
   }
 
   @override
@@ -188,7 +214,7 @@ class FireStoreQuery implements AbstractFireStoreQuery {
 
   @override
   Future<Store> editStore(Store newStore) async {
-    LocalStorage localStorage = LocalStorage();
+    // LocalStorage localStorage = LocalStorage();
     Store stateStore = await localStorage.getStore();
     Map<String, dynamic> changes = stateStore.compare(newStore);
     CollectionReference storeReference = firestore.collection('stores');

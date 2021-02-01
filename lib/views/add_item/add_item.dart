@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:locie/bloc/listing_bloc.dart';
 import 'package:locie/components/appBar.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
@@ -7,8 +8,14 @@ import 'package:locie/components/primary_container.dart';
 import 'package:locie/components/text_field.dart';
 import 'package:locie/helper/pick_image.dart';
 import 'package:locie/helper/screen_size.dart';
+import 'package:locie/models/category.dart';
+import 'package:locie/models/listing.dart';
 
 class AddItemWidget extends StatefulWidget {
+  Category category;
+  Listing listing;
+  final ListingBloc bloc;
+  AddItemWidget({this.category, this.listing, this.bloc});
   @override
   _AddItemWidgetState createState() => _AddItemWidgetState();
 }
@@ -20,6 +27,25 @@ class _AddItemWidgetState extends State<AddItemWidget> {
       TextEditingController();
   final pickImage = PickImage();
   var image;
+  @override
+  void initState() {
+    if (widget.listing != null) {
+      textEditingController.value = TextEditingValue(text: widget.listing.name);
+      textEditingControllerDescription.value =
+          TextEditingValue(text: widget.listing.description);
+      image = widget.listing.image;
+    }
+    super.initState();
+  }
+
+  ImageProvider imageProvider() {
+    if (image is String) {
+      return NetworkImage(image);
+    } else if (image is String) {
+      return FileImage(image);
+    }
+  }
+
   @override
   void dispose() {
     textEditingController.dispose();
@@ -61,7 +87,7 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                         decoration: BoxDecoration(
                             image: image != null
                                 ? DecorationImage(
-                                    image: FileImage(image), fit: BoxFit.fill)
+                                    image: imageProvider(), fit: BoxFit.fill)
                                 : null,
                             color: Colour.bgColor,
                             borderRadius: BorderRadius.all(
@@ -203,10 +229,16 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                     height: screen.vertical(50),
                   ),
                   SubmitButton(
-                    //TODO run a function for next page
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         debugPrint('submit');
+                        Listing listing = Listing(
+                            name: textEditingController.value.text,
+                            description: textEditingController.value.text,
+                            parent: widget.category.id,
+                            category: widget.category,
+                            parentName: widget.category.name);
+                        widget.bloc..add(ProceedToMetaDataPage(listing));
                       }
                     },
                     buttonName: 'Next',

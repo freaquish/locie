@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:locie/bloc/listing_bloc.dart';
 import 'package:locie/components/appBar.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
@@ -9,9 +9,13 @@ import 'package:locie/components/switch_button.dart';
 import 'package:locie/components/text_field.dart';
 import 'package:locie/components/units_dialog.dart';
 import 'package:locie/helper/screen_size.dart';
+import 'package:locie/models/listing.dart';
 import 'package:locie/models/unit.dart';
 
 class ItemMetaDataWidget extends StatefulWidget {
+  final ListingBloc bloc;
+  Listing listing;
+  ItemMetaDataWidget({this.bloc, this.listing});
   @override
   _ItemMetaDataWidgetState createState() => _ItemMetaDataWidgetState();
 }
@@ -22,7 +26,7 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
   TextEditingController textEditingControllerMin = TextEditingController();
   List<Unit> units = [];
   String unit = 'kg';
-  bool _enable = true;
+  bool inStockSwitch = true;
   bool isListLoaded = false;
 
   @override
@@ -161,10 +165,10 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
                             padding:
                                 EdgeInsets.only(right: screen.horizontal(2.5)),
                             child: CustomSwitch(
-                              value: _enable,
+                              value: inStockSwitch,
                               onChanged: (bool val) {
                                 setState(() {
-                                  _enable = val;
+                                  inStockSwitch = val;
                                 });
                               },
                             ),
@@ -180,6 +184,13 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
                           debugPrint('submit');
+                          widget.listing.priceMax =
+                              double.parse(textEditingControllerMax.value.text);
+                          widget.listing.priceMin =
+                              double.parse(textEditingControllerMin.value.text);
+                          widget.listing.unit = unit;
+                          widget.listing.inStock = inStockSwitch;
+                          widget.bloc..add(CreateListing(widget.listing));
                         }
                       },
                       buttonName: 'Done',

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:locie/models/category.dart';
+
 class Listing {
   String id;
   String name;
@@ -15,6 +17,7 @@ class Listing {
   bool inStock;
   File imageFile;
   List<String> nGram;
+  Category category;
 
   Listing(
       {this.id,
@@ -28,6 +31,7 @@ class Listing {
       this.priceMax,
       this.description,
       this.parentName,
+      this.category,
       this.created,
       this.inStock});
 
@@ -50,7 +54,7 @@ class Listing {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
-    data['image'] = this.image;
+    data['image'] = this.image == null ? "" : this.image;
     data['parent'] = this.parent;
     data['store'] = this.store;
     data['unit'] = this.unit;

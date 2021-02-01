@@ -140,8 +140,9 @@ class Address {
 class PreviousExample {
   String text;
   String image;
+  File imageFile;
 
-  PreviousExample({this.text, this.image});
+  PreviousExample({this.text, this.image, this.imageFile});
 
   PreviousExample.fromJson(Map<String, dynamic> json) {
     text = json['text'];
@@ -166,7 +167,7 @@ class PreviousExamples {
     sid = json['sid'];
     examples = [];
     (json['examples'] as List).forEach((element) {
-      examples.add(element);
+      examples.add(PreviousExample.fromJson(element));
     });
   }
 
