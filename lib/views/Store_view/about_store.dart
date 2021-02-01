@@ -12,38 +12,59 @@ class StoreAboutWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final screen = Scale(context);
     return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: screen.horizontal(4), vertical: screen.vertical(5)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LatoText(storeName, size: 28,style: FontStyle.normal,weight: FontWeight.w900,),
-          SizedBox(
-            height: screen.vertical(20),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children:[
-              Icon(Icons.star, color: Colors.amberAccent[700],size: 21,),
-              SizedBox(width: screen.horizontal(2),),
-              LatoText('4.8 Rating',size: 18)
-            ]
+          LatoText(
+            storeName,
+            size: 28,
+            style: FontStyle.normal,
+            weight: FontWeight.w900,
           ),
           SizedBox(
             height: screen.vertical(20),
           ),
-          RailwayText(description, size: 20,),
+          Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+            Icon(
+              Icons.star,
+              color: Colors.amberAccent[700],
+              size: 21,
+            ),
+            SizedBox(
+              width: screen.horizontal(2),
+            ),
+            LatoText('4.8 Rating', size: 18)
+          ]),
           SizedBox(
             height: screen.vertical(20),
           ),
-          LatoText('Contact', size: 28,style: FontStyle.normal,weight: FontWeight.w900,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children:[
-              Icon(Icons.comment, color: Colors.amberAccent[700],size: 32,),
-              SizedBox(width: screen.horizontal(2),),
-              LatoText('4.8 Rating',size: 22)
-            ]
+          RailwayText(
+            description,
+            size: 18,
           ),
+          SizedBox(
+            height: screen.vertical(25),
+          ),
+          LatoText(
+            'Contact',
+            size: 28,
+            style: FontStyle.normal,
+            weight: FontWeight.w900,
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+            Icon(
+              Icons.comment,
+              color: Colors.amberAccent[700],
+              size: 28,
+            ),
+            SizedBox(
+              width: screen.horizontal(2),
+            ),
+            LatoText(contactDetails, size: 20)
+          ]),
         ],
       ),
     );

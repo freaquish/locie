@@ -60,14 +60,17 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
               height: screen.vertical(420),
               width: screen.horizontal(100),
               decoration: BoxDecoration(
-                color: Colour.skeletonColor,
-              ),
+                  color: Colour.skeletonColor,
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/placeholder.png'),
+                    fit: BoxFit.fill,
+                  )),
             ),
             Positioned(
               top: screen.vertical(10),
               left: screen.vertical(10),
               child: IconButton(
-                color: Colors.white,
+                color: Colors.grey,
                 icon: Icon(Icons.keyboard_backspace),
                 onPressed: () {},
               ),
@@ -79,7 +82,6 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
               builder:
                   (BuildContext context, ScrollController scrollController) {
                 return Container(
-                  
                   decoration: BoxDecoration(
                     color: Colour.bgColor,
                     borderRadius: BorderRadius.only(
@@ -100,12 +102,12 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                             horizontal: screen.horizontal(2),
                             vertical: screen.vertical(50)),
                         child: TabBar(
-                           indicatorColor: Colors.white,
-                                indicator: UnderlineTabIndicator(
-                                    insets: EdgeInsets.only(
-                                  left: screen.horizontal(2),
-                                  right: screen.horizontal(2),
-                                )),
+                          indicatorColor: Colors.white,
+                          indicator: UnderlineTabIndicator(
+                              insets: EdgeInsets.only(
+                            left: screen.horizontal(2),
+                            right: screen.horizontal(2),
+                          )),
                           tabs: [
                             Padding(
                               padding:
