@@ -47,6 +47,7 @@ class LocalStorage {
     prefs.setStringList("store_categories", store.categories);
     prefs.setString("store_description", store.description);
     prefs.setString("store_gstin", store.gstin);
+    prefs.setString("store_logo", store.logo);
     if (store.address != null) {
       prefs.setString("address_body", store.address.body);
       prefs.setString("address_city", store.address.city);
@@ -75,6 +76,7 @@ class LocalStorage {
         store.categories.add(v);
       });
     }
+    store.logo = prefs.getString("store_logo");
     store.description = prefs.getString('store_description');
     store.owner = prefs.getString('uid');
     store.gstin = prefs.getString('store_gstin');

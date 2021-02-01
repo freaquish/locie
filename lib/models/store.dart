@@ -33,10 +33,12 @@ class Store {
   String gstin;
   StoreLocation location;
   File imageFile;
+  String logo;
 
   Store(
       {this.id,
       this.name,
+      this.logo,
       this.contact,
       this.address,
       this.image,
@@ -61,12 +63,7 @@ class Store {
       });
     }
     description = json['description'];
-    // if (json['previous_examples'] != null) {
-    //   previousExamples = new List<PreviousExamples>();
-    //   json['previous_examples'].forEach((v) {
-    //     previousExamples.add(new PreviousExamples.fromJson(v));
-    //   });
-    // }
+    logo = json["logo"];
     owner = json['owner'];
     created = json['created'].toDate();
     gstin = json['gstin'];
@@ -94,6 +91,7 @@ class Store {
     //       this.previousExamples.map((v) => v.toJson()).toList();
     // }
     data['owner'] = this.owner;
+    data['logo'] = this.logo == null ? "" : this.logo;
     data['created'] = this.created;
     data['gstin'] = this.gstin == null ? '' : this.gstin;
     if (location != null) {
@@ -134,6 +132,11 @@ class Address {
     data['city'] = this.city;
     data['pin_code'] = this.pinCode;
     return data;
+  }
+
+  @override
+  String toString() {
+    return '$body,$city,$pinCode';
   }
 }
 
