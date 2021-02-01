@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:locie/pages/category.dart';
-import 'package:locie/views/Example/previous_example.dart';
+import 'package:locie/views/Add_Item/add_item.dart';
+import 'package:locie/views/Store_view/store_view.dart';
 
 void main() {
   runApp(MyApp());
@@ -39,7 +39,7 @@ class _MainPageState extends State<MainPage> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return CategoryProvider();
+            return StoreViewWidget();
           }
         },
       ),
