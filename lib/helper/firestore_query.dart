@@ -137,7 +137,7 @@ class FireStoreQuery implements AbstractFireStoreQuery {
       snapshot = await ref.where("is_default", isEqualTo: true).get();
     }
     var docs = snapshot.docs;
-    return docs.map((e) => Category.fromJson(e.data()));
+    return docs.map((e) => Category.fromJson(e.data())).toList();
   }
 
   @override

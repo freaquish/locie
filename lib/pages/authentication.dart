@@ -4,9 +4,9 @@ import 'package:locie/bloc/authentication_bloc.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/pages/home.dart';
 import 'package:locie/views/loadings.dart';
-import 'package:locie/views/phone_authentication.dart';
-import 'package:locie/views/registration_screen.dart';
-import 'package:locie/views/verify_otp.dart';
+import 'package:locie/views/authentication/phone_authentication.dart';
+import 'package:locie/views/authentication/registration_screen.dart';
+import 'package:locie/views/authentication/verify_otp.dart';
 
 class AuthenticationWidget extends StatelessWidget {
   final AuthenticationEvent event;

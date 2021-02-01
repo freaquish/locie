@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:locie/components/color.dart';
 
 class TextBox extends StatelessWidget {
   final TextEditingController textController;
@@ -47,7 +48,7 @@ class TextBox extends StatelessWidget {
         prefixStyle: GoogleFonts.lato(
             fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
         filled: true,
-        fillColor: Color(0xff5c5c5c),
+        fillColor: Colour.textfieldColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(12),
