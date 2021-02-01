@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:locie/pages/category.dart';
 import 'package:locie/pages/store_widgets.dart';
 import 'package:locie/views/Add%20Item/item_meta_data.dart';
+import 'package:locie/views/category/selection.dart';
 import 'package:locie/views/invoice.dart';
 
 void main() {
@@ -40,7 +42,7 @@ class _MainPageState extends State<MainPage> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return ItemMetaDataWidget();
+            return CategoryProvider();
           }
         },
       ),
