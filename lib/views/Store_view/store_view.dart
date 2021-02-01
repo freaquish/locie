@@ -4,6 +4,9 @@ import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/views/Store_view/about_store.dart';
+import 'package:locie/views/Store_view/product.dart';
+import 'package:locie/views/Store_view/reviews.dart';
+import 'package:locie/views/Store_view/work.dart';
 
 class StoreViewWidget extends StatefulWidget {
   @override
@@ -76,10 +79,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
               builder:
                   (BuildContext context, ScrollController scrollController) {
                 return Container(
-                  padding: EdgeInsets.only(
-                      top: screen.vertical(0),
-                      left: screen.horizontal(6),
-                      right: screen.horizontal(6)),
+                  
                   decoration: BoxDecoration(
                     color: Colour.bgColor,
                     borderRadius: BorderRadius.only(
@@ -92,16 +92,62 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                     ),
                   ),
                   child: ListView(
+                    physics: BouncingScrollPhysics(),
                     controller: scrollController,
                     children: [
-                      TabBar(
-                        tabs: [
-                          LatoText("About"),
-                          LatoText("About"),
-                          LatoText("About"),
-                          LatoText("About"),
-                        ],
-                        controller: tabController,
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screen.horizontal(2),
+                            vertical: screen.vertical(50)),
+                        child: TabBar(
+                           indicatorColor: Colors.white,
+                                indicator: UnderlineTabIndicator(
+                                    insets: EdgeInsets.only(
+                                  left: screen.horizontal(2),
+                                  right: screen.horizontal(2),
+                                )),
+                          tabs: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(bottom: screen.horizontal(2)),
+                              child: LatoText(
+                                'About',
+                                fontColor: tabController.index == 0
+                                    ? Colors.white
+                                    : Color(0xff6c6c6c),
+                                size: 16,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(bottom: screen.horizontal(2)),
+                              child: LatoText('Product',
+                                  fontColor: tabController.index == 1
+                                      ? Colors.white
+                                      : Color(0xff6c6c6c),
+                                  size: 16),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(bottom: screen.horizontal(2)),
+                              child: LatoText('Work',
+                                  fontColor: tabController.index == 2
+                                      ? Colors.white
+                                      : Color(0xff6c6c6c),
+                                  size: 16),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(bottom: screen.horizontal(2)),
+                              child: LatoText('Review',
+                                  fontColor: tabController.index == 3
+                                      ? Colors.white
+                                      : Color(0xff6c6c6c),
+                                  size: 16),
+                            ),
+                          ],
+                          controller: tabController,
+                        ),
                       ),
                       getCurrentBodyWidget()
                     ],
