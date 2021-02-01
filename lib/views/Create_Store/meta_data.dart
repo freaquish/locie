@@ -109,6 +109,9 @@ class _MetaDataWidgetState extends State<MetaDataWidget> {
                         if (value.isEmpty || value == null) {
                           return 'Required field';
                         }
+                        if (value.length > 150) {
+                          return 'Description is greater than 150 character';
+                        }
                       },
                       keyboard: TextInputType.multiline),
                   SizedBox(

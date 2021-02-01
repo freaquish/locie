@@ -86,10 +86,13 @@ class _AddressWidgetState extends State<AddressWidget> {
                         if (value.isEmpty || value == null) {
                           return 'Required field';
                         }
+                        if (value.length > 150) {
+                          return 'Address is greater than 150 character';
+                        }
                       },
                       hintText: 'Address Line *',
                       textController: textEditingControllerAddress1,
-                      maxLength: 100,
+                      maxLength: 150,
                       minLines: 2,
                       maxLines: 3,
                       keyboard: TextInputType.multiline),
@@ -112,6 +115,9 @@ class _AddressWidgetState extends State<AddressWidget> {
                       validator: (value) {
                         if (value.isEmpty || value == null) {
                           return 'Required field';
+                        }
+                        if (value.length > 50) {
+                          return 'Value is greater than 50 character';
                         }
                       },
                       hintText: 'City, State *',
