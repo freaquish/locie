@@ -23,6 +23,12 @@ class StoreReviewsWidget extends StatelessWidget {
                   trailing: Wrap(
                     children: [
                       Padding(
+                        padding: EdgeInsets.only(
+                            top: screen.vertical(10),
+                            right: screen.horizontal(2)),
+                        child: LatoText('4.8'),
+                      ),
+                      Padding(
                         padding: EdgeInsets.only(top: screen.vertical(10)),
                         child: Icon(
                           Icons.star,
@@ -30,12 +36,6 @@ class StoreReviewsWidget extends StatelessWidget {
                           size: 16,
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: screen.vertical(10),
-                            left: screen.horizontal(2)),
-                        child: LatoText('4.8'),
-                      )
                     ],
                   ),
                   tileColor: Colors.transparent,
