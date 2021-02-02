@@ -52,8 +52,16 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
-    return SafeArea(
-      child: PrimaryContainer(
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.deepPurple[700],
+        child: Icon(
+          Icons.edit,
+          color: Colors.white,
+        ),
+        onPressed: () {},
+      ),
+      body: PrimaryContainer(
         widget: Stack(
           children: [
             Container(
