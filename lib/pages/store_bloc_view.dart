@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/store_view_bloc.dart';
+import 'package:locie/components/loading_container/work_container.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/models/listing.dart';
 import 'package:locie/models/review.dart';
 import 'package:locie/models/store.dart';
 import 'package:locie/views/Store_view/about_store.dart';
+import 'package:locie/views/Store_view/product.dart';
 import 'package:locie/views/Store_view/work.dart';
 
 class StoreViewGlobalStateSingleton {
@@ -89,17 +91,15 @@ class StoreViewBuilder extends StatelessWidget {
         builder: (context, state) {
           print(state);
           if (state is LoadingState) {
-            return Center(
-              child: Container(
-                child: CircularProgressIndicator(),
-              ),
-            );
+            return WorkLoadingContainer();
           } else if (state is FetchedStore) {
             singleton.store = state.store;
             return StoreAboutWidget(singleton.store);
           } else if (state is FetchedStoreWorks) {
             singleton.examples = state.examples;
             return StoreWorksWidget(singleton.examples);
+          } else if (state is FetchedStoreProducts) {
+            return StoreProductWidget(state.listings);
           }
         },
       ),

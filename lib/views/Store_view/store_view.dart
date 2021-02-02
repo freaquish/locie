@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/store_view_bloc.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/pages/store_bloc_view.dart';
-import 'package:locie/views/Store_view/about_store.dart';
 
 class StoreViewWidget extends StatefulWidget {
   final String sid;
@@ -25,15 +23,28 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
   StoreViewGlobalStateSingleton singleton;
   StoreViewBloc bloc;
   StoreViewEvent event;
+  ScrollController _scrollController;
 
   @override
   void initState() {
     singleton = StoreViewGlobalStateSingleton();
     bloc = StoreViewBloc();
-    event = FetchStore(widget.sid);
+    if (widget.event == null) {
+      event = FetchStore(widget.sid);
+    }
     tabController = TabController(initialIndex: 0, length: 4, vsync: this);
     tabController.addListener(handleTabSelection);
+    _scrollController.addListener(scrollListener);
     super.initState();
+  }
+
+  void scrollListener() {
+    if (_scrollController.position.atEdge &&
+        tabController.index % 2 != 0 &&
+        _scrollController.position.pixels != 0) {
+      // As Products and Reviews are on 1 and 3
+      bloc..add(getEvent());
+    }
   }
 
   @override
@@ -126,6 +137,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
               maxChildSize: 1,
               builder:
                   (BuildContext context, ScrollController scrollController) {
+                _scrollController = scrollController;
                 return Container(
                   decoration: BoxDecoration(
                     color: Colour.bgColor,

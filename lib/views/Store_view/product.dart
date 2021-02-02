@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:locie/components/font_text.dart';
+import 'package:locie/components/rich_image.dart';
+import 'package:locie/constants.dart';
 import 'package:locie/helper/screen_size.dart';
+import 'package:locie/models/listing.dart';
 
 class StoreProductWidget extends StatelessWidget {
-  //TODO u have to send List image urls so that by doing indexing you can view all the image on screen this is
-  // as simple as fuck , now image will not distort
-  //List products and list of price. THey all have same index in list  so that the render on screen correctly to their parent product,
+  final List<Listing> listings;
+  StoreProductWidget(this.listings);
+  String placeHolder = 'assets/images/placeholder.png';
+
+  ImageProvider getProvider(Listing listing) {
+    if (listing.image == null || listing.image.isEmpty) {
+      return AssetImage(placeHolder);
+    } else {
+      return NetworkImage(listing.image);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +40,9 @@ class StoreProductWidget extends StatelessWidget {
                     child: Container(
                       width: screen.horizontal(50),
                       height: screen.vertical(390),
-                      decoration: BoxDecoration(
+                      child: RichImage(
+                        image: listings[index].image,
                         borderRadius: BorderRadius.all(Radius.circular(15)),
-                        image: DecorationImage(
-                            image: index % 2 == 0
-                                ? AssetImage('assets/images/placeholder.png')
-                                : AssetImage('assets/images/Splash_Screen.png'),
-                            fit: BoxFit.cover),
                       ),
                     ),
                   ),
@@ -43,12 +50,12 @@ class StoreProductWidget extends StatelessWidget {
                     padding: EdgeInsets.symmetric(
                         horizontal: screen.horizontal(3),
                         vertical: screen.vertical(10)),
-                    child: RailwayText('Product Name'),
+                    child: RailwayText(listings[index].name),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: screen.horizontal(3)),
                     child: LatoText(
-                      'INR 34 - 40',
+                      '$rupeeSign ${listings[index].priceMax} - $rupeeSign ${listings[index].priceMin}',
                       fontColor: Color(0xffFF7A00),
                       size: 12,
                     ),
