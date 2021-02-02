@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/store_view_bloc.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/helper/screen_size.dart';
+import 'package:locie/pages/store_bloc_view.dart';
 import 'package:locie/views/Store_view/about_store.dart';
-import 'package:locie/views/Store_view/product.dart';
-import 'package:locie/views/Store_view/reviews.dart';
-import 'package:locie/views/Store_view/work.dart';
 
 class StoreViewWidget extends StatefulWidget {
+  final String sid;
+  final StoreViewEvent event;
+  StoreViewWidget({this.sid, this.event});
   @override
   _StoreViewWidgetState createState() => _StoreViewWidgetState();
 }
@@ -19,8 +22,15 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
 
   TabController tabController;
 
+  StoreViewGlobalStateSingleton singleton;
+  StoreViewBloc bloc;
+  StoreViewEvent event;
+
   @override
   void initState() {
+    singleton = StoreViewGlobalStateSingleton();
+    bloc = StoreViewBloc();
+    event = FetchStore(widget.sid);
     tabController = TabController(initialIndex: 0, length: 4, vsync: this);
     tabController.addListener(handleTabSelection);
     super.initState();
@@ -33,21 +43,48 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
   }
 
   handleTabSelection() {
-    setState(() {});
+    setState(() {
+      event = getEvent();
+      debugPrint('$event, ${tabController.index}');
+      bloc..add(event);
+    });
+    // bloc..add(event);
   }
 
-  Widget getCurrentBodyWidget() {
-    List<Widget> widgets = [
-      StoreAboutWidget(),
-      StoreProductWidget(),
-      StoreWorksWidget(),
-      StoreReviewsWidget()
-    ];
-    return widgets[tabController.index];
+  StoreViewEvent getEvent() {
+    if (tabController.index == 0) {
+      // About tab; if store is null then fetch event otherwise InjectEvent
+      if (!singleton.isStoreNull) {
+        return InjectStoreView(FetchedStore(singleton.store));
+      } else {
+        return FetchStore(widget.sid);
+      }
+    } else if (tabController.index == 1) {
+      // Product tab; if listing is empty then send FetchProduct with startAt
+      /// else set startAt = listings[length-1].snapshot [limit=10]
+      /// the state will start loading if listings.length > 0  then tell widget to show extent loading else full screen
+      if (singleton.isListingNull) {
+        return FetchStoreProducts(widget.sid);
+      } else if (singleton.isNextListingFetchViable) {
+        return FetchStoreProducts(widget.sid,
+            startAt: singleton.lastListingSnap);
+      }
+    } else if (tabController.index == 2) {
+      if (singleton.isExamplesNull) {
+        return FetchStoreWorks(widget.sid);
+      } else {
+        return InjectStoreView(FetchedStoreWorks(singleton.examples));
+      }
+    } else if (tabController.index == 3) {
+      // Reviews tab; if reviews is null then fetch without startA
+      /// if Reviews is notEmpty and length is [limit=5] then fetch Next
+      if (singleton.isReviewNull) {
+        return FetchStoreReviews(widget.sid);
+      } else if (singleton.isNextReviewFetchViable) {
+        return FetchStoreReviews(widget.sid, startAt: singleton.lastReviewSnap);
+      }
+    }
   }
-
-  PageController pageController = PageController();
-  // TabController tabController = TabController(length: 4, vsync: null)
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +198,11 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                           controller: tabController,
                         ),
                       ),
-                      getCurrentBodyWidget()
+                      StoreViewProvider(
+                        event,
+                        singleton: singleton,
+                        bloc: bloc,
+                      )
                     ],
                   ),
                 );

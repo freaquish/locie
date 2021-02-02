@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:locie/views/Store_view/product.dart';
 import 'package:locie/views/Store_view/store_view.dart';
+import 'package:locie/views/not_internet_widget.dart';
 
 void main() {
   runApp(MyApp());
@@ -39,7 +40,9 @@ class _MainPageState extends State<MainPage> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return StoreViewWidget();
+            return StoreViewWidget(
+              sid: "abaf3de1-1558-5960-9dd5-e7c04eb54767",
+            );
           }
         },
       ),

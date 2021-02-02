@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pdf/widgets.dart';
+
 class Review {
   String text;
   double rating;
@@ -5,11 +8,14 @@ class Review {
   String user;
   String userName;
   String userImage;
+  DateTime created;
+  DocumentSnapshot snapshot;
 
   Review(
       {this.text,
       this.rating,
       this.store,
+      this.snapshot,
       this.user,
       this.userName,
       this.userImage});
@@ -31,6 +37,7 @@ class Review {
     data['user'] = this.user;
     data['user_name'] = this.userName;
     data['user_image'] = this.userImage;
+    data['created'] = this.created == null ? DateTime.now() : this.created;
     return data;
   }
 }

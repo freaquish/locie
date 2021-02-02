@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class StoreLocation {
   double lat;
   double long;
@@ -34,11 +36,13 @@ class Store {
   StoreLocation location;
   File imageFile;
   String logo;
+  dynamic rating;
 
   Store(
       {this.id,
       this.name,
       this.logo,
+      this.rating,
       this.contact,
       this.address,
       this.image,
@@ -67,6 +71,7 @@ class Store {
     owner = json['owner'];
     created = json['created'].toDate();
     gstin = json['gstin'];
+    rating = json['rating'];
     location = StoreLocation.fromJson(json['location']);
   }
 
@@ -144,8 +149,9 @@ class PreviousExample {
   String text;
   String image;
   File imageFile;
+  DocumentSnapshot snapshot;
 
-  PreviousExample({this.text, this.image, this.imageFile});
+  PreviousExample({this.text, this.snapshot, this.image, this.imageFile});
 
   PreviousExample.fromJson(Map<String, dynamic> json) {
     text = json['text'];

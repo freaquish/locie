@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 
 class RichImage extends StatelessWidget {
   final dynamic image;
-  const RichImage({this.image});
+  final BorderRadius borderRadius;
+
+  const RichImage({this.image, this.borderRadius});
 
   ImageProvider getImage() {
     if (image is String && image.length > 0) {
@@ -19,7 +21,9 @@ class RichImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderRadius: borderRadius != null
+              ? borderRadius
+              : BorderRadius.all(Radius.circular(8)),
           image: DecorationImage(image: getImage(), fit: BoxFit.cover)),
     );
   }

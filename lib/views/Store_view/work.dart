@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:locie/components/font_text.dart';
+import 'package:locie/components/rich_image.dart';
 import 'package:locie/helper/screen_size.dart';
+import 'package:locie/models/store.dart';
 
 class StoreWorksWidget extends StatelessWidget {
-  final String description =
-      'Shopping is an activity in which a customer browses the available goods or services presented by one or more retailers with the potential intent to purchase a suitable selection of them. ';
-
+  final PreviousExamples examples;
+  StoreWorksWidget(this.examples);
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
@@ -16,7 +17,7 @@ class StoreWorksWidget extends StatelessWidget {
           child: ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: 10,
+            itemCount: examples.examples.length,
             itemBuilder: (context, i) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -25,18 +26,16 @@ class StoreWorksWidget extends StatelessWidget {
                   Container(
                     width: screen.horizontal(100),
                     height: screen.vertical(390),
-                    decoration: BoxDecoration(
+                    child: RichImage(
                       borderRadius: BorderRadius.all(Radius.circular(15)),
-                      image: DecorationImage(
-                          image: AssetImage('assets/images/placeholder.png'),
-                          fit: BoxFit.cover),
+                      image: examples.examples[i].image,
                     ),
                   ),
                   SizedBox(
                     height: screen.vertical(20),
                   ),
                   RailwayText(
-                    description,
+                    examples.examples[i].text,
                     size: 18,
                   ),
                   SizedBox(

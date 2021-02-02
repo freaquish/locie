@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:locie/models/category.dart';
 
 class Listing {
@@ -18,10 +19,12 @@ class Listing {
   File imageFile;
   List nGram;
   Category category;
+  DocumentSnapshot snapshot;
 
   Listing(
       {this.id,
       this.name,
+      this.snapshot,
       this.imageFile,
       this.image,
       this.parent,

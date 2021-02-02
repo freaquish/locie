@@ -27,12 +27,24 @@ class StoreViewRepo {
   }
 
   // Returns PE with null sid if none exists
-  Future<List<Listing>> fetchStoreListing(String sid) async {
-    QuerySnapshot snapshot = await instance
+  Future<List<Listing>> fetchStoreListing(String sid,
+      [DocumentSnapshot documentSnapshot]) async {
+    int limit = 10;
+    QuerySnapshot snapshot;
+    Query query;
+    query = instance
         .collection("listings")
         .where("store", isEqualTo: sid)
-        .get();
-    return snapshot.docs.map((e) => Listing.fromJson(e.data())).toList();
+        .orderBy("created");
+    if (documentSnapshot != null) {
+      query = query.startAfterDocument(documentSnapshot);
+    }
+    snapshot = await query.limit(limit).get();
+    return snapshot.docs.map((e) {
+      Listing listing = Listing.fromJson(e.data());
+      listing.snapshot = e;
+      return listing;
+    }).toList();
   }
 
   Future<PreviousExamples> fetchWorks(String sid) async {
@@ -47,11 +59,21 @@ class StoreViewRepo {
     }
   }
 
-  Future<List<Review>> fetchReviews(String sid) async {
-    QuerySnapshot snapshot = await instance
+  Future<List<Review>> fetchReviews(String sid,
+      [DocumentSnapshot documentSnapshot]) async {
+    int limit = 5;
+    Query query = instance
         .collection("reviews")
         .where("store", isEqualTo: sid)
-        .get();
-    return snapshot.docs.map((e) => Review.fromJson(e.data())).toList();
+        .orderBy("rating");
+    if (documentSnapshot != null) {
+      query = query.startAfterDocument(documentSnapshot);
+    }
+    QuerySnapshot snapshot = await query.limit(limit).get();
+    return snapshot.docs.map((e) {
+      Review review = Review.fromJson(e.data());
+      review.snapshot = e;
+      return review;
+    }).toList();
   }
 }
