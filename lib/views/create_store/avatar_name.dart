@@ -83,7 +83,7 @@ class _CreateStoreWidgetState extends State<CreateStoreWidget> {
                         decoration: BoxDecoration(
                             image: image != null
                                 ? DecorationImage(
-                                    image: imageProvider(), fit: BoxFit.fill)
+                                    image: imageProvider(), fit: BoxFit.cover)
                                 : null,
                             color: Colour.bgColor,
                             borderRadius: BorderRadius.all(

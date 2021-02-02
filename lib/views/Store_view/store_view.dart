@@ -63,7 +63,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                   color: Colour.skeletonColor,
                   image: DecorationImage(
                     image: AssetImage('assets/images/placeholder.png'),
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                   )),
             ),
             Positioned(
@@ -98,9 +98,11 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                     controller: scrollController,
                     children: [
                       Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: screen.horizontal(2),
-                            vertical: screen.vertical(50)),
+                        padding: EdgeInsets.fromLTRB(
+                            screen.horizontal(2),
+                            screen.vertical(50),
+                            screen.horizontal(2),
+                            screen.vertical(30)),
                         child: TabBar(
                           indicatorColor: Colors.white,
                           indicator: UnderlineTabIndicator(

@@ -85,7 +85,7 @@ class _CreateNewCategoryWidgetState extends State<CreateNewCategoryWidget> {
                                   image: image != null
                                       ? DecorationImage(
                                           image: FileImage(image),
-                                          fit: BoxFit.fill)
+                                          fit: BoxFit.cover)
                                       : null,
                                   color: Colour.bgColor,
                                   borderRadius: BorderRadius.all(

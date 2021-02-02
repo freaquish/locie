@@ -61,7 +61,7 @@ class _PreviousExampleWidgetState extends State<PreviousExampleWidget> {
                         decoration: BoxDecoration(
                             image: image != null
                                 ? DecorationImage(
-                                    image: FileImage(image), fit: BoxFit.fill)
+                                    image: FileImage(image), fit: BoxFit.cover)
                                 : null,
                             color: Colour.bgColor,
                             borderRadius: BorderRadius.all(

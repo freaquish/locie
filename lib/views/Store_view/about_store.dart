@@ -55,10 +55,12 @@ class StoreAboutWidget extends StatelessWidget {
             weight: FontWeight.w900,
           ),
           Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            Icon(
-              Icons.comment,
-              color: Colors.amberAccent[700],
-              size: 28,
+            Container(
+              height: 26,
+              width: 26,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/whatsapp.png'))),
             ),
             SizedBox(
               width: screen.horizontal(2),

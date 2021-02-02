@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:locie/views/Store_view/product.dart';
 import 'package:locie/views/Store_view/store_view.dart';
 
 void main() {

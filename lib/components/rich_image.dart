@@ -20,7 +20,7 @@ class RichImage extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8)),
-          image: DecorationImage(image: getImage(), fit: BoxFit.fill)),
+          image: DecorationImage(image: getImage(), fit: BoxFit.cover)),
     );
   }
 }
