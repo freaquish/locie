@@ -54,7 +54,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
     final screen = Scale(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.deepPurple[700],
+        backgroundColor: Colour.submitButtonColor,
         child: Icon(
           Icons.edit,
           color: Colors.white,
