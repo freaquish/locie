@@ -3,8 +3,11 @@ import 'package:locie/bloc/store_view_bloc.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
+import 'package:locie/components/text_field.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/pages/store_bloc_view.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:locie/components/flatActionButton.dart';
 
 class StoreViewWidget extends StatefulWidget {
   final String sid;
@@ -17,6 +20,8 @@ class StoreViewWidget extends StatefulWidget {
 class _StoreViewWidgetState extends State<StoreViewWidget>
     with TickerProviderStateMixin {
   String imageUrl;
+
+  TextEditingController textEditingControllerReview = TextEditingController();
 
   TabController tabController;
 
@@ -50,6 +55,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
   @override
   void dispose() {
     tabController.dispose();
+    textEditingControllerReview.dispose();
     super.dispose();
   }
 
@@ -107,7 +113,9 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
           Icons.edit,
           color: Colors.white,
         ),
-        onPressed: () {},
+        onPressed: () {
+          showBottomReviewSheet(context, screen);
+        },
       ),
       body: PrimaryContainer(
         widget: Stack(
@@ -224,6 +232,106 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
           ],
         ),
       ),
+    );
+  }
+
+  showBottomReviewSheet(BuildContext parentContext, Scale screen) {
+    return showModalBottomSheet(
+      context: parentContext,
+      builder: (builder) {
+        return Container(
+          height: screen.vertical(400),
+          color: Colour.bgColor,
+          child: Container(
+            decoration: new BoxDecoration(
+              color: Colors.white,
+              borderRadius: new BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
+            child: ListView(
+              physics: BouncingScrollPhysics(),
+              shrinkWrap: true,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(screen.horizontal(3)),
+                      child: Text(
+                        'Select Image',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontFamily: 'Mulish'),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close, color: Colors.red),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                ),
+                RatingBar.builder(
+                  initialRating: 3,
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    switch (index) {
+                      case 0:
+                        return Icon(
+                          Icons.sentiment_very_dissatisfied,
+                          color: Colors.red,
+                        );
+                      case 1:
+                        return Icon(
+                          Icons.sentiment_dissatisfied,
+                          color: Colors.redAccent,
+                        );
+                      case 2:
+                        return Icon(
+                          Icons.sentiment_neutral,
+                          color: Colors.amber,
+                        );
+                      case 3:
+                        return Icon(
+                          Icons.sentiment_satisfied,
+                          color: Colors.lightGreen,
+                        );
+                      case 4:
+                        return Icon(
+                          Icons.sentiment_very_satisfied,
+                          color: Colors.green,
+                        );
+                    }
+                  },
+                  onRatingUpdate: (rating) {
+                    print(rating);
+                  },
+                ),
+                SizedBox(
+                  height: screen.vertical(50),
+                ),
+                CustomTextField(
+                    textAlignment: TextAlign.start,
+                    hintText: 'Review',
+                    textController: textEditingControllerReview,
+                    keyboard: TextInputType.multiline),
+                SizedBox(
+                  height: screen.vertical(50),
+                ),
+                SubmitButton(
+                  buttonColor: Colour.submitButtonColor,
+                  buttonName: 'Post',
+                  onPressed: () {},
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -52,7 +52,8 @@ class _AddItemWidgetState extends State<AddItemWidget> {
   }
 
   void onBackClick(BuildContext context) {
-    BlocProvider.of<NavigationBloc>(context).replace(NavigateToSelectCategory());
+    BlocProvider.of<NavigationBloc>(context)
+        .replace(NavigateToSelectCategory());
   }
 
   @override
@@ -68,7 +69,7 @@ class _AddItemWidgetState extends State<AddItemWidget> {
     return Scaffold(
       appBar: Appbar().appbar(
         context: context,
-        onTap: (){
+        onTap: () {
           onBackClick(context);
         },
         title: LatoText(
@@ -118,89 +119,90 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                           ),
                           onPressed: () {
                             showModalBottomSheet(
-                                enableDrag: false,
-                                context: context,
-                                builder: (builder) {
-                                  return new Container(
-                                    height: screen.vertical(250),
-                                    color: Colour.bgColor, //Color(0xff111117),
-                                    child: new Container(
-                                      decoration: new BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: new BorderRadius.only(
-                                          topLeft: Radius.circular(16),
-                                          topRight: Radius.circular(16),
-                                        ),
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.all(
-                                                    screen.horizontal(3)),
-                                                child: Text(
-                                                  'Select Image',
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 18,
-                                                      fontFamily: 'Mulish'),
-                                                ),
-                                              ),
-                                              IconButton(
-                                                icon: Icon(Icons.close,
-                                                    color: Colors.red),
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                              )
-                                            ],
-                                          ),
-                                          ListTile(
-                                            onTap: () async {
-                                              var pickedimage = await pickImage
-                                                  .getImageFromCamera();
-                                              setState(() {
-                                                image = pickedimage;
-                                                //printimage);
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                            title: Text(
-                                              'Camera',
-                                              style: TextStyle(
-                                                  color: Colors.grey[900],
-                                                  fontSize: 14),
-                                            ),
-                                            leading: Icon(Icons.camera_alt,
-                                                color: Colors.grey[900]),
-                                          ),
-                                          ListTile(
-                                            onTap: () async {
-                                              var pickedimage = await pickImage
-                                                  .getImageFromGallery();
-
-                                              setState(() {
-                                                image = pickedimage;
-                                              });
-                                              Navigator.pop(context);
-                                            },
-                                            title: Text(
-                                              'Gallery',
-                                              style: TextStyle(
-                                                  color: Colors.grey[900],
-                                                  fontSize: 14),
-                                            ),
-                                            leading: Icon(Icons.image,
-                                                color: Colors.grey[900]),
-                                          ),
-                                        ],
+                              enableDrag: false,
+                              context: context,
+                              builder: (builder) {
+                                return new Container(
+                                  height: screen.vertical(250),
+                                  color: Colour.bgColor, //Color(0xff111117),
+                                  child: new Container(
+                                    decoration: new BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: new BorderRadius.only(
+                                        topLeft: Radius.circular(16),
+                                        topRight: Radius.circular(16),
                                       ),
                                     ),
-                                  );
-                                });
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.all(
+                                                  screen.horizontal(3)),
+                                              child: Text(
+                                                'Select Image',
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 18,
+                                                    fontFamily: 'Mulish'),
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: Icon(Icons.close,
+                                                  color: Colors.red),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            )
+                                          ],
+                                        ),
+                                        ListTile(
+                                          onTap: () async {
+                                            var pickedimage = await pickImage
+                                                .getImageFromCamera();
+                                            setState(() {
+                                              image = pickedimage;
+                                              //printimage);
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                          title: Text(
+                                            'Camera',
+                                            style: TextStyle(
+                                                color: Colors.grey[900],
+                                                fontSize: 14),
+                                          ),
+                                          leading: Icon(Icons.camera_alt,
+                                              color: Colors.grey[900]),
+                                        ),
+                                        ListTile(
+                                          onTap: () async {
+                                            var pickedimage = await pickImage
+                                                .getImageFromGallery();
+
+                                            setState(() {
+                                              image = pickedimage;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                          title: Text(
+                                            'Gallery',
+                                            style: TextStyle(
+                                                color: Colors.grey[900],
+                                                fontSize: 14),
+                                          ),
+                                          leading: Icon(Icons.image,
+                                              color: Colors.grey[900]),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
                           },
                         ),
                       ),

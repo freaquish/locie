@@ -63,11 +63,14 @@ class StoreViewGlobalStateSingleton {
 
 class StoreViewProvider extends StatelessWidget {
   final StoreViewEvent event;
-  final StoreViewBloc bloc;
+  StoreViewBloc bloc;
   StoreViewGlobalStateSingleton singleton;
   StoreViewProvider(this.event, {this.singleton, this.bloc});
   @override
   Widget build(BuildContext context) {
+    if(bloc == null){
+      bloc = StoreViewBloc();
+    }
     return Container(
       child: BlocProvider<StoreViewBloc>(
         create: (context) => bloc..add(event),
