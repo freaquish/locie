@@ -50,6 +50,9 @@ class NavigationBuilder extends StatelessWidget {
             return AuthenticationWidget();
           } else if (state is NavigatedToCreateStore) {
             return CreateOrEditStoreWidget();
+          } else if(state is NavigatedToEditingListing){
+            return ListingOperationViewProvider(listing: state.listing,
+            );
           }
         },
       ),

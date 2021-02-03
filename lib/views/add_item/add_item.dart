@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/listing_bloc.dart';
+import 'package:locie/bloc/navigation_bloc.dart';
+import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/components/appBar.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
@@ -48,6 +51,10 @@ class _AddItemWidgetState extends State<AddItemWidget> {
     }
   }
 
+  void onBackClick(BuildContext context) {
+    BlocProvider.of<NavigationBloc>(context).replace(NavigateToSelectCategory());
+  }
+
   @override
   void dispose() {
     textEditingController.dispose();
@@ -61,6 +68,9 @@ class _AddItemWidgetState extends State<AddItemWidget> {
     return Scaffold(
       appBar: Appbar().appbar(
         context: context,
+        onTap: (){
+          onBackClick(context);
+        },
         title: LatoText(
           '',
           size: 22,

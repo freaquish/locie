@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/listing_bloc.dart';
+import 'package:locie/bloc/navigation_bloc.dart';
+import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/components/appBar.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
@@ -35,7 +38,9 @@ class _MyListingsWidgetState extends State<MyListingsWidget> {
     Navigator.pop(context);
   }
 
-  void onTap() {}
+  void onTap(BuildContext context, Listing listing) {
+    BlocProvider.of<NavigationBloc>(context).push(NavigateToEditListing(listing: listing));
+  }
 
   void showLoading() {
     showDialog(
@@ -72,7 +77,7 @@ class _MyListingsWidgetState extends State<MyListingsWidget> {
                   itemCount: widget.listings.length,
                   itemBuilder: (context, index) => InkWell(
                     onTap: () {
-                      onTap();
+                      onTap(context, widget.listings[index]);
                     },
                     child: ListTile(
                       leading: Container(
