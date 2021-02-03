@@ -1,8 +1,10 @@
 class Invoice {
   String recipient;
   String recipientName;
+  String recipientPhoneNumber;
   String generator;
   String generatorName;
+  String generatorPhoneNumber;
   DateTime timestamp;
   String id;
   List<Items> items;
@@ -18,6 +20,8 @@ class Invoice {
       this.recipientName,
       this.generator,
       this.generatorName,
+      this.generatorPhoneNumber,
+      this.recipientPhoneNumber,
       this.timestamp,
       this.id,
       this.items,
@@ -30,9 +34,13 @@ class Invoice {
 
   Invoice.fromJson(Map<String, dynamic> json) {
     recipient = json['recipient'];
-    recipientName = json['recipient_name'];
+    if (recipientName != null) {
+      recipientName = json['recipient_name'];
+    }
+    recipientPhoneNumber = json['recipient_phone_number'];
     generator = json['generator'];
     generatorName = json['generator_name'];
+    generatorPhoneNumber = json['generator_phone_number'];
     timestamp = json['timestamp'].toDate();
     id = json['id'];
     if (json['items'] != null) {
@@ -60,8 +68,10 @@ class Invoice {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['recipient'] = this.recipient;
     data['recipient_name'] = this.recipientName;
+    data['recipient_phone_number'] = this.recipientPhoneNumber;
     data['generator'] = this.generator;
     data['generator_name'] = this.generatorName;
+    data['generator_phone_number'] = this.generatorPhoneNumber;
     data['timestamp'] = this.timestamp;
     data['id'] = this.id;
     if (this.items != null) {

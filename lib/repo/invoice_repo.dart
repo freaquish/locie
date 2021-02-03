@@ -32,25 +32,40 @@ class InvoiceRepo {
     localStorage.prefs.setString("store_logo", url);
   }
 
+  String timeId(DateTime time) {
+    return time.microsecondsSinceEpoch.toString();
+  }
+
   Future<void> createInvoice(Invoice invoice) async {
     await localStorage.init();
     Store store = await localStorage.getStore();
+    var now = DateTime.now();
     invoice.generator = store.id;
     invoice.generatorName = store.name;
-    invoice.timestamp = DateTime.now();
+    invoice.generatorPhoneNumber = store.contact;
+    invoice.id = store.name + "_" + timeId(now);
+    invoice.timestamp = now;
     invoice.meta = Meta(
         address: store.address.toString(),
         logo: store.logo,
         contact: store.contact,
         gstin: store.gstin);
+    Map<String, dynamic> json = invoice.toJson();
+    await instance.collection("invoices").doc(invoice.id).set(json);
   }
 
   Future<Account> searchAccount(String phoneNumber) async {
-    QuerySnapshot snapshot = await instance.collection("accounts")
-    .where("phone_number", isEqualTo:phoneNumber).get();
-    if(snapshot.docs.length == 0){
+    QuerySnapshot snapshot = await instance
+        .collection("accounts")
+        .where("phone_number", isEqualTo: phoneNumber)
+        .get();
+    // print(snapshot.docs.length);
+    if (snapshot.docs.length == 0) {
       return null;
     }
-    return snapshot.docs.map((e) => Account.fromJson(e.data())).toList()[0];
+    List<Account> accountSnaps =
+        snapshot.docs.map((e) => Account.fromJson(e.data())).toList();
+    // print(accountSnaps);
+    return accountSnaps[0];
   }
 }

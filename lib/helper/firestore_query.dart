@@ -188,10 +188,8 @@ class FireStoreQuery implements AbstractFireStoreQuery {
                 .inDays <=
             1) {
       var decoded = jsonDecode(localStorage.prefs.getString("units")) as List;
-      // //printdecoded);
       return decoded.map((e) => Unit.fromJson(e)).toList();
     } else {
-      // //print"endocded");
       CollectionReference ref = firestore.collection('units');
       var snapshot = await ref.get();
       List<QueryDocumentSnapshot> snaps = snapshot.docs;
@@ -200,7 +198,6 @@ class FireStoreQuery implements AbstractFireStoreQuery {
       localStorage.prefs
           .setString("last_unit_fetch", DateTime.now().toIso8601String());
       return snaps.map((e) {
-        // //print'sd ${e.data()["name"]}');
         return Unit.fromJson(e.data());
       }).toList();
     }

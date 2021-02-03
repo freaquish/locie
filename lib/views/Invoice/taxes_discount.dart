@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/invoice_bloc.dart';
 import 'package:locie/components/appBar.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/invoice_dialogues.dart';
 import 'package:locie/components/primary_container.dart';
+import 'package:locie/constants.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/invoice.dart';
 import 'package:locie/views/Invoice/invoice_item_billing.dart';
@@ -20,12 +23,52 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
   List<Taxes> taxes = [];
 
   @override
+  void initState() {
+    widget.invoice.grandTotal = widget.invoice.subTotal;
+    super.initState();
+  }
+
+  void onBackClick(BuildContext context) {
+    Invoice invoice = widget.invoice;
+    invoice.taxes = null;
+    invoice.amountPaid = null;
+    invoice.discount = null;
+    BlocProvider.of<InvoiceBloc>(context)..add(ItemInputPageLaunch(invoice));
+  }
+
+  void calculateGrandTotal() {
+    double totalSum = widget.invoice.subTotal;
+    if (widget.invoice.taxes != null) {
+      widget.invoice.taxes.forEach((element) {
+        totalSum += element.value;
+      });
+    }
+    if (widget.invoice.discount != null) {
+      widget.invoice.grandTotal -= widget.invoice.discount.value;
+    }
+
+    if (widget.invoice.amountPaid != null) {
+      widget.invoice.grandTotal -= widget.invoice.amountPaid;
+    }
+    widget.invoice.grandTotal = totalSum;
+  }
+
+  void onNextClick(BuildContext context) {
+    widget.invoice.taxes = taxes;
+    calculateGrandTotal();
+    BlocProvider.of<InvoiceBloc>(context)
+      ..add(CreateInvoiceOnServer(widget.invoice));
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
     return Scaffold(
       appBar: Appbar().appbar(
-        title: LatoText(''),
-      ),
+          title: LatoText(''),
+          onTap: () {
+            onBackClick(context);
+          }),
       bottomNavigationBar: Container(
         color: Colour.bgColor,
         child: Padding(
@@ -36,7 +79,9 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
             height: screen.vertical(100),
             width: screen.horizontal(100),
             child: SubmitButton(
-              onPressed: () {},
+              onPressed: () {
+                onNextClick(context);
+              },
               buttonName: 'Create',
               buttonColor: Color(0xff355cfd),
             ),
@@ -128,7 +173,8 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
                                   child: GestureDetector(
                                     onTap: () {
                                       setState(() {
-                                        taxes.removeAt(i);
+                                        var tax = taxes.removeAt(i);
+                                        widget.invoice.grandTotal -= tax.value;
                                       });
                                     },
                                     child: Icon(
@@ -171,7 +217,9 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
                           onPressed: (item) {
                             setState(() {
                               taxes.add(item);
+                              widget.invoice.grandTotal += item.value;
                             });
+                            Navigator.of(context).pop();
                           },
                         ),
                       );
@@ -230,6 +278,8 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
                                         onPressed: (discount) {
                                           setState(() {
                                             widget.invoice.discount = discount;
+                                            widget.invoice.grandTotal -=
+                                                discount.value;
                                           });
                                           Navigator.of(context).pop();
                                         },
@@ -244,7 +294,7 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
                                 ),
                               )
                             : LatoText(
-                                '-INR' +
+                                '-$rupeeSign' +
                                     widget.invoice.discount.value.toString(),
                                 size: 16,
                               ),
@@ -257,6 +307,8 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
                           child: GestureDetector(
                             onTap: () {
                               setState(() {
+                                widget.invoice.grandTotal +=
+                                    widget.invoice.discount.value;
                                 widget.invoice.discount = null;
                               });
                             },
@@ -313,6 +365,8 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
                                           setState(() {
                                             widget.invoice.amountPaid =
                                                 amountPaid;
+                                            widget.invoice.grandTotal -=
+                                                amountPaid;
                                           });
                                           Navigator.of(context).pop();
                                         },
@@ -327,7 +381,8 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
                                 ),
                               )
                             : LatoText(
-                                '+INR' + widget.invoice.amountPaid.toString(),
+                                '-$rupeeSign' +
+                                    widget.invoice.amountPaid.toString(),
                                 size: 16,
                               ),
                       ),
@@ -339,6 +394,8 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
                           child: GestureDetector(
                             onTap: () {
                               setState(() {
+                                widget.invoice.grandTotal +=
+                                    widget.invoice.amountPaid;
                                 widget.invoice.amountPaid = null;
                               });
                             },
@@ -381,7 +438,8 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
                             right: screen.horizontal(3),
                             top: screen.vertical(5)),
                         //TODO insert grand total value;
-                        child: LatoText('INR 2200'),
+                        child: LatoText(
+                            '$rupeeSign ${widget.invoice.grandTotal.toStringAsFixed(2)}'),
                       )
                     ],
                   ),

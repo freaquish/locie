@@ -17,11 +17,17 @@ class StoreAboutWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LatoText(
-            store.name,
-            size: 28,
-            style: FontStyle.normal,
-            weight: FontWeight.w900,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              LatoText(
+                store.name,
+                size: 28,
+                style: FontStyle.normal,
+                weight: FontWeight.w900,
+              ),
+              IconButton(icon: Icon(Icons.share), onPressed: () {})
+            ],
           ),
           SizedBox(
             height: screen.vertical(20),
