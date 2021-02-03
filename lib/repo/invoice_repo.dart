@@ -68,4 +68,23 @@ class InvoiceRepo {
     // print(accountSnaps);
     return accountSnaps[0];
   }
+
+  Future<List<Invoice>> fetchInvoices({bool received = false}) async {
+    QuerySnapshot snapshots;
+    await localStorage.init();
+    CollectionReference ref = instance.collection("invoices");
+    if (received || !localStorage.prefs.containsKey("sid")) {
+      snapshots = await ref
+          .where("recipient_phone_number",
+              isEqualTo: localStorage.prefs.getString("phone_number"))
+          .get();
+    } else {
+      // Created
+      snapshots = await ref
+          .where("generator_phone_number",
+              isEqualTo: localStorage.prefs.getString("store_contanct"))
+          .get();
+    }
+    return snapshots.docs.map((e) => Invoice.fromJson(e.data())).toList();
+  }
 }

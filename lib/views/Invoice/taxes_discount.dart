@@ -10,7 +10,6 @@ import 'package:locie/components/primary_container.dart';
 import 'package:locie/constants.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/invoice.dart';
-import 'package:locie/views/Invoice/invoice_item_billing.dart';
 
 class TaxesAndDiscountWidget extends StatefulWidget {
   Invoice invoice;

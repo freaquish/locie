@@ -5,6 +5,7 @@ import 'package:locie/components/appBar.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
+import 'package:locie/components/text_field.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/account.dart';
 import 'package:locie/models/invoice.dart';
@@ -22,9 +23,16 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
 
   @override
   void initState() {
-    print(widget.account);
+    // print(widget.account);
+    nameTextController = TextEditingController();
     isUserFound = widget.account != null;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    nameTextController.dispose();
+    super.dispose();
   }
 
   void onBackClick(BuildContext context) {
@@ -32,12 +40,18 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
       ..add(InvoiceCustomerPhoneInputPageLaunch());
   }
 
+  TextEditingController nameTextController;
+
   void onContinueClick(BuildContext context) {
     print('clicked');
-    Invoice invoice = Invoice(recipientPhoneNumber: widget.phoneNumber);
+    Invoice invoice = Invoice(
+        recipientPhoneNumber: widget.phoneNumber,
+        recipient: widget.account.phoneNumber);
     if (widget.account != null) {
-      invoice.recipient = widget.account.phoneNumber;
+      // invoice.recipient = widget.account.phoneNumber;
       invoice.recipientName = widget.account.name;
+    } else {
+      invoice.recipientName = nameTextController.text;
     }
     BlocProvider.of<InvoiceBloc>(context)..add(ItemInputPageLaunch(invoice));
   }
@@ -88,6 +102,12 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
                         'User with phone number ${widget.phoneNumber} not found !!',
                         size: 21,
                       ),
+                    ),
+                    CustomTextField(
+                      hintText: "Customer Name",
+                      keyboard: TextInputType.name,
+                      textController: nameTextController,
+                      textAlignment: TextAlign.start,
                     ),
                     SizedBox(
                       height: screen.vertical(40),

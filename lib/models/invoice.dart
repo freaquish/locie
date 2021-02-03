@@ -50,7 +50,7 @@ class Invoice {
       });
     }
     meta = json['meta'] != null ? new Meta.fromJson(json['meta']) : null;
-    subTotal = json['sub_total'];
+    subTotal = double.parse(json['sub_total'].toString());
     if (json['taxes'] != null) {
       taxes = new List<Taxes>();
       json['taxes'].forEach((v) {
@@ -60,14 +60,15 @@ class Invoice {
     discount = json['discount'] != null
         ? new Discount.fromJson(json['discount'])
         : null;
-    grandTotal = json['grand_total'];
-    amountPaid = json['amount_paid'];
+    grandTotal = double.parse(json['grand_total'].toString());
+    amountPaid = double.parse(json['amount_paid'].toString());
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['recipient'] = this.recipient;
-    data['recipient_name'] = this.recipientName;
+    data['recipient'] = this.recipient == null ? '' : this.recipient;
+    data['recipient_name'] =
+        this.recipientName == null ? '' : this.recipientName;
     data['recipient_phone_number'] = this.recipientPhoneNumber;
     data['generator'] = this.generator;
     data['generator_name'] = this.generatorName;
@@ -156,14 +157,16 @@ class Taxes {
   Taxes({this.factor, this.value, this.taxName});
 
   Taxes.fromJson(Map<String, dynamic> json) {
-    factor = json['factor'];
-    value = json['value'];
+    factor = double.parse(json['factor'].toString());
+    value = double.parse(json['value'].toString());
+    taxName = json['tax_name'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['factor'] = this.factor;
     data['value'] = this.value;
+    data['tax_name'] = this.taxName;
     return data;
   }
 }
@@ -176,8 +179,8 @@ class Discount {
   Discount({this.factor, this.value});
 
   Discount.fromJson(Map<String, dynamic> json) {
-    factor = json['factor'];
-    value = json['value'];
+    factor = double.parse(json['factor'].toString());
+    value = double.parse(json['value'].toString());
   }
 
   Map<String, dynamic> toJson() {

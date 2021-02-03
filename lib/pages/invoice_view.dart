@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/invoice_bloc.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/views/Invoice/invoice_item_billing.dart';
+import 'package:locie/views/Invoice/my_invoices.dart';
 import 'package:locie/views/Invoice/search_invoice_result.dart';
 import 'package:locie/views/Invoice/search_invoice_user.dart';
 import 'package:locie/views/Invoice/taxes_discount.dart';
@@ -30,6 +31,7 @@ class InvoiceBuilder extends StatelessWidget {
       widget: BlocBuilder<InvoiceBloc, InvoiceState>(
         cubit: BlocProvider.of<InvoiceBloc>(context),
         builder: (context, state) {
+          print(state);
           if (state is ShowingPhoneInputPage) {
             return SearchInvoiceUser();
           } else if (state is ShowingCustomerResultPage) {
@@ -41,6 +43,9 @@ class InvoiceBuilder extends StatelessWidget {
             return InvoiceItemBilling(state.invoice);
           } else if (state is ShowingFinanceInputPage) {
             return TaxesAndDiscountWidget(invoice: state.invoice);
+          } else if (state is ShowingInvoices) {
+            return MyInvoices(state.invoices,
+                received: state.received, storeExists: state.storeExists);
           }
           return Center(
             child: Container(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:locie/components/appBar.dart';
 import 'package:locie/components/color.dart';
-import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/helper/screen_size.dart';
