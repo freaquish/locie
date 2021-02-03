@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:locie/pages/invoice_view.dart';
 import 'package:locie/views/Invoice/invoice_item_billing.dart';
 import 'package:locie/views/Invoice/search_invoice_user.dart';
 
@@ -39,7 +40,7 @@ class _MainPageState extends State<MainPage> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return InvoiceItemBilling();
+            return InvoiceProvider();
           }
         },
       ),

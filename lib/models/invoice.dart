@@ -1,15 +1,17 @@
 class Invoice {
   String recipient;
   String recipientName;
+  String recipientPhoneNumber;
   String generator;
   String generatorName;
+  String generatorPhoneNumber;
   DateTime timestamp;
   String id;
   List<Items> items;
   Meta meta;
   double subTotal;
   List<Taxes> taxes;
-  Taxes discount;
+  Discount discount;
   double grandTotal;
   double amountPaid;
 
@@ -18,6 +20,8 @@ class Invoice {
       this.recipientName,
       this.generator,
       this.generatorName,
+      this.generatorPhoneNumber,
+      this.recipientPhoneNumber,
       this.timestamp,
       this.id,
       this.items,
@@ -30,9 +34,13 @@ class Invoice {
 
   Invoice.fromJson(Map<String, dynamic> json) {
     recipient = json['recipient'];
-    recipientName = json['recipient_name'];
+    if (recipientName != null) {
+      recipientName = json['recipient_name'];
+    }
+    recipientPhoneNumber = json['recipient_phone_number'];
     generator = json['generator'];
     generatorName = json['generator_name'];
+    generatorPhoneNumber = json['generator_phone_number'];
     timestamp = json['timestamp'].toDate();
     id = json['id'];
     if (json['items'] != null) {
@@ -49,8 +57,9 @@ class Invoice {
         taxes.add(new Taxes.fromJson(v));
       });
     }
-    discount =
-        json['discount'] != null ? new Taxes.fromJson(json['discount']) : null;
+    discount = json['discount'] != null
+        ? new Discount.fromJson(json['discount'])
+        : null;
     grandTotal = json['grand_total'];
     amountPaid = json['amount_paid'];
   }
@@ -59,8 +68,10 @@ class Invoice {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['recipient'] = this.recipient;
     data['recipient_name'] = this.recipientName;
+    data['recipient_phone_number'] = this.recipientPhoneNumber;
     data['generator'] = this.generator;
     data['generator_name'] = this.generatorName;
+    data['generator_phone_number'] = this.generatorPhoneNumber;
     data['timestamp'] = this.timestamp;
     data['id'] = this.id;
     if (this.items != null) {
@@ -85,8 +96,8 @@ class Invoice {
 class Items {
   String name;
 
-  int quantity;
-  int price;
+  dynamic quantity;
+  dynamic price;
   String unit;
 
   Items({this.name, this.quantity, this.price, this.unit});
@@ -108,6 +119,8 @@ class Items {
     data['unit'] = this.unit;
     return data;
   }
+
+  double get total => price * quantity;
 }
 
 class Meta {
@@ -136,12 +149,33 @@ class Meta {
 }
 
 class Taxes {
-  int factor;
-  int value;
+  double factor;
+  double value;
+  String taxName;
 
-  Taxes({this.factor, this.value});
+  Taxes({this.factor, this.value, this.taxName});
 
   Taxes.fromJson(Map<String, dynamic> json) {
+    factor = json['factor'];
+    value = json['value'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['factor'] = this.factor;
+    data['value'] = this.value;
+    return data;
+  }
+}
+
+class Discount {
+  double factor;
+  double value;
+  // String taxName;
+
+  Discount({this.factor, this.value});
+
+  Discount.fromJson(Map<String, dynamic> json) {
     factor = json['factor'];
     value = json['value'];
   }

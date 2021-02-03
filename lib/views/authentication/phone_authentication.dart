@@ -73,7 +73,7 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
                       ),
                       CustomTextField(
                         preffixWidget: Wrap(
-                          spacing: 4,
+                          spacing: screen.horizontal(1),
                           children: [
                             Padding(
                               padding: EdgeInsets.only(
