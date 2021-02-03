@@ -43,10 +43,6 @@ class _AddItemWidgetState extends State<AddItemWidget> {
     super.initState();
   }
 
-  void onBackClick() {
-    // widget.bloc..add();
-  }
-
   ImageProvider imageProvider() {
     if (image is String) {
       return NetworkImage(image);
