@@ -5,7 +5,7 @@ import 'package:locie/components/appBar.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
-import 'package:locie/components/invoice_dialogues.dart';
+import 'package:locie/components/dialogs_sheet.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/constants.dart';
 import 'package:locie/helper/screen_size.dart';

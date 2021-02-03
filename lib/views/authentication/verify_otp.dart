@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:locie/bloc/authentication_bloc.dart';
 import 'package:locie/components/color.dart';
@@ -21,6 +23,32 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
   bool resendOtp;
   final _formKey = GlobalKey<FormState>();
   TextEditingController textEditingController = TextEditingController();
+  int timeLeft = 120;
+  final  oneSecond = Duration(seconds: 1);
+
+  void retry() {
+    widget.bloc..add(InitiateLogin());
+  }
+
+  @override
+  void initState() {
+    Timer.periodic(oneSecond, (timer){
+      setState(() {
+        timeLeft -= 1;
+        if(timeLeft == 0){
+          timer.cancel();
+        }
+      });
+    });
+    super.initState();
+  }
+
+  String getTimer() {
+    if(timeLeft > 0){
+      return timeLeft.toString() + ' ';
+    }
+    return '';
+  }
 
   @override
   void dispose() {
@@ -124,7 +152,22 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                         },
                         buttonName: 'Verify',
                         buttonColor: Color(0xff355cfd),
-                      )
+                      ),
+                      SizedBox(
+                        height: screen.vertical(40),
+                      ),
+                      SubmitButton(
+                        onPressed: () {
+                          if(timeLeft == 0){
+                            textEditingController.clear();
+                            retry();
+                          }
+
+                        },
+                        buttonName: '${getTimer()}Retry',
+                        buttonColor: Colour.bgColor,
+                        textColor: Colour.submitButtonColor,
+                      ),
                     ],
                   ),
                 ),

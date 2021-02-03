@@ -12,6 +12,9 @@ class ShowSplashScreen extends AuthenticationState {}
 
 class InitialState extends AuthenticationState {}
 
+class CommonAuthenticationError extends AuthenticationState {}
+class AccountRegistrationFailed extends AuthenticationState {}
+
 class RedirectingToHome extends AuthenticationState {}
 
 class ShowingPhoneAuthenticationPage extends AuthenticationState {}
@@ -114,38 +117,42 @@ class AuthenticationBloc
       AuthenticationEvent event) async* {
     await localStorage.init();
     // await storeQuery.securityCheck();
-    if (event is TriggerSplashScreen) {
-      // Show splash screen untill we check internet connection
-      // verify that account exist and then redirect to home
-      // otherwise initiate login page
-      yield ShowSplashScreen();
-      if (localStorage.prefs.containsKey("uid")) {
-        yield RedirectingToHome();
-      } else {
-        this..add(InitiateLogin());
-      }
-    } else if (event is LoginEvent) {
-      // Login Event mapping to another function for handling
-      yield* mapPhoneAuthentication(event);
-    } else if (event is FetchCurrentAccount) {
-      // This handle will fetch current user by uid
-      // If no users exist than trigger registration process
-      // else redirect to Home
-      yield FetchingCurrentAccount();
-      var uid = localStorage.prefs.getString("uid");
-      var snapshot = await storeQuery.getAccountSnapshot(uid: uid);
+    try {
+      if (event is TriggerSplashScreen) {
+        // Show splash screen untill we check internet connection
+        // verify that account exist and then redirect to home
+        // otherwise initiate login page
+        yield ShowSplashScreen();
+        if (localStorage.prefs.containsKey("uid")) {
+          yield RedirectingToHome();
+        } else {
+          this..add(InitiateLogin());
+        }
+      } else if (event is LoginEvent) {
+        // Login Event mapping to another function for handling
+        yield* mapPhoneAuthentication(event);
+      } else if (event is FetchCurrentAccount) {
+        // This handle will fetch current user by uid
+        // If no users exist than trigger registration process
+        // else redirect to Home
+        yield FetchingCurrentAccount();
+        var uid = localStorage.prefs.getString("uid");
+        var snapshot = await storeQuery.getAccountSnapshot(uid: uid);
 
-      bool exist = storeQuery.accountExist(snapshot);
-      // //print'$snapshot $exist');
-      if (exist) {
-        Account account = Account.fromJson(snapshot.data());
-        localStorage.setAccount(account);
-        yield RedirectingToHome();
-      } else {
-        this..add(InitiateRegistration());
+        bool exist = storeQuery.accountExist(snapshot);
+        // print('$snapshot $exist');
+        if (exist) {
+          Account account = Account.fromJson(snapshot.data());
+          localStorage.setAccount(account);
+          yield RedirectingToHome();
+        } else {
+          this..add(InitiateRegistration());
+        }
+      } else if (event is RegisteringEvents) {
+        yield* mapAccountRegistration(event);
       }
-    } else if (event is RegisteringEvents) {
-      yield* mapAccountRegistration(event);
+    } catch (e) {
+      yield CommonAuthenticationError();
     }
   }
 
@@ -167,14 +174,14 @@ class AuthenticationBloc
       yield AuthenticatingUser();
       try {
         await event.authentication.verifyOtp(event.otp);
-        // //print'authenticated..');
+        // print('authenticated..');
         // yield InitialState();
         localStorage.prefs.setString("uid", event.authentication.user.uid);
         localStorage.prefs
             .setString("phone_number", event.authentication.phoneNumber);
         this..add(FetchCurrentAccount());
       } catch (e) {
-        // //printe);
+        // print(e);
         yield AuthenticationFailed();
       }
     } else if (event is CancelPhoneAuthentication) {
@@ -184,6 +191,7 @@ class AuthenticationBloc
 
   Stream<AuthenticationState> mapAccountRegistration(
       RegisteringEvents event) async* {
+    try{
     if (event is InitiateRegistration) {
       if (localStorage.prefs.containsKey("uid") &&
           localStorage.prefs.containsKey("name")) {
@@ -197,5 +205,9 @@ class AuthenticationBloc
       localStorage.setAccount(account);
       yield RedirectingToHome();
     }
+    }catch (e) {
+      yield AccountRegistrationFailed();
+    }
   }
 }
+// TODO: Common Authentication Error, AuthenticationFailed and AccountRegistrationFailed implementation
