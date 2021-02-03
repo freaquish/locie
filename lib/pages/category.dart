@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/category_bloc.dart';
+import 'package:locie/bloc/navigation_bloc.dart';
+import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/views/category/create.dart';
 import 'package:locie/views/category/selection.dart';
@@ -25,6 +27,7 @@ class CategoryBuilder extends StatelessWidget {
       widget: BlocBuilder<CategoryBloc, CategoryState>(
         cubit: bloc,
         builder: (context, state) {
+          //printstate);
           if (state is LoadingStates) {
             return Center(
               child: Container(
@@ -32,12 +35,20 @@ class CategoryBuilder extends StatelessWidget {
               ),
             );
           } else if (state is ShowingCategorySelectionPage) {
+            // //printBlocProvider.of<NavigationBloc>(context));
+            // //printstate.category);
             return CategorySelection(bloc: bloc, categories: state.category);
           } else if (state is ShowingAddNewCategoryPage) {
             return CreateNewCategoryWidget(
               bloc: bloc,
               current: state.current,
             );
+          } else if (state is RedirectToStoreCreation) {
+            BlocProvider.of<NavigationBloc>(context)
+                .push(NavigateToCreateStore());
+            // navBloc.route.push(NavigateToCreateStore());
+            // navBloc
+            return Container();
           }
         },
       ),

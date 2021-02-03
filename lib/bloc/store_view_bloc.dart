@@ -74,7 +74,7 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
     if (event is FetchStore) {
       yield LoadingState();
       Store store = await repo.fetchStore(event.sid);
-      // print(store);
+      // //printstore);
       yield FetchedStore(store);
     } else if (event is FetchStoreProducts) {
       yield LoadingState();
@@ -84,7 +84,7 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
     } else if (event is FetchStoreWorks) {
       yield LoadingState();
       PreviousExamples examples = await repo.fetchWorks(event.sid);
-      print(examples);
+      //printexamples);
       yield FetchedStoreWorks(examples);
     } else if (event is FetchStoreReviews) {
       yield FetchingList();

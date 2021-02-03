@@ -84,16 +84,16 @@ class Invoice {
 
 class Items {
   String name;
-  String id;
+
   int quantity;
   int price;
   String unit;
 
-  Items({this.name, this.id, this.quantity, this.price, this.unit});
+  Items({this.name, this.quantity, this.price, this.unit});
 
   Items.fromJson(Map<String, dynamic> json) {
     name = json['name'];
-    id = json['id'];
+
     quantity = json['quantity'];
     price = json['price'];
     unit = json['unit'];
@@ -102,7 +102,7 @@ class Items {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
-    data['id'] = this.id;
+
     data['quantity'] = this.quantity;
     data['price'] = this.price;
     data['unit'] = this.unit;

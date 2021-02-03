@@ -1,27 +1,54 @@
-import 'package:locie/models/listing.dart';
-import 'package:locie/models/store.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/navigation_event.dart';
+import 'package:locie/helper/navigation_stack.dart';
+import 'package:locie/models/category.dart';
 
 class NavigationState {}
 
-class NavigationEvent {}
+class TransitionState extends NavigationState {}
 
-class NavigateToAuthentication extends NavigationEvent {}
+class NavigatedToCategorySelection extends NavigationState {}
 
-class NavigateToHome extends NavigationEvent {}
+class NavigatedToCreateStore extends NavigationState {}
 
-class NavigateToCreateListing extends NavigationEvent {}
-
-class NavigateToCreateStore extends NavigationEvent {}
-
-class NavigateToEditStore extends NavigationEvent {}
-
-class NavigateToEditListing extends NavigationEvent {
-  final Listing listing;
-  NavigateToEditListing({this.listing});
+class NavigatedToCreateListing extends NavigationState {
+  final Category category;
+  NavigatedToCreateListing(this.category);
 }
 
-class NavigateToMyStore extends NavigationEvent {}
+class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
+  NavigationBloc() : super(TransitionState());
+  NavigationStack route = NavigationStack();
 
-class NavigateToMyWorks extends NavigationEvent {}
+  void push(NavigationEvent event) {
+    route.push(event);
+    this..add(route.current());
+  }
 
-class NavigateToMyListings extends NavigationEvent {}
+  void pop(NavigationEvent event) {
+    route.pop();
+    if (route.length > 0) {
+      this..add(route.current());
+    }
+  }
+
+  void replace(NavigationEvent event) {
+    route.replace(event);
+    this..add(route.current());
+  }
+
+  @override
+  Stream<NavigationState> mapEventToState(NavigationEvent event) async* {
+    if (event is NavigateToSelectCategory) {
+      yield NavigatedToCategorySelection();
+    } else if (event is NavigateToCreateListing) {
+      yield NavigatedToCreateListing(event.category);
+    } else if (event is NavigateToAuthentication) {
+      yield TransitionState();
+    } else if (event is NavigateToHome) {
+      yield NavigatedToCategorySelection();
+    } else if (event is NavigateToCreateStore) {
+      yield NavigatedToCreateStore();
+    }
+  }
+}

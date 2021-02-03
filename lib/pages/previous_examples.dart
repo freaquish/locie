@@ -13,7 +13,7 @@ class PreviousExampleProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     PreviousExampleEvent initialEvent =
         event != null ? event : FetchPreviousExamples(store: sid);
-    print(event);
+    //printevent);
     return Container(
       child: BlocProvider<PreviousExamplesBloc>(
         create: (context) => PreviousExamplesBloc()..add(initialEvent),

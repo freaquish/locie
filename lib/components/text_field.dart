@@ -11,6 +11,7 @@ class CustomTextField extends StatelessWidget {
   final textAlignment;
   final TextInputType keyboard;
   final Widget preffixWidget;
+  final bool readOnly;
 
   final String label;
   final int maxLines;
@@ -21,6 +22,7 @@ class CustomTextField extends StatelessWidget {
       this.maxLines = 1,
       this.maxLength,
       this.minLines = 1,
+      this.readOnly = false,
       this.preffixWidget,
       this.helperText,
       @required this.hintText,

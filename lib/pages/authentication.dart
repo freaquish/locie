@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/authentication_bloc.dart';
+import 'package:locie/bloc/navigation_bloc.dart';
+import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/components/primary_container.dart';
-import 'package:locie/pages/home.dart';
 import 'package:locie/views/loadings.dart';
 import 'package:locie/views/authentication/phone_authentication.dart';
 import 'package:locie/views/authentication/registration_screen.dart';
@@ -48,7 +49,9 @@ class AuthenticationBuilder extends StatelessWidget {
               bloc: bloc,
             );
           } else if (state is RedirectingToHome) {
-            return HomeWidget();
+            BlocProvider.of<NavigationBloc>(context)..add(NavigateToHome());
+            // //printstate);
+            return Container();
           }
           return CircularLoading();
         },

@@ -156,16 +156,22 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     CollectionReference ref = firestore.collection('category');
     QuerySnapshot snapshot;
     if (current != null && store != null) {
+      //print'1 ${current != null && store != null}');
       snapshot = await ref
           .where("parent", isEqualTo: current)
           .where("store", isEqualTo: store)
           .get();
     } else if (categories != null && categories.isNotEmpty) {
+      //print'21 ${categories != null && categories.isNotEmpty}');
       snapshot = await ref.where("id", whereIn: categories).get();
     } else {
+      //print'3');
       snapshot = await ref.where("is_default", isEqualTo: true).get();
     }
     var docs = snapshot.docs;
+    docs.forEach((element) {
+      //printelement.data());
+    });
     return docs.map((e) => Category.fromJson(e.data())).toList();
   }
 
@@ -182,10 +188,10 @@ class FireStoreQuery implements AbstractFireStoreQuery {
                 .inDays <=
             1) {
       var decoded = jsonDecode(localStorage.prefs.getString("units")) as List;
-      // print(decoded);
+      // //printdecoded);
       return decoded.map((e) => Unit.fromJson(e)).toList();
     } else {
-      // print("endocded");
+      // //print"endocded");
       CollectionReference ref = firestore.collection('units');
       var snapshot = await ref.get();
       List<QueryDocumentSnapshot> snaps = snapshot.docs;
@@ -194,7 +200,7 @@ class FireStoreQuery implements AbstractFireStoreQuery {
       localStorage.prefs
           .setString("last_unit_fetch", DateTime.now().toIso8601String());
       return snaps.map((e) {
-        // print('sd ${e.data()["name"]}');
+        // //print'sd ${e.data()["name"]}');
         return Unit.fromJson(e.data());
       }).toList();
     }
@@ -238,5 +244,16 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     exampleReference.doc(sid).update({
       "examples": FieldValue.arrayRemove([example.toJson()])
     });
+  }
+
+  Future<Store> fetchStore(String uid) async {
+    QuerySnapshot snapshots = await firestore
+        .collection("stores")
+        .where("owner", isEqualTo: uid)
+        .get();
+    if (snapshots.docs.isEmpty) {
+      return null;
+    }
+    return snapshots.docs.map((e) => Store.fromJson(e.data())).toList()[0];
   }
 }

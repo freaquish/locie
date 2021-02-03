@@ -12,6 +12,7 @@ class CountryCodeModel extends StatelessWidget {
     return Dialog(
       child: PrimaryContainer(
         widget: ListView.builder(
+          physics: BouncingScrollPhysics(),
           itemCount: countryCodes.length,
           itemBuilder: (context, index) {
             return ListTile(

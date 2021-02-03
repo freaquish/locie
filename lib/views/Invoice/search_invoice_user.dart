@@ -1,75 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:locie/bloc/authentication_bloc.dart';
-import 'package:locie/components/color.dart';
+import 'package:locie/components/appBar.dart';
 import 'package:locie/components/country_codes.dart';
 import 'package:locie/components/flatActionButton.dart';
-import 'package:locie/components/primary_container.dart';
-import 'package:locie/helper/screen_size.dart';
 import 'package:locie/components/font_text.dart';
+import 'package:locie/components/primary_container.dart';
 import 'package:locie/components/text_field.dart';
-import 'package:locie/views/authentication/verify_otp.dart';
+import 'package:locie/helper/screen_size.dart';
 
-class PhoneAuthenticationWidget extends StatefulWidget {
-  final AuthenticationBloc bloc;
-  PhoneAuthenticationWidget({this.bloc});
+class SearchInvoiceUser extends StatefulWidget {
   @override
-  _PhoneAuthenticationWidgetState createState() =>
-      _PhoneAuthenticationWidgetState();
+  _SearchInvoiceUserState createState() => _SearchInvoiceUserState();
 }
 
-class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
+class _SearchInvoiceUserState extends State<SearchInvoiceUser> {
   String phoneNumber;
   final _formKey = GlobalKey<FormState>();
   TextEditingController textEditingController = TextEditingController();
   String countryCode = "91";
 
   @override
-  void dispose() {
-    textEditingController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
     return Scaffold(
-      backgroundColor: Colour.bgColor,
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: PrimaryContainer(
-          widget: ListView(
+      appBar: Appbar().appbar(title: LatoText('')),
+      body: PrimaryContainer(
+        widget: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: ListView(
             physics: BouncingScrollPhysics(),
             children: [
-              Form(
-                key: _formKey,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: screen.horizontal(4),
-                      vertical: screen.horizontal(1)),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: screen.horizontal(4),
+                    vertical: screen.horizontal(1)),
+                child: Form(
+                  key: _formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: screen.vertical(200),
+                        height: screen.vertical(170),
                       ),
                       RailwayText(
-                        'Enter your \nPhone number',
+                        'Create \nNew Invoice',
                         size: 36,
                         weight: FontWeight.bold,
                       ),
                       SizedBox(
                         height: screen.vertical(30),
-                      ),
-                      LatoText(
-                        'We \'ll text your verification code',
-                        size: 18,
-                        fontColor: Colors.grey,
-                      ),
-                      SizedBox(
-                        height: screen.vertical(35),
                       ),
                       CustomTextField(
                         preffixWidget: Wrap(
@@ -84,21 +65,22 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
                               child: InkWell(
                                 onTap: () {
                                   showDialog(
-                                      context: context,
-                                      builder: (context) => CountryCodeModel(
-                                            onChange: (value) {
-                                              setState(() {
-                                                countryCode = value;
-                                              });
+                                    context: context,
+                                    builder: (context) => CountryCodeModel(
+                                      onChange: (value) {
+                                        setState(() {
+                                          countryCode = value;
+                                        });
 
-                                              Navigator.of(context).pop();
-                                            },
-                                          ));
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  );
                                 },
                                 child: LatoText(
                                   '+$countryCode',
                                   size: 18,
-                                  fontColor: Colors.grey,
+                                  fontColor: Colors.grey[300],
                                 ),
                               ),
                             ),
@@ -138,7 +120,7 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
                           }
                         },
                         textController: textEditingController,
-                        hintText: 'Phone Number',
+                        hintText: 'Customer Phone Number',
                         keyboard: TextInputType.phone,
                         textAlignment: TextAlign.start,
                       ),
@@ -146,17 +128,10 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
                         height: screen.vertical(40),
                       ),
                       SubmitButton(
-                        //TODO run a function for send OTP
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
-                            debugPrint('submit');
                             var phoneNumber = textEditingController.value.text;
-
                             textEditingController.clear();
-                            // //printcountryCode + phoneNumber);
-                            widget.bloc
-                              ..add(ProceedToOtpPage(
-                                  '+$countryCode$phoneNumber'));
                           }
                         },
                         buttonName: 'Continue',

@@ -136,7 +136,7 @@ class AuthenticationBloc
       var snapshot = await storeQuery.getAccountSnapshot(uid: uid);
 
       bool exist = storeQuery.accountExist(snapshot);
-      print('$snapshot $exist');
+      // //print'$snapshot $exist');
       if (exist) {
         Account account = Account.fromJson(snapshot.data());
         localStorage.setAccount(account);
@@ -167,14 +167,14 @@ class AuthenticationBloc
       yield AuthenticatingUser();
       try {
         await event.authentication.verifyOtp(event.otp);
-        print('authenticated..');
+        // //print'authenticated..');
         // yield InitialState();
         localStorage.prefs.setString("uid", event.authentication.user.uid);
         localStorage.prefs
             .setString("phone_number", event.authentication.phoneNumber);
         this..add(FetchCurrentAccount());
       } catch (e) {
-        print(e);
+        // //printe);
         yield AuthenticationFailed();
       }
     } else if (event is CancelPhoneAuthentication) {

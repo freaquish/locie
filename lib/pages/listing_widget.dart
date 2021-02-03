@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/listing_bloc.dart';
+import 'package:locie/bloc/navigation_bloc.dart';
+import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/models/category.dart';
 import 'package:locie/models/listing.dart';
@@ -35,8 +37,8 @@ class ListingOperationBuilder extends StatelessWidget {
       widget: BlocBuilder<ListingBloc, ListingState>(
         cubit: bloc,
         builder: (context, state) {
-          // print(state);
-          if (state is InitializingState) {
+          // //printstate);
+          if (state is InitializingState || state is CreatingListing) {
             return Center(
               child: Container(
                 child: CircularProgressIndicator(),
@@ -58,6 +60,11 @@ class ListingOperationBuilder extends StatelessWidget {
               bloc: bloc,
               listings: state.listings,
             );
+          } else if (state is CreatedListing) {
+            //TODO: Remove
+            BlocProvider.of<NavigationBloc>(context)
+              ..add(NavigateToSelectCategory());
+            return Container();
           }
         },
       ),

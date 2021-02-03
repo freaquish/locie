@@ -30,7 +30,7 @@ class _UnitDialogState extends State<UnitDialog> {
   Future<void> pullUnits() async {
     await localStorage.init();
     List<Unit> units = await storeQuery.fetchUnits();
-    // print(units);
+    // //printunits);
     this.insertUnits(units);
   }
 

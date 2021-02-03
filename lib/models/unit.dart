@@ -5,7 +5,7 @@ class Unit {
   Unit({this.name, this.sign});
 
   Unit.fromJson(dynamic json) {
-    // print('s ${json["name"]}');
+    // //print's ${json["name"]}');
     name = json['name'];
     sign = json['sign'];
   }
