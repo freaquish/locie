@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:locie/helper/firestore_storage.dart';
 import 'package:locie/helper/local_storage.dart';
+import 'package:locie/models/account.dart';
 import 'package:locie/models/invoice.dart';
 import 'package:locie/models/store.dart';
 
@@ -42,5 +43,14 @@ class InvoiceRepo {
         logo: store.logo,
         contact: store.contact,
         gstin: store.gstin);
+  }
+
+  Future<Account> searchAccount(String phoneNumber) async {
+    QuerySnapshot snapshot = await instance.collection("accounts")
+    .where("phone_number", isEqualTo:phoneNumber).get();
+    if(snapshot.docs.length == 0){
+      return null;
+    }
+    return snapshot.docs.map((e) => Account.fromJson(e.data())).toList()[0];
   }
 }

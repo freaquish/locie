@@ -32,6 +32,13 @@ class FetchedStoreReviews extends StoreViewState {
   FetchedStoreReviews(this.reviews);
 }
 
+class ShowingParticularItemView extends StoreViewState {
+  final Listing listing;
+  ShowingParticularItemView(this.listing);
+}
+
+class NotItemFoundInStore extends StoreViewState {}
+
 class StoreViewEvent {}
 
 class FetchStore extends StoreViewEvent {
@@ -50,6 +57,11 @@ class FetchStoreWorks extends StoreViewEvent {
   FetchStoreWorks(
     this.sid,
   );
+}
+
+class LaunchItemView extends StoreViewEvent {
+  final String lid;
+  LaunchItemView(this.lid);
 }
 
 class InjectStoreView extends StoreViewEvent {
@@ -92,6 +104,14 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
       yield FetchedStoreReviews(reviews);
     } else if (event is InjectStoreView) {
       yield event.state;
+    } else if(event is LaunchItemView){
+      yield LoadingState();
+      Listing listing = await repo.fetchItem(event.lid);
+      if(listing == null){
+        yield NotItemFoundInStore();
+      }else {
+        yield ShowingParticularItemView(listing);
+      }
     }
   }
 }

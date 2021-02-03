@@ -59,7 +59,7 @@ class StoreAboutWidget extends StatelessWidget {
               width: 26,
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage('assets/images/whatsapp.png'))),
+                      image: AssetImage('assets/images/whatsapp_icon.png'))),
             ),
             SizedBox(
               width: screen.horizontal(2),

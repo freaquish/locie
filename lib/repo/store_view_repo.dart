@@ -76,4 +76,12 @@ class StoreViewRepo {
       return review;
     }).toList();
   }
+
+  Future<Listing> fetchItem(String lid) async {
+    DocumentSnapshot snapshot = await instance.collection("listings").doc(lid).get();
+    if(snapshot.exists){
+      return null;
+    }
+    return Listing.fromJson(snapshot.data());
+  }
 }

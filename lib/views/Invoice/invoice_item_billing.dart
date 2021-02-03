@@ -128,7 +128,7 @@ class _InvoiceItemBillingState extends State<InvoiceItemBilling> {
                     buttonColor: Colour.submitButtonColor,
                     onPressed: () {
                       setState(() {
-                        items.add('Lawde');
+                        items.add('');
                       });
                     },
                     buttonName: 'Add Items',
