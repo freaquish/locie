@@ -12,13 +12,14 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboard;
   final Widget preffixWidget;
   final bool readOnly;
-
+  final Function onChanged;
   final String label;
   final int maxLines;
   final int maxLength;
   final int minLines;
   CustomTextField(
       {@required this.textAlignment,
+      this.onChanged,
       this.maxLines = 1,
       this.maxLength,
       this.minLines = 1,
@@ -34,6 +35,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: onChanged,
       keyboardType: keyboard,
       textAlign: textAlignment,
       maxLength: maxLength,
