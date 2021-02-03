@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:locie/bloc/listing_bloc.dart';
 import 'package:locie/components/appBar.dart';
@@ -45,7 +47,7 @@ class _AddItemWidgetState extends State<AddItemWidget> {
   ImageProvider imageProvider() {
     if (image is String) {
       return NetworkImage(image);
-    } else if (image is String) {
+    } else if (image is File) {
       return FileImage(image);
     }
   }
@@ -156,6 +158,7 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                                                   .getImageFromCamera();
                                               setState(() {
                                                 image = pickedimage;
+                                                //printimage);
                                               });
                                               Navigator.pop(context);
                                             },
@@ -238,9 +241,9 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                           textEditingController.text.length > 3) {
                         debugPrint('submit');
                         Listing listing = Listing(
-                          name: textEditingController.value.text,
-                          description: textEditingController.value.text,
-                        );
+                            name: textEditingController.value.text,
+                            description: textEditingController.value.text,
+                            imageFile: image);
                         if (widget.category != null) {
                           listing.parent = widget.category.id;
                           listing.parentName = widget.category.name;

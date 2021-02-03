@@ -77,7 +77,7 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
       } else if (event is FetchItems) {
         List<Listing> listings =
             await listingQuery.fetchListings(sid: event.sid);
-        // print(listings);
+        // //printlistings);
         if (event.sid == null) {
           yield ShowingMyListings(listings);
         } else {
@@ -85,7 +85,7 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
         }
       }
     } catch (e) {
-      // print(e);
+      // //printe);
       yield CreationErrorState();
     }
   }

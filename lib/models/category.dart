@@ -27,6 +27,10 @@ class Category {
     store = json['store'];
   }
 
+  toString() {
+    return 'Catgeory(name:$name, id: $id, parent $parent)';
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;

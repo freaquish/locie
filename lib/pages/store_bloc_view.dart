@@ -89,7 +89,7 @@ class StoreViewBuilder extends StatelessWidget {
       widget: BlocBuilder<StoreViewBloc, StoreViewState>(
         cubit: bloc,
         builder: (context, state) {
-          print(state);
+          //printstate);
           if (state is LoadingState) {
             return WorkLoadingContainer();
           } else if (state is FetchedStore) {

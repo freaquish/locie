@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/navigation_bloc.dart';
+import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/bloc/store_bloc.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/views/create_store/address.dart';
@@ -42,6 +44,9 @@ class CreateOrEditStoreBuilder extends StatelessWidget {
               bloc: bloc,
               store: state.store,
             );
+          } else if (state is RedirectToHomeFromCreateStore) {
+            BlocProvider.of<NavigationBloc>(context).replace(NavigateToHome());
+            return Container();
           }
           return Center(child: CircularProgressIndicator());
         },

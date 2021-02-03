@@ -12,6 +12,8 @@ class InitializingCreateOrEditStore extends StoreState {
   InitializingCreateOrEditStore({this.store});
 }
 
+class RedirectToHomeFromCreateStore extends StoreState {}
+
 // Shows uploading page
 class UploadingStore extends StoreState {}
 
@@ -113,7 +115,7 @@ class CreateOrEditStoreBloc extends Bloc<StoreEvent, StoreState> {
 
   @override
   Stream<StoreState> mapEventToState(StoreEvent event) async* {
-    // await localStorage.init();
+    await localStorage.init();
     if (event is InitializeCreateOrEditStore) {
       /**
        * [InitiakizeCreateOrEditStore] will handle Store Creation or editing
@@ -124,12 +126,22 @@ class CreateOrEditStoreBloc extends Bloc<StoreEvent, StoreState> {
       if (event.store != null) {
         yield InitializingCreateOrEditStore(store: event.store);
       } else {
-        yield InitializingCreateOrEditStore();
+        Store store;
+        if (localStorage.prefs.containsKey("uid")) {
+          var uid = localStorage.prefs.getString("uid");
+          store = await storeQuery.fetchStore(uid);
+        }
+        if (store != null) {
+          localStorage.setStore(store);
+          yield RedirectToHomeFromCreateStore();
+        } else {
+          yield InitializingCreateOrEditStore();
+        }
       }
     } else if (event is CreateStore) {
       // CreateStore commands set store data in the database
       yield UploadingStore();
-      FireStoreQuery storeQuery = FireStoreQuery();
+      // FireStoreQuery storeQuery = FireStoreQuery();
       var account = await localStorage.getAccount();
       Store store = await storeQuery.createStore(event.store, account);
       yield ShowMyStorePage(store);

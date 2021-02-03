@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/category_bloc.dart';
+import 'package:locie/bloc/navigation_bloc.dart';
+import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/components/appBar.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
@@ -20,13 +23,14 @@ class _CategorySelectionState extends State<CategorySelection> {
   Category groupValue;
 
   void onSelect(Category category) {
-    // print(category.name);
+    // //printcategory.name);
     setState(() {
       groupValue = category;
     });
   }
 
   void onClickForwardArrow(Category category) {
+    //printwidget.bloc);
     widget.bloc..add(ProceedToNextCategoryPage(category.id));
   }
 
@@ -46,8 +50,15 @@ class _CategorySelectionState extends State<CategorySelection> {
     }
   }
 
-  void onNext() {
+  void onNext(BuildContext context) {
     // Navigate to create item builder but do not bloc jump
+
+    if (groupValue != null) {
+      BlocProvider.of<NavigationBloc>(context)
+        ..add(NavigateToCreateListing(groupValue));
+    } else {
+      showNoCategorySelectedError(context);
+    }
   }
 
   void showNoCategorySelectedError(BuildContext context) {
@@ -75,8 +86,8 @@ class _CategorySelectionState extends State<CategorySelection> {
                 vertical: scale.vertical(20), horizontal: scale.horizontal(4)),
             child: SubmitButton(
               onPressed: () {
-                onNext();
-                showNoCategorySelectedError(context);
+                onNext(context);
+                // showNoCategorySelectedError(context);
               },
               buttonName: 'Continue',
               buttonColor: Colour.submitButtonColor,

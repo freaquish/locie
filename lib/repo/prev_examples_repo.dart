@@ -22,17 +22,17 @@ class PreviousExamplesRepo {
     }
     QuerySnapshot snapshots = await workRef.where("sid", isEqualTo: sid).get();
     PreviousExamples examples = PreviousExamples(examples: []);
-    // print(snapshots.docs.length);
+    // //printsnapshots.docs.length);
     if (snapshots.docs.length > 0) {
       List<PreviousExamples> exampleSnaps = snapshots.docs.map((e) {
-        // print(e.data());
+        // //printe.data());
         return PreviousExamples.fromJson(e.data());
       }).toList();
       if (exampleSnaps.isNotEmpty) {
         examples = exampleSnaps[0];
       }
     }
-    // print('quad $examples');
+    // //print'quad $examples');
     return examples;
   }
 
