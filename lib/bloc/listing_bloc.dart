@@ -44,6 +44,11 @@ class InitiateListingCreation extends ListingEvent {
   InitiateListingCreation(this.category, {this.listing});
 }
 
+class InitiateListingUpdate extends ListingEvent {
+  final Listing listing;
+  InitiateListingUpdate(this.listing);
+}
+
 class ProceedToMetaDataPage extends ListingEvent {
   final Listing listing;
   ProceedToMetaDataPage(this.listing);
@@ -83,6 +88,8 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
         } else {
           yield ShowingStoreListings(sid: event.sid, listings: listings);
         }
+      }else if(event is InitiateListingUpdate){
+        yield ShowingListingPage(listing: event.listing);
       }
     } catch (e) {
       // //printe);

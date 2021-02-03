@@ -29,6 +29,10 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
   bool inStockSwitch = true;
   bool isListLoaded = false;
 
+  void onBackClick() {
+    widget.bloc..add(InitiateListingCreation(widget.listing.category, listing: widget.listing.id !=null? widget.listing : null));
+  }
+
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
@@ -36,6 +40,9 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
       backgroundColor: Colour.bgColor,
       appBar: Appbar().appbar(
         context: context,
+        onTap: (){
+          onBackClick();
+        },
         title: LatoText(
           '',
           size: 22,
