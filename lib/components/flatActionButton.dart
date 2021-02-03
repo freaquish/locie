@@ -6,10 +6,10 @@ import 'package:locie/helper/screen_size.dart';
 class SubmitButton extends StatelessWidget {
 
   final Function onPressed;
-  final Color buttonColor;
+  final Color buttonColor, textColor;
   final String buttonName;
 
-  SubmitButton({@required this.onPressed,@required this.buttonName, @required this.buttonColor});
+  SubmitButton({@required this.onPressed,@required this.buttonName, this.textColor = Colors.white, @required this.buttonColor});
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +26,7 @@ class SubmitButton extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: scale.horizontal(4), vertical: scale.horizontal(4)),
           child: LatoText(
             buttonName,
+            fontColor: textColor,
           ),
         ),
       ),
