@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/invoice_bloc.dart';
 import 'package:locie/components/appBar.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/helper/screen_size.dart';
+import 'package:locie/models/account.dart';
+import 'package:locie/models/invoice.dart';
 
 class SearchInVoiceResult extends StatefulWidget {
+  final Account account;
+  final String phoneNumber;
+  SearchInVoiceResult({this.account, this.phoneNumber});
   @override
   _SearchInVoiceResultState createState() => _SearchInVoiceResultState();
 }
@@ -14,10 +21,36 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
   bool isUserFound = false;
 
   @override
+  void initState() {
+    print(widget.account);
+    isUserFound = widget.account != null;
+    super.initState();
+  }
+
+  void onBackClick(BuildContext context) {
+    BlocProvider.of<InvoiceBloc>(context)
+      ..add(InvoiceCustomerPhoneInputPageLaunch());
+  }
+
+  void onContinueClick(BuildContext context) {
+    print('clicked');
+    Invoice invoice = Invoice(recipientPhoneNumber: widget.phoneNumber);
+    if (widget.account != null) {
+      invoice.recipient = widget.account.phoneNumber;
+      invoice.recipientName = widget.account.name;
+    }
+    BlocProvider.of<InvoiceBloc>(context)..add(ItemInputPageLaunch(invoice));
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
     return Scaffold(
-        appBar: Appbar().appbar(title: LatoText('')),
+        appBar: Appbar().appbar(
+            title: LatoText(''),
+            onTap: () {
+              onBackClick(context);
+            }),
         body: isUserFound
             ? buildUserFoundScreen(screen)
             : buildUserNotFoundScreen(screen));
@@ -52,7 +85,7 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
                     Padding(
                       padding: EdgeInsets.all(screen.horizontal(8)),
                       child: LatoText(
-                        'User with phone number +918574047383 not found !!',
+                        'User with phone number ${widget.phoneNumber} not found !!',
                         size: 21,
                       ),
                     ),
@@ -62,7 +95,9 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
                     Padding(
                       padding: EdgeInsets.all(screen.horizontal(5)),
                       child: SubmitButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          onContinueClick(context);
+                        },
                         buttonName: 'Create Invoice',
                         buttonColor: Color(0xff355cfd),
                       ),
@@ -103,7 +138,9 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
               height: screen.vertical(60),
             ),
             SubmitButton(
-              onPressed: () {},
+              onPressed: () {
+                onContinueClick(context);
+              },
               buttonName: 'Continue',
               buttonColor: Color(0xff355cfd),
             )

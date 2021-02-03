@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/invoice_bloc.dart';
 import 'package:locie/components/appBar.dart';
 import 'package:locie/components/country_codes.dart';
 import 'package:locie/components/flatActionButton.dart';
@@ -6,6 +8,7 @@ import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/components/text_field.dart';
 import 'package:locie/helper/screen_size.dart';
+import 'package:locie/models/invoice.dart';
 
 class SearchInvoiceUser extends StatefulWidget {
   @override
@@ -70,8 +73,9 @@ class _SearchInvoiceUserState extends State<SearchInvoiceUser> {
                                       onChange: (value) {
                                         setState(() {
                                           countryCode = value;
+                                          // print(countryCode);
                                         });
-
+                                        // print(countryCode);
                                         Navigator.of(context).pop();
                                       },
                                     ),
@@ -130,8 +134,12 @@ class _SearchInvoiceUserState extends State<SearchInvoiceUser> {
                       SubmitButton(
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
-                            var phoneNumber = textEditingController.value.text;
+                            var phoneNumber =
+                                countryCode + textEditingController.value.text;
                             textEditingController.clear();
+                            BlocProvider.of<InvoiceBloc>(context)
+                              ..add(
+                                  SearchCustomerForInvoice('+' + phoneNumber));
                           }
                         },
                         buttonName: 'Continue',

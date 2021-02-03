@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/invoice_bloc.dart';
 import 'package:locie/components/appBar.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/invoice_dialogues.dart';
 import 'package:locie/components/primary_container.dart';
+import 'package:locie/constants.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/invoice.dart';
 import 'package:locie/views/Invoice/taxes_discount.dart';
 
 class InvoiceItemBilling extends StatefulWidget {
+  Invoice invoice;
+  InvoiceItemBilling(this.invoice);
   @override
   _InvoiceItemBillingState createState() => _InvoiceItemBillingState();
 }
@@ -25,14 +30,21 @@ class _InvoiceItemBillingState extends State<InvoiceItemBilling> {
     return total;
   }
 
+  void onBackClick(BuildContext context) {
+    BlocProvider.of<InvoiceBloc>(context)
+      ..add(InvoiceCustomerPhoneInputPageLaunch());
+  }
+
   // List items = [];
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
     return Scaffold(
       appBar: Appbar().appbar(
-        title: LatoText(''),
-      ),
+          title: LatoText(''),
+          onTap: () {
+            onBackClick(context);
+          }),
       bottomNavigationBar: Container(
         color: Colour.bgColor,
         child: Padding(
@@ -48,21 +60,16 @@ class _InvoiceItemBillingState extends State<InvoiceItemBilling> {
                   showDialog(
                     context: context,
                     builder: (context) => ModalDialogueBox(onPressed: (total) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TaxesAndDiscountWidget(
-                                    invoice: Invoice(subTotal: subTotal()),
-                                  )));
+                      widget.invoice.subTotal = total;
+                      BlocProvider.of<InvoiceBloc>(context)
+                        ..add(FinanceInputPageLaunch(widget.invoice));
                     }),
                   );
                 } else {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TaxesAndDiscountWidget(
-                                invoice: Invoice(subTotal: subTotal()),
-                              )));
+                  widget.invoice.items = items;
+                  widget.invoice.subTotal = subTotal();
+                  BlocProvider.of<InvoiceBloc>(context)
+                    ..add(FinanceInputPageLaunch(widget.invoice));
                 }
               },
               buttonName: 'Continue',
@@ -147,8 +154,8 @@ class _InvoiceItemBillingState extends State<InvoiceItemBilling> {
                                 Padding(
                                   padding:
                                       EdgeInsets.only(top: screen.vertical(5)),
-                                  child: LatoText(
-                                      '${items[i].price * items[i].quantity}'),
+                                  child:
+                                      LatoText('$rupeeSign ${items[i].total}'),
                                 ),
                                 Padding(
                                     padding: EdgeInsets.only(
