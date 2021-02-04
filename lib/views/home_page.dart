@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/font_text.dart';
@@ -18,6 +19,17 @@ class _HomePageViewState extends State<HomePageView> {
     setState(() {
       currentTabIndex = index;
     });
+  }
+
+  final FirebaseMessaging fcm = FirebaseMessaging();
+
+  @override
+  initState() {
+    super.initState();
+    fcm.configure(
+        onMessage: (Map<String, dynamic> message) async {},
+        onResume: (Map<String, dynamic> message) async {},
+        onLaunch: (Map<String, dynamic> message) async {});
   }
 
   String searchText = '';

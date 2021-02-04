@@ -9,6 +9,7 @@ class Account {
   bool isStoreOwner;
   String phoneNumber;
   DateTime lastLogin;
+  List<String> tokens;
   File imageFile;
 
   Account(
@@ -16,6 +17,7 @@ class Account {
       this.avatar = "",
       this.isStoreOwner = false,
       this.lastLogin,
+      this.tokens,
       this.name,
       this.phoneNumber});
 
@@ -31,6 +33,7 @@ class Account {
     avatar = json['avatar'];
     isStoreOwner = json['is_store_owner'];
     phoneNumber = json['phone_number'];
+    tokens = json.containsKey("tokens") ? json['tokens'] : [];
   }
 
   Map<String, dynamic> toJson() {
@@ -40,6 +43,7 @@ class Account {
     data['avatar'] = avatar;
     data['is_store_owner'] = isStoreOwner;
     data['phone_number'] = phoneNumber;
+    data['tokens'] = tokens == null ? [] : tokens;
     return data;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/helper/firestore_auth.dart';
 import 'package:locie/helper/firestore_query.dart';
@@ -111,7 +112,7 @@ class AuthenticationBloc
   LocalStorage localStorage = LocalStorage();
   AuthenticationBloc() : super(InitialState());
   FireStoreQuery storeQuery = FireStoreQuery();
-
+  final fcm = FirebaseMessaging();
   @override
   Stream<AuthenticationState> mapEventToState(
       AuthenticationEvent event) async* {
@@ -202,6 +203,8 @@ class AuthenticationBloc
     } else if (event is RegisterAccount) {
       yield RegisteringAccount();
       Account account = await PhoneAuthentication.createAccount(event.account);
+      String token = await fcm.getToken();
+      PhoneAuthentication.updateToken(token);
       localStorage.setAccount(account);
       yield RedirectingToHome();
     }
