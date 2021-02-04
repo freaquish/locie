@@ -47,3 +47,17 @@ List<String> nGram(String data) {
   }
   return grams;
 }
+
+List<String> trigramNGram(String data) {
+  List<String> grams = [];
+  int currentIndex = 0;
+  if (data.length > 3) {
+    currentIndex = 4;
+    grams.add(data.substring(0, 4));
+  }
+  while (currentIndex < data.length) {
+    grams.add(data.substring(0, currentIndex));
+    currentIndex++;
+  }
+  return grams;
+}

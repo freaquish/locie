@@ -29,6 +29,7 @@ class Store {
   String image;
   List<String> categories;
   String description;
+  List<String> nGram;
   // List<PreviousExamples> previousExamples;
   String owner;
   DateTime created;
@@ -67,6 +68,7 @@ class Store {
       });
     }
     description = json['description'];
+    nGram = json['n_gram'];
     logo = json["logo"];
     owner = json['owner'];
     created = json['created'].toDate();
@@ -99,6 +101,9 @@ class Store {
     data['logo'] = this.logo == null ? "" : this.logo;
     data['created'] = this.created;
     data['gstin'] = this.gstin == null ? '' : this.gstin;
+    if (nGram != null) {
+      data['n_gram'] = nGram;
+    }
     if (location != null) {
       data['location'] = this.location.toJson();
     }
