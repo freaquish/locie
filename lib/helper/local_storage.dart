@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:locie/models/account.dart';
 import 'package:locie/models/store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +12,29 @@ class LocalStorage {
 
   LocalStorage() {
     this.init();
+  }
+
+  Future<void> freezeStoresForHome(List<Store> stores) async {
+    if (prefs == null) {
+      await init();
+    }
+    prefs.setString(
+        "stores_for_home", jsonEncode(stores.map((e) => e.toJson()).toList()));
+    prefs.setString("last_stores_fetch", DateTime.now().toIso8601String());
+  }
+
+  Future<bool> frozenStoresViable() async {
+    return prefs.containsKey("stores_for_home") &&
+        DateTime.now()
+                .difference(
+                    DateTime.parse(prefs.getString("last_stores_fetch")))
+                .inDays <=
+            1;
+  }
+
+  Future<List<Store>> unFreezeStoresForHome() async {
+    return (jsonDecode(prefs.getString("stores_for_home"))
+        .map((e) => Store.fromJson(e))).toList();
   }
 
   Future<void> setAccount(Account account) async {

@@ -104,12 +104,12 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
       yield FetchedStoreReviews(reviews);
     } else if (event is InjectStoreView) {
       yield event.state;
-    } else if(event is LaunchItemView){
+    } else if (event is LaunchItemView) {
       yield LoadingState();
       Listing listing = await repo.fetchItem(event.lid);
-      if(listing == null){
+      if (listing == null) {
         yield NotItemFoundInStore();
-      }else {
+      } else {
         yield ShowingParticularItemView(listing);
       }
     }

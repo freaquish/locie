@@ -10,6 +10,7 @@ class Listing {
   String parent;
   String parentName;
   String store;
+  String storeName;
   String unit;
   double priceMin;
   double priceMax;
@@ -20,12 +21,13 @@ class Listing {
   List nGram;
   Category category;
   DocumentSnapshot snapshot;
-
+  double noOfQuotes;
   Listing(
       {this.id,
       this.name,
       this.snapshot,
       this.imageFile,
+      this.noOfQuotes,
       this.image,
       this.parent,
       this.store,
@@ -33,6 +35,7 @@ class Listing {
       this.priceMin,
       this.priceMax,
       this.description,
+      this.storeName,
       this.parentName,
       this.category,
       this.created,
@@ -51,6 +54,10 @@ class Listing {
     created = json['created'].toDate();
     inStock = json['in_stock'];
     nGram = json['n_gram'];
+    storeName = json['store_name'];
+    if (json.containsKey("no_of_quotes")) {
+      noOfQuotes = double.parse(json['no_of_quotes'].toString());
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -67,6 +74,8 @@ class Listing {
     data['created'] = this.created != null ? this.created : DateTime.now();
     data['in_stock'] = this.inStock;
     data['n_gram'] = this.nGram;
+    data['store_name'] = this.storeName;
+    data['no_of_quotes'] = this.noOfQuotes == null ? 0.0 : this.noOfQuotes;
     return data;
   }
 }

@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:locie/bloc/invoice_bloc.dart';
-import 'package:locie/pages/invoice_view.dart';
-import 'package:locie/views/Invoice/invoice_item_billing.dart';
-import 'package:locie/views/Invoice/search_invoice_user.dart';
+import 'package:locie/models/quotations.dart';
+import 'package:locie/views/home_page.dart';
+
+import 'package:locie/views/not_internet_widget.dart';
+import 'package:locie/views/quotation/myQuotation.dart';
 
 void main() {
   runApp(MyApp());
@@ -41,9 +42,7 @@ class _MainPageState extends State<MainPage> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return InvoiceProvider(
-              event: FetchMyInvoices(),
-            );
+            return HomePageView();
           }
         },
       ),

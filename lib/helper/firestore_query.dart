@@ -97,6 +97,10 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     var json = category.toJson();
     json["n_gram"] = nGram(category.name);
     await categoryReference.doc(cid).set(json);
+    await firestore
+        .collection('stores')
+        .doc(store.id)
+        .update({"n_gram": FieldValue.arrayUnion(trigramNGram(category.name))});
 
     return category;
   }
@@ -219,10 +223,30 @@ class FireStoreQuery implements AbstractFireStoreQuery {
   Future<Store> editStore(Store newStore) async {
     // LocalStorage localStorage = LocalStorage();
     Store stateStore = await localStorage.getStore();
+    if (newStore.nGram != null && !newStore.nGram.contains(newStore.name)) {
+      List<String> oldNameNgram = nGram(stateStore.name);
+      List<String> newNGram =
+          newStore.nGram == null ? stateStore.nGram : newStore.nGram;
+      oldNameNgram.forEach((element) {
+        newNGram.remove(element);
+      });
+      newNGram += nGram(newStore.name);
+    }
     Map<String, dynamic> changes = stateStore.compare(newStore);
     CollectionReference storeReference = firestore.collection('stores');
-    storeReference.doc(stateStore.id).update(changes);
-    localStorage.setStore(newStore);
+    await storeReference.doc(stateStore.id).update(changes);
+    await localStorage.setStore(newStore);
+    if (stateStore.name != newStore.name) {
+      WriteBatch batch = firestore.batch();
+      QuerySnapshot listingSnapshots = await firestore
+          .collection("listings")
+          .where("store", isEqualTo: newStore.id)
+          .get();
+      listingSnapshots.docs.forEach((element) {
+        batch.update(element.reference,
+            {"n_gram": FieldValue.arrayUnion(trigramNGram(newStore.name))});
+      });
+    }
     return newStore;
   }
 

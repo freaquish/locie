@@ -123,6 +123,8 @@ class InvoiceCard extends StatelessWidget {
           ),
         ),
         trailing: IconButton(
+          //TODO implement onpressed function
+          onPressed: (){},
           icon: Icon(
             Icons.share,
             color: Colour.submitButtonColor,

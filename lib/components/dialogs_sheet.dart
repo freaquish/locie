@@ -417,20 +417,22 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
                   ),
                   SubmitButton(
                       onPressed: () {
-                        String name = textEditingControllerTaxName.text;
-                        Taxes taxes = Taxes(
-                            factor:
-                                double.parse(textEditingControllerFactor.text),
-                            taxName: name.length > 8
-                                ? name.substring(0, 9) + '...'
-                                : name,
-                            value: double.parse(percentageValue()));
-                        widget.onPressed(taxes);
-                        textEditingControllerFactor.clear();
-                        textEditingControllerTaxName.clear();
-                        setState(() {
-                          percentage = '0.0';
-                        });
+                        if (_formKey.currentState.validate()) {
+                          String name = textEditingControllerTaxName.text;
+                          Taxes taxes = Taxes(
+                              factor: double.parse(
+                                  textEditingControllerFactor.text),
+                              taxName: name.length > 8
+                                  ? name.substring(0, 9) + '...'
+                                  : name,
+                              value: double.parse(percentageValue()));
+                          widget.onPressed(taxes);
+                          textEditingControllerFactor.clear();
+                          textEditingControllerTaxName.clear();
+                          setState(() {
+                            percentage = '0.0';
+                          });
+                        }
                       },
                       buttonName: 'Add',
                       buttonColor: Colour.submitButtonColor)
@@ -565,11 +567,13 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
                   ),
                   SubmitButton(
                       onPressed: () {
-                        Discount discount = Discount(
-                            factor:
-                                double.parse(textEditingControllerFactor.text),
-                            value: double.parse(percentageValue()));
-                        widget.onPressed(discount);
+                        if (_formKey.currentState.validate()) {
+                          Discount discount = Discount(
+                              factor: double.parse(
+                                  textEditingControllerFactor.text),
+                              value: double.parse(percentageValue()));
+                          widget.onPressed(discount);
+                        }
                       },
                       buttonName: 'Add',
                       buttonColor: Colour.submitButtonColor)
@@ -666,10 +670,12 @@ class _AddReceivedDialogState extends State<AddReceivedDialog> {
                   ),
                   SubmitButton(
                       onPressed: () {
-                        amountPaid = double.parse(
-                            textEditingControllerFactor.text.trim());
-                        double paidAmount = amountPaid;
-                        widget.onPressed(paidAmount);
+                        if (_formKey.currentState.validate()) {
+                          amountPaid = double.parse(
+                              textEditingControllerFactor.text.trim());
+                          double paidAmount = amountPaid;
+                          widget.onPressed(paidAmount);
+                        }
                       },
                       buttonName: 'Add',
                       buttonColor: Colour.submitButtonColor)
@@ -683,4 +689,112 @@ class _AddReceivedDialogState extends State<AddReceivedDialog> {
   }
 }
 
+class QuotationDialoge extends StatefulWidget {
+  // final Function onPressed;
+  // QuotationDialoge({@required this.onPressed});
+  @override
+  _QuotationDialogeState createState() => _QuotationDialogeState();
+}
 
+class _QuotationDialogeState extends State<QuotationDialoge> {
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController textEditingControllerPrice = TextEditingController();
+  TextEditingController textEditingControllerQuantity = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    final screen = Scale(context);
+    return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(
+              screen.horizontal(4),
+            ),
+          ),
+        ),
+        backgroundColor: Colour.bgColor,
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Container(
+            height: screen.vertical(400),
+            width: screen.horizontal(80),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: screen.horizontal(4),
+                  vertical: screen.vertical(10)),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  physics: BouncingScrollPhysics(),
+                  children: [
+                    SizedBox(
+                      height: screen.vertical(20),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        LatoText(''),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Icon(
+                            Icons.close,
+                            size: 16,
+                            color: Colors.red,
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: screen.vertical(20),
+                    ),
+                    Container(
+                      width: screen.horizontal(32),
+                      child: CustomTextField(
+                          validator: (value) {
+                            if (value.isEmpty || value == null) {
+                              return 'Required field';
+                            }
+                          },
+                          textAlignment: TextAlign.start,
+                          hintText: 'Price',
+                          textController: textEditingControllerPrice,
+                          keyboard: TextInputType.number),
+                    ),
+                    SizedBox(
+                      height: screen.vertical(20),
+                    ),
+                    Container(
+                      width: screen.horizontal(32),
+                      child: CustomTextField(
+                          validator: (value) {
+                            if (value.isEmpty || value == null) {
+                              return 'Required field';
+                            }
+                          },
+                          textAlignment: TextAlign.start,
+                          hintText: 'Quantity',
+                          textController: textEditingControllerQuantity,
+                          keyboard: TextInputType.number),
+                    ),
+                    SizedBox(
+                      height: screen.vertical(20),
+                    ),
+                    SubmitButton(
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            debugPrint('Done');
+                          }
+                        },
+                        buttonName: 'Add',
+                        buttonColor: Colour.submitButtonColor)
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ));
+  }
+}

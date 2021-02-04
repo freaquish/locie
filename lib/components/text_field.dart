@@ -27,10 +27,10 @@ class CustomTextField extends StatelessWidget {
       this.preffixWidget,
       this.helperText,
       @required this.hintText,
-      @required this.textController,
+      this.textController,
       this.validator,
       this.label,
-      @required this.keyboard});
+      this.keyboard = TextInputType.name});
 
   @override
   Widget build(BuildContext context) {

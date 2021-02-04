@@ -31,6 +31,7 @@ class ListingQuery {
       listing.imageFile = null;
     }
     listing.store = store.id;
+    listing.storeName = store.name;
     listing.nGram = nGram(listing.name);
     listing.nGram += nGram(store.name).sublist(3);
     listing.nGram += nGram(listing.parentName).sublist(3);
