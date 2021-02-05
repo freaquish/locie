@@ -17,7 +17,7 @@ class StoreProductWidget extends StatefulWidget {
 }
 
 class _StoreProductWidgetState extends State<StoreProductWidget> {
-  String placeHolder = 'assets/images/placeholder.png';
+  String placeHolder = 'assets/images/item_placeholder.png';
 
   ImageProvider getProvider(Listing listing) {
     if (listing.image == null || listing.image.isEmpty) {
@@ -96,7 +96,10 @@ class _StoreProductWidgetState extends State<StoreProductWidget> {
                         width: screen.horizontal(50),
                         height: screen.vertical(390),
                         child: RichImage(
-                          image: widget.listings[index].image,
+                          image: widget.listings[index].image != null ||
+                                  widget.listings[index].image != ''
+                              ? widget.listings[index].image
+                              : placeHolder,
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                         ),
                       ),
