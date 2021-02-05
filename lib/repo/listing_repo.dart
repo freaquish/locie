@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:locie/helper/firestore_storage.dart';
 import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/minions.dart';
+import 'package:locie/helper/notification.dart';
 import 'package:locie/models/account.dart';
 import 'package:locie/models/listing.dart';
 import 'package:locie/models/quotations.dart';
@@ -11,6 +12,7 @@ class ListingQuery {
   LocalStorage localStorage = LocalStorage();
   FirebaseFirestore instance = FirebaseFirestore.instance;
   CollectionReference listingRef;
+  final SendNotification notification = SendNotification();
 
   ListingQuery() {
     listingRef = instance.collection("listings");
@@ -75,6 +77,19 @@ class ListingQuery {
         .collection("quotations")
         .doc(quotation.id)
         .set(quotation.toJson());
+    DocumentSnapshot snapshot = await instance.collection("stores").doc(quotation.store).get();
+    if(snapshot.exists){
+      Store store = Store.fromJson(snapshot.data());
+      dynamic token = await notification.getToken(userId:store.owner);
+      await notification.sendNotification(
+        sender: quotation.user,
+        message: '${quotation.userName} sent you Enquiry for product ${quotation.listingName}',
+        tokens: token,
+        notificationTitle: 'Enquiry',
+        notificationType: 'Quotation',
+      );
+    }
+    // ait 
   }
 
   Future<List<Quotation>> fetchQuotations({bool sent = false}) async {
