@@ -18,8 +18,9 @@ class LocalStorage {
     if (prefs == null) {
       await init();
     }
-    prefs.setString(
-        "stores_for_home", jsonEncode(stores.map((e) => e.toJson()).toList()));
+    print(stores);
+    prefs.setString("stores_for_home",
+        jsonEncode(stores.map((e) => e.toJson(storage: true)).toList()));
     prefs.setString("last_stores_fetch", DateTime.now().toIso8601String());
   }
 
@@ -33,8 +34,11 @@ class LocalStorage {
   }
 
   Future<List<Store>> unFreezeStoresForHome() async {
-    return (jsonDecode(prefs.getString("stores_for_home"))
-        .map((e) => Store.fromJson(e))).toList();
+    List<Store> stores = [];
+    (jsonDecode(prefs.getString("stores_for_home")) as List).forEach((element) {
+      stores.add(Store.fromJson(element));
+    });
+    return stores;
   }
 
   Future<void> setAccount(Account account) async {

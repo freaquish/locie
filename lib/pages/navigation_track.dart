@@ -68,6 +68,11 @@ class NavigationBuilder extends StatelessWidget {
               listing: state.listing,
               isEditable: state.isEditable,
             );
+          } else if (state is NavigatedToEditStore) {
+            print(state.store.toString() + "nt");
+            return CreateOrEditStoreWidget(
+              store: state.store,
+            );
           }
           return Center(
             child: Container(

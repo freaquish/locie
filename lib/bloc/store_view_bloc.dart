@@ -14,29 +14,44 @@ class LoadingState extends StoreViewState {}
 
 class FetchedStore extends StoreViewState {
   final Store store;
-  FetchedStore(this.store);
+  final bool isStoreMine;
+  FetchedStore(this.store, {this.isStoreMine = false});
 }
 
 class FetchingList extends StoreViewState {}
 
 class FetchedStoreProducts extends StoreViewState {
   final List<Listing> listings;
-  FetchedStoreProducts(this.listings);
+  final bool isStoreMine;
+  FetchedStoreProducts(this.listings, {this.isStoreMine = false});
+}
+
+class ShowingStoreViewWidget extends StoreViewState {
+  final Store store;
+  final bool isEditable;
+  ShowingStoreViewWidget({this.store, this.isEditable});
 }
 
 class FetchedStoreWorks extends StoreViewState {
   final PreviousExamples examples;
-  FetchedStoreWorks(this.examples);
+  final bool isStoreMine;
+  FetchedStoreWorks(this.examples, {this.isStoreMine = false});
 }
 
 class FetchedStoreReviews extends StoreViewState {
   final List<Review> reviews;
-  FetchedStoreReviews(this.reviews);
+  final bool isStoreMine;
+  FetchedStoreReviews(this.reviews, {this.isStoreMine = false});
 }
 
 class NotItemFoundInStore extends StoreViewState {}
 
 class StoreViewEvent {}
+
+class FetchStoreView extends StoreViewEvent {
+  final Store store;
+  FetchStoreView(this.store);
+}
 
 class FetchStore extends StoreViewEvent {
   final String sid;
@@ -73,32 +88,44 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
   StoreViewRepo repo = StoreViewRepo();
   StoreViewGlobalStateSingleton singleton = StoreViewGlobalStateSingleton();
   final int cacheTime = 3;
+  Store store;
+
+  bool storeIsSame(String sid) {
+    return store != null && sid == store.id;
+  }
 
   @override
   Stream<StoreViewState> mapEventToState(StoreViewEvent event) async* {
     // yield LoadingState();
+    // await localStorage.init();
+    store = await localStorage.getStore();
     if (event is FetchStore) {
+      // This event will show complete widget
       yield LoadingState();
       Store store;
       store = await repo.fetchStore(event.sid);
 
-      yield FetchedStore(store);
+      yield ShowingStoreViewWidget(
+          store: store, isEditable: storeIsSame(event.sid));
     } else if (event is FetchStoreProducts) {
       yield LoadingState();
       List<Listing> listings =
           await repo.fetchStoreListing(event.sid, event.startAt);
-      yield FetchedStoreProducts(listings);
+      yield FetchedStoreProducts(listings, isStoreMine: storeIsSame(event.sid));
     } else if (event is FetchStoreWorks) {
       yield LoadingState();
       PreviousExamples examples = await repo.fetchWorks(event.sid);
       //printexamples);
-      yield FetchedStoreWorks(examples);
+      yield FetchedStoreWorks(examples, isStoreMine: storeIsSame(event.sid));
     } else if (event is FetchStoreReviews) {
       yield FetchingList();
       List<Review> reviews = await repo.fetchReviews(event.sid, event.startAt);
-      yield FetchedStoreReviews(reviews);
+      yield FetchedStoreReviews(reviews, isStoreMine: storeIsSame(event.sid));
     } else if (event is InjectStoreView) {
       yield event.state;
+    } else if (event is FetchStoreView) {
+      yield LoadingState();
+      yield FetchedStore(event.store, isStoreMine: storeIsSame(event.store.id));
     }
   }
 }

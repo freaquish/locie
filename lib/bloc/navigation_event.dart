@@ -1,5 +1,6 @@
 import 'package:locie/models/category.dart';
 import 'package:locie/models/listing.dart';
+import 'package:locie/models/store.dart';
 
 class NavigationEvent {}
 
@@ -24,7 +25,10 @@ class NavigateToCreateListing extends NavigationEvent {
 
 class NavigateToCreateStore extends NavigationEvent {}
 
-class NavigateToEditStore extends NavigationEvent {}
+class NavigateToEditStore extends NavigationEvent {
+  final Store store;
+  NavigateToEditStore(this.store);
+}
 
 class MaterialProviderRoute<T> extends NavigationEvent {
   final T route;

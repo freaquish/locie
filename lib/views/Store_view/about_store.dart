@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/navigation_bloc.dart';
+import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/store.dart';
+import 'package:locie/workers/sharing_wrokers.dart';
 
 class StoreAboutWidget extends StatelessWidget {
   final Store store;
-  StoreAboutWidget(this.store);
+  final bool isEditable;
+  StoreAboutWidget(this.store, {this.isEditable = false});
+
+  void onEditClick(BuildContext context) {
+    print(store.toString() + "as");
+    BlocProvider.of<NavigationBloc>(context).push(NavigateToEditStore(store));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +36,26 @@ class StoreAboutWidget extends StatelessWidget {
                 style: FontStyle.normal,
                 weight: FontWeight.w900,
               ),
-              IconButton(icon: Icon(Icons.share), onPressed: () {})
+              Wrap(
+                children: [
+                  IconButton(
+                      icon: Icon(
+                        Icons.share,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        SharingWorkers().shareStore(store);
+                      }),
+                  IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        onEditClick(context);
+                      })
+                ],
+              )
             ],
           ),
           SizedBox(
@@ -58,6 +87,9 @@ class StoreAboutWidget extends StatelessWidget {
             size: 28,
             style: FontStyle.normal,
             weight: FontWeight.w900,
+          ),
+          SizedBox(
+            height: screen.vertical(25),
           ),
           Row(mainAxisAlignment: MainAxisAlignment.start, children: [
             Container(

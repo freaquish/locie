@@ -32,6 +32,7 @@ class _CreateStoreWidgetState extends State<CreateStoreWidget> {
       textEditingController.value = TextEditingValue(text: widget.store.name);
       image = widget.store.image;
     }
+    print(widget.store.toString() + "ans");
     super.initState();
   }
 

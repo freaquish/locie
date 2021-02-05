@@ -35,9 +35,11 @@ class Store {
   DateTime created;
   String gstin;
   StoreLocation location;
+  int noOfReviews;
   File imageFile;
   String logo;
   dynamic rating;
+  dynamic noAvgRating;
 
   Store(
       {this.id,
@@ -48,8 +50,9 @@ class Store {
       this.address,
       this.image,
       this.categories,
+      this.noOfReviews,
       this.description,
-      // this.previousExamples,
+      this.noAvgRating,
       this.owner,
       this.created,
       this.gstin,
@@ -71,13 +74,17 @@ class Store {
     nGram = (json['n_gram'] as List<dynamic>).map((e) => e.toString()).toList();
     logo = json["logo"];
     owner = json['owner'];
-    created = json['created'].toDate();
+    created = json['created'] is String
+        ? DateTime.parse(json['created'])
+        : json['created'].toDate();
     gstin = json['gstin'];
-    rating = json['rating'];
+    noAvgRating = json['rating'];
+    noOfReviews = json.containsKey("no_of_reviews") ? json['no_of_reviews'] : 0;
+    rating = noAvgRating / (noOfReviews > 0 ? noOfReviews : 1);
     location = StoreLocation.fromJson(json['location']);
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({bool storage = false}) {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.id != null) {
       data['id'] = this.id;
@@ -99,8 +106,13 @@ class Store {
     // }
     data['owner'] = this.owner;
     data['logo'] = this.logo == null ? "" : this.logo;
-    data['created'] = this.created;
+    data['created'] = this.created == null ? DateTime.now() : this.created;
+    if (storage) {
+      data['created'] = data['created'].toIso8601String();
+    }
     data['gstin'] = this.gstin == null ? '' : this.gstin;
+    data['no_of_reviews'] = this.noOfReviews == null ? 0 : this.noOfReviews;
+    data['rating'] = this.noAvgRating;
     if (nGram != null) {
       data['n_gram'] = nGram;
     }

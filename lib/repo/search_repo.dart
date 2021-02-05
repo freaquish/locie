@@ -19,7 +19,8 @@ class SearchRepository {
   Future<List<Store>> _fetchTopStoresForHome() async {
     QuerySnapshot snapshots = await storeRef
         .orderBy("rating", descending: true)
-        .orderBy("timestamp", descending: true)
+        .orderBy("created", descending: true)
+        .orderBy("no_of_reviews", descending: false)
         .limit(5)
         .get();
     return snapshots.docs.map((e) => Store.fromJson(e.data())).toList();
@@ -28,7 +29,7 @@ class SearchRepository {
   Future<List<Store>> fetchTopStoresForHome() async {
     bool frozenStoresViable = await this.isStoresForHomeFrozen();
     if (frozenStoresViable) {
-      return localStorage.unFreezeStoresForHome();
+      return await localStorage.unFreezeStoresForHome();
     }
     List<Store> stores = await _fetchTopStoresForHome();
     await localStorage.freezeStoresForHome(stores);
@@ -47,7 +48,17 @@ class SearchRepository {
     if (startAt != null) {
       query = query.startAfterDocument(startAt);
     }
-    QuerySnapshot snapshots = await query.limit(10).get();
+    QuerySnapshot snapshots = await query.get();
     return snapshots.docs.map((e) => Listing.fromJson(e.data())).toList();
+  }
+
+  Future<List<Store>> searchStore(String text) async {
+    QuerySnapshot snapshots = await instance
+        .collection("stores")
+        .where("n_gram", arrayContainsAny: [text])
+        .orderBy("rating", descending: true)
+        .orderBy("no_of_reviews", descending: false)
+        .get();
+    return snapshots.docs.map((e) => Store.fromJson(e.data())).toList();
   }
 }

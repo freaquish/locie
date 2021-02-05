@@ -95,5 +95,9 @@ class StoreViewRepo {
             DateTime.now().microsecondsSinceEpoch.toString());
     review.id = reviewId;
     await instance.collection("reviews").doc(reviewId).set(review.toJson());
+    await instance.collection("stores").doc(review.store).update({
+      "rating": FieldValue.increment(review.rating),
+      "no_of_reviews": FieldValue.increment(1)
+    });
   }
 }
