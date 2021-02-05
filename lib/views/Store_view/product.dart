@@ -17,7 +17,7 @@ class StoreProductWidget extends StatefulWidget {
 }
 
 class _StoreProductWidgetState extends State<StoreProductWidget> {
-  String placeHolder = 'assets/images/placeholder.png';
+  String placeHolder = 'assets/images/item_placeholder.png';
 
   ImageProvider getProvider(Listing listing) {
     if (listing.image == null || listing.image.isEmpty) {
@@ -43,19 +43,7 @@ class _StoreProductWidgetState extends State<StoreProductWidget> {
   }
 
   void _handleScroll() {
-    print('working');
-    print(_scrollController.position.pixels);
-    if (_scrollController.position.atEdge &&
-        _scrollController.position.pixels == 0) {
-      setState(() {
-        physics = BouncingScrollPhysics();
-      });
-    } else if (physics is BouncingScrollPhysics &&
-        _scrollController.position.pixels == (1 - 0.38)) {
-      setState(() {
-        physics = NeverScrollableScrollPhysics();
-      });
-    }
+    setState(() {});
   }
 
   @override
@@ -76,7 +64,7 @@ class _StoreProductWidgetState extends State<StoreProductWidget> {
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               childAspectRatio: screen.horizontal(50) / screen.vertical(470),
               crossAxisCount: 2),
-          // physics: physics,
+          physics: BouncingScrollPhysics(),
           // controller: _scrollController,
           shrinkWrap: true,
           itemCount: widget.listings.length,

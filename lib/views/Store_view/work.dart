@@ -16,7 +16,7 @@ class StoreWorksWidget extends StatelessWidget {
               horizontal: screen.horizontal(7), vertical: screen.vertical(10)),
           child: ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: BouncingScrollPhysics(),
             itemCount: examples.examples.length,
             itemBuilder: (context, i) {
               return Column(

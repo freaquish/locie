@@ -1,6 +1,7 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/views/Store_view/store_view.dart';
+import 'package:locie/views/Store_view/store_widget.dart';
 
 class DynamicLinksService {
   NavigationEvent event;

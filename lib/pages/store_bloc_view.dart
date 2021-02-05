@@ -9,6 +9,7 @@ import 'package:locie/views/Store_view/about_store.dart';
 import 'package:locie/views/Store_view/product.dart';
 import 'package:locie/views/Store_view/reviews.dart';
 import 'package:locie/views/Store_view/store_view.dart';
+import 'package:locie/views/Store_view/store_widget.dart';
 import 'package:locie/views/Store_view/work.dart';
 
 /// Bloc used to populate store view ...

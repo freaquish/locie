@@ -17,6 +17,35 @@ class StoreAboutWidget extends StatelessWidget {
     BlocProvider.of<NavigationBloc>(context).push(NavigateToEditStore(store));
   }
 
+  ratingIcon(dynamic rating) {
+    if (rating >= 0 && rating <= 1.0) {
+      return Icon(
+        Icons.sentiment_very_dissatisfied,
+        color: Colors.red,
+      );
+    } else if (rating >= 1 && rating <= 2) {
+      return Icon(
+        Icons.sentiment_dissatisfied,
+        color: Colors.redAccent,
+      );
+    } else if (rating >= 3 && rating <= 4) {
+      return Icon(
+        Icons.sentiment_neutral,
+        color: Colors.amber,
+      );
+    } else if (rating >= 4 && rating <= 5) {
+      return Icon(
+        Icons.sentiment_satisfied,
+        color: Colors.lightGreen,
+      );
+    } else {
+      return Icon(
+        Icons.sentiment_very_satisfied,
+        color: Colors.green,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
@@ -39,6 +68,7 @@ class StoreAboutWidget extends StatelessWidget {
               Wrap(
                 children: [
                   IconButton(
+                      splashRadius: 4,
                       icon: Icon(
                         Icons.share,
                         color: Colors.white,
@@ -47,6 +77,7 @@ class StoreAboutWidget extends StatelessWidget {
                         SharingWorkers().shareStore(store);
                       }),
                   IconButton(
+                      splashRadius: 4,
                       icon: Icon(
                         Icons.edit,
                         color: Colors.white,
@@ -62,11 +93,7 @@ class StoreAboutWidget extends StatelessWidget {
             height: screen.vertical(20),
           ),
           Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            Icon(
-              Icons.star,
-              color: Colors.amberAccent[700],
-              size: 21,
-            ),
+            ratingIcon(2),
             SizedBox(
               width: screen.horizontal(2),
             ),

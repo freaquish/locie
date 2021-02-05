@@ -233,13 +233,79 @@ class _HomePageViewState extends State<HomePageView> {
                   ),
                   SearchProvider(
                     bloc: bloc,
-                  )
+                  ),
                 ],
               ),
             ),
           ],
         )),
       ),
+    );
+  }
+
+  showBottomSheet(Scale screen, BuildContext context) {
+    showModalBottomSheet(
+      enableDrag: false,
+      context: context,
+      builder: (builder) {
+        return new Container(
+          height: screen.vertical(250),
+          color: Colour.bgColor, //Color(0xff111117),
+          child: new Container(
+            decoration: new BoxDecoration(
+              color: Colors.white,
+              borderRadius: new BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.close, color: Colors.red),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                ),
+                store != null
+                    ? Column(
+                        children: [
+                          ListTile(
+                            onTap: () {},
+                            leading: Icon(
+                              Icons.local_mall_outlined,
+                              color: Colors.white,
+                            ),
+                            title: LatoText('Create Listing'),
+                          ),
+                          ListTile(
+                            onTap: () {},
+                            leading: Icon(
+                              Icons.article_outlined,
+                              color: Colors.white,
+                            ),
+                            title: LatoText('Create Invoice'),
+                          ),
+                        ],
+                      )
+                    : ListTile(
+                        onTap: () {},
+                        leading: Icon(
+                          Icons.add_business,
+                          color: Colors.white,
+                        ),
+                        title: LatoText('Create Store'),
+                      ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

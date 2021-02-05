@@ -67,6 +67,40 @@ class StoreCard extends StatelessWidget {
     )));
   }
 
+  ratingIcon(dynamic rating) {
+    if (rating >= 0 && rating <= 1.0) {
+      return Icon(
+        Icons.sentiment_very_dissatisfied,
+        color: Colors.red,
+        size: 17,
+      );
+    } else if (rating >= 1 && rating <= 2) {
+      return Icon(
+        Icons.sentiment_dissatisfied,
+        color: Colors.redAccent,
+        size: 17,
+      );
+    } else if (rating >= 3 && rating <= 4) {
+      return Icon(
+        Icons.sentiment_neutral,
+        color: Colors.amber,
+        size: 17,
+      );
+    } else if (rating >= 4 && rating <= 5) {
+      return Icon(
+        Icons.sentiment_satisfied,
+        color: Colors.lightGreen,
+        size: 17,
+      );
+    } else {
+      return Icon(
+        Icons.sentiment_very_satisfied,
+        color: Colors.green,
+        size: 17,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Scale scale = Scale(context);
@@ -86,12 +120,25 @@ class StoreCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              LatoText(store.name, weight: FontWeight.bold),
+              LatoText(
+                store.name,
+                weight: FontWeight.bold,
+                size: 16,
+              ),
               // RailwayText("Jaiswal Trading Company"),
-              RailwayText(
-                store.rating.toString(),
-                size: 12,
-                fontColor: Colors.amberAccent[700],
+              SizedBox(
+                height: scale.vertical(10),
+              ),
+              Wrap(
+                spacing: 14,
+                children: [
+                  ratingIcon(store.rating),
+                  LatoText(
+                    store.rating.toString(),
+                    size: 12,
+                    fontColor: Colors.amberAccent[700],
+                  ),
+                ],
               )
             ],
           ),

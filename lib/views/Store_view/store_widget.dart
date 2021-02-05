@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:locie/bloc/navigation_bloc.dart';
 import 'package:locie/bloc/store_view_bloc.dart';
 import 'package:locie/components/color.dart';
+import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
-import 'package:locie/components/primary_container.dart';
 import 'package:locie/components/rich_image.dart';
 import 'package:locie/components/text_field.dart';
 import 'package:locie/helper/local_storage.dart';
@@ -13,22 +14,23 @@ import 'package:locie/models/account.dart';
 import 'package:locie/models/review.dart';
 import 'package:locie/models/store.dart';
 import 'package:locie/pages/store_bloc_view.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/repo/store_view_repo.dart';
-import 'package:locie/singleton.dart';
-// import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class StoreWidget extends StatefulWidget {
+import '../../singleton.dart';
+
+//TODO back button not working
+//TODO work not working
+
+class StoreViewWidget extends StatefulWidget {
   final String sid;
   final StoreViewEvent event;
   final Store store;
-  StoreWidget({this.sid, this.event, this.store});
+  StoreViewWidget({this.sid, this.event, this.store});
   @override
-  _StoreWidgetState createState() => _StoreWidgetState();
+  _StoreViewWidgetState createState() => _StoreViewWidgetState();
 }
 
-class _StoreWidgetState extends State<StoreWidget>
+class _StoreViewWidgetState extends State<StoreViewWidget>
     with TickerProviderStateMixin {
   String imageUrl;
 
@@ -63,10 +65,6 @@ class _StoreWidgetState extends State<StoreWidget>
       // As Products and Reviews are on 1 and 3
       // bloc..add(getEvent());
     }
-  }
-
-  void onBackClick(BuildContext context) {
-    BlocProvider.of<NavigationBloc>(context).pop();
   }
 
   @override
@@ -120,6 +118,10 @@ class _StoreWidgetState extends State<StoreWidget>
     }
   }
 
+  void onBackClick(BuildContext context) {
+    BlocProvider.of<NavigationBloc>(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
@@ -129,6 +131,7 @@ class _StoreWidgetState extends State<StoreWidget>
         return true;
       },
       child: Scaffold(
+        backgroundColor: Colour.bgColor,
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colour.submitButtonColor,
           child: Icon(
@@ -139,118 +142,88 @@ class _StoreWidgetState extends State<StoreWidget>
             showBottomReviewSheet(context, screen);
           },
         ),
-        body: PrimaryContainer(
-          widget: Stack(
-            children: [
-              Container(
-                height: screen.vertical(420),
-                width: screen.horizontal(100),
-                child: RichImage(
-                  image: widget.store.image,
+        body: NestedScrollView(
+          physics: BouncingScrollPhysics(),
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                backgroundColor: Colour.bgColor,
+                expandedHeight: screen.vertical(420),
+                toolbarHeight: 0,
+                floating: false,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  background:
+                      widget.store.image != null || widget.store.image != ''
+                          ? Image.network(
+                              widget.store.image,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.asset(
+                              'assets/images/store_placeholder.png',
+                              fit: BoxFit.cover,
+                            ),
                 ),
               ),
-              Positioned(
-                top: screen.vertical(25),
-                left: screen.vertical(10),
-                child: IconButton(
-                  color: Colors.grey,
-                  icon: Icon(Icons.keyboard_backspace),
-                  onPressed: () {
-                    onBackClick(context);
-                  },
-                ),
-              ),
-              DraggableScrollableSheet(
-                initialChildSize: 1 - 0.38,
-                minChildSize: 1 - 0.38,
-                maxChildSize: 1,
-                builder:
-                    (BuildContext context, ScrollController scrollController) {
-                  // print(scrollController.position.pixels);
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colour.bgColor,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(
-                          screen.horizontal(8),
+              SliverPersistentHeader(
+                delegate: _SliverAppBarDelegate(
+                  TabBar(
+                    controller: tabController,
+                    indicatorColor: Colors.white,
+                    tabs: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: screen.horizontal(2),
+                          top: screen.vertical(30),
                         ),
-                        topRight: Radius.circular(
-                          screen.horizontal(8),
+                        child: LatoText(
+                          'About',
+                          fontColor: tabController.index == 0
+                              ? Colors.white
+                              : Color(0xff6c6c6c),
+                          size: 16,
                         ),
                       ),
-                    ),
-                    child: ListView(
-                      physics: BouncingScrollPhysics(),
-                      controller: _scrollController,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(
-                              screen.horizontal(2),
-                              screen.vertical(50),
-                              screen.horizontal(2),
-                              screen.vertical(50)),
-                          child: TabBar(
-                            indicatorColor: Colors.white,
-                            indicator: UnderlineTabIndicator(
-                                insets: EdgeInsets.only(
-                              left: screen.horizontal(2),
-                              right: screen.horizontal(2),
-                            )),
-                            tabs: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    bottom: screen.horizontal(2)),
-                                child: LatoText(
-                                  'About',
-                                  fontColor: tabController.index == 0
-                                      ? Colors.white
-                                      : Color(0xff6c6c6c),
-                                  size: 16,
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    bottom: screen.horizontal(2)),
-                                child: LatoText('Product',
-                                    fontColor: tabController.index == 1
-                                        ? Colors.white
-                                        : Color(0xff6c6c6c),
-                                    size: 16),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    bottom: screen.horizontal(2)),
-                                child: LatoText('Work',
-                                    fontColor: tabController.index == 2
-                                        ? Colors.white
-                                        : Color(0xff6c6c6c),
-                                    size: 16),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    bottom: screen.horizontal(2)),
-                                child: LatoText('Review',
-                                    fontColor: tabController.index == 3
-                                        ? Colors.white
-                                        : Color(0xff6c6c6c),
-                                    size: 16),
-                              ),
-                            ],
-                            controller: tabController,
-                          ),
-                        ),
-                        StoreViewProvider(
-                          event,
-                          singleton: singleton,
-                          bloc: bloc,
-                        )
-                      ],
-                    ),
-                  );
-                },
+                      Padding(
+                        padding: EdgeInsets.only(
+                            bottom: screen.horizontal(2),
+                            top: screen.vertical(30)),
+                        child: LatoText('Product',
+                            fontColor: tabController.index == 1
+                                ? Colors.white
+                                : Color(0xff6c6c6c),
+                            size: 16),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            bottom: screen.horizontal(2),
+                            top: screen.vertical(30)),
+                        child: LatoText('Work',
+                            fontColor: tabController.index == 2
+                                ? Colors.white
+                                : Color(0xff6c6c6c),
+                            size: 16),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            bottom: screen.horizontal(2),
+                            top: screen.vertical(30)),
+                        child: LatoText('Review',
+                            fontColor: tabController.index == 3
+                                ? Colors.white
+                                : Color(0xff6c6c6c),
+                            size: 16),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              //
-            ],
+            ];
+          },
+          body: StoreViewProvider(
+            event,
+            singleton: singleton,
+            bloc: bloc,
           ),
         ),
       ),
@@ -388,5 +361,29 @@ class _StoreWidgetState extends State<StoreWidget>
         );
       },
     );
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this._tabBar);
+
+  final TabBar _tabBar;
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height;
+  @override
+  double get maxExtent => _tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return new Container(
+      child: _tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
   }
 }
