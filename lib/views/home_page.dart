@@ -232,7 +232,7 @@ class _HomePageViewState extends State<HomePageView> {
                   ),
                   SearchProvider(
                     bloc: bloc,
-                  )
+                  ),
                 ],
               ),
             ),
@@ -275,7 +275,7 @@ class _HomePageViewState extends State<HomePageView> {
                     ? Column(
                         children: [
                           ListTile(
-                            onTap: (){},
+                            onTap: () {},
                             leading: Icon(
                               Icons.local_mall_outlined,
                               color: Colors.white,
@@ -283,7 +283,7 @@ class _HomePageViewState extends State<HomePageView> {
                             title: LatoText('Create Listing'),
                           ),
                           ListTile(
-                            onTap: (){},
+                            onTap: () {},
                             leading: Icon(
                               Icons.article_outlined,
                               color: Colors.white,
@@ -293,7 +293,7 @@ class _HomePageViewState extends State<HomePageView> {
                         ],
                       )
                     : ListTile(
-                      onTap: (){},
+                        onTap: () {},
                         leading: Icon(
                           Icons.add_business,
                           color: Colors.white,

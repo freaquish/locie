@@ -9,7 +9,7 @@ class RichImage extends StatelessWidget {
   final BorderRadius borderRadius;
 
   const RichImage({this.image, this.borderRadius});
-  final String placeholder = 'assets/images/placeholder.png';
+  final String placeholder = 'assets/images/item_placeholder.png';
 
   ImageProvider getImage() {
     if (image is String && image.length > 0) {

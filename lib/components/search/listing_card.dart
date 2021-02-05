@@ -47,6 +47,35 @@ class StoreCard extends StatelessWidget {
 
   StoreCard({this.store});
 
+  ratingIcon(dynamic rating) {
+    if (rating > 0 && rating < 1.0) {
+      return Icon(
+        Icons.sentiment_very_dissatisfied,
+        color: Colors.red,
+      );
+    } else if (rating > 1 && rating < 2) {
+      return Icon(
+        Icons.sentiment_dissatisfied,
+        color: Colors.redAccent,
+      );
+    } else if (rating > 3 && rating < 4) {
+      return Icon(
+        Icons.sentiment_neutral,
+        color: Colors.amber,
+      );
+    } else if (rating > 4 && rating < 5) {
+      return Icon(
+        Icons.sentiment_satisfied,
+        color: Colors.lightGreen,
+      );
+    } else {
+      return Icon(
+        Icons.sentiment_very_satisfied,
+        color: Colors.green,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Scale scale = Scale(context);
@@ -65,10 +94,16 @@ class StoreCard extends StatelessWidget {
             children: [
               LatoText(store.name, weight: FontWeight.bold),
               // RailwayText("Jaiswal Trading Company"),
-              RailwayText(
-                store.rating.toString(),
-                size: 12,
-                fontColor: Colors.amberAccent[700],
+              Wrap(
+                spacing: 16,
+                children: [
+                  ratingIcon(store.rating),
+                  RailwayText(
+                    store.rating.toString(),
+                    size: 12,
+                    fontColor: Colors.amberAccent[700],
+                  ),
+                ],
               )
             ],
           ),
