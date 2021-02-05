@@ -45,10 +45,9 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
   void onContinueClick(BuildContext context) {
     print('clicked');
     Invoice invoice = Invoice(
-        recipientPhoneNumber: widget.phoneNumber,
-        recipient: widget.account.phoneNumber);
+        recipientPhoneNumber: widget.phoneNumber);
     if (widget.account != null) {
-      // invoice.recipient = widget.account.phoneNumber;
+      invoice.recipient = widget.account.uid;
       invoice.recipientName = widget.account.name;
     } else {
       invoice.recipientName = nameTextController.text;

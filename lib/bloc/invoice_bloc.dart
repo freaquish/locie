@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/helper/local_storage.dart';
+import 'package:locie/helper/notification.dart';
 import 'package:locie/models/account.dart';
 import 'package:locie/models/invoice.dart';
 import 'package:locie/repo/invoice_repo.dart';
@@ -76,6 +77,7 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
   LocalStorage localStorage = LocalStorage();
 
   InvoiceEvent lastEvent;
+  final notification = SendNotification();
 
   @override
   Stream<InvoiceState> mapEventToState(InvoiceEvent event) async* {
@@ -96,6 +98,17 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
     } else if (event is CreateInvoiceOnServer) {
       yield CreatingInvoice();
       await repo.createInvoice(event.invoice);
+      // if even.invoice.recipient != null --> send notification
+      if (event.invoice.recipient != null){
+        dynamic token = await notification.getToken(userId: event.invoice.recipient);
+        notification.sendNotification(
+          tokens: token,
+          sender: event.invoice.id,
+          notificationType: 'Invoice',
+          notificationTitle: 'New Invoice',
+          message: event.invoice.generatorName + " has created an Invoice for you, with Invoice number "+event.invoice.id,
+        );
+      }
       this..add(FetchMyInvoices());
     } else if (event is FetchMyInvoices) {
       yield LoadingState();

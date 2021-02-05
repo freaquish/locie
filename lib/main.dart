@@ -7,6 +7,12 @@ import 'package:locie/pages/navigation_track.dart';
 import 'package:locie/pages/store_bloc_view.dart';
 import 'package:locie/views/home_page.dart';
 
+import 'package:locie/models/quotations.dart';
+import 'package:locie/views/home_page.dart';
+
+import 'package:locie/views/not_internet_widget.dart';
+import 'package:locie/views/quotation/myQuotation.dart';
+
 void main() {
   runApp(MyApp());
 }

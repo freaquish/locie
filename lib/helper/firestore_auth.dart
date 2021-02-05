@@ -56,8 +56,19 @@ class PhoneAuthentication {
         .collection('accounts')
         .doc(account.uid)
         .set(account.toJson());
-    localStorage.setAccount(account);
+    await localStorage.setAccount(account);
     return account;
+  }
+
+  static Future<void> updateToken(String token) async {
+    LocalStorage localStorage = LocalStorage();
+    await localStorage.init();
+    if (localStorage.prefs.containsKey("uid")) {
+      String uid = localStorage.prefs.getString("uid");
+      await FirebaseFirestore.instance.collection("accounts").doc(uid).update({
+        "tokens": FieldValue.arrayUnion([token])
+      });
+    }
   }
 
   verificationFailed(FirebaseAuthException e) {
