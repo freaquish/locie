@@ -4,6 +4,7 @@ import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/navigation_stack.dart';
 import 'package:locie/models/category.dart';
 import 'package:locie/models/listing.dart';
+import 'package:locie/models/store.dart';
 import 'package:locie/repo/store_view_repo.dart';
 
 class NavigationState {}
@@ -17,6 +18,11 @@ class NavigatedToCategorySelection extends NavigationState {}
 class NavigatedToCreateStore extends NavigationState {}
 
 class NotItemFound extends NavigationState {}
+
+class NavigatedToEditStore extends NavigationState {
+  final Store store;
+  NavigatedToEditStore(this.store);
+}
 
 class NavigatedToCreateListing extends NavigationState {
   final Category category;
@@ -104,6 +110,9 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
       } else {
         yield ShowingParticularItemView(listing, isEditable: isEditable);
       }
+    } else if (event is NavigateToEditStore) {
+      print(event.store.toString() + "nb");
+      yield NavigatedToEditStore(event.store);
     }
   }
 }

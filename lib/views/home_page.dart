@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/navigation_bloc.dart';
+import 'package:locie/bloc/navigation_event.dart';
+import 'package:locie/bloc/search_bloc.dart';
+import 'package:locie/bloc/store_bloc.dart';
+import 'package:locie/bloc/store_view_bloc.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/rich_image.dart';
@@ -9,6 +15,8 @@ import 'package:locie/helper/screen_size.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:locie/models/account.dart';
 import 'package:locie/models/store.dart';
+import 'package:locie/pages/search_view.dart';
+import 'package:locie/pages/store_bloc_view.dart';
 
 class HomePageView extends StatefulWidget {
   final bool isStoreExists;
@@ -24,6 +32,7 @@ class _HomePageViewState extends State<HomePageView> {
   Account account;
 
   int currentTabIndex = 1;
+  String searchText = '';
 
   Future<void> getStoreAndAccount() async {
     await localStorage.init();
@@ -34,19 +43,37 @@ class _HomePageViewState extends State<HomePageView> {
     setState(() {});
   }
 
+  SearchBloc bloc;
+
   @override
   void initState() {
     getStoreAndAccount();
+    bloc = SearchBloc();
     super.initState();
+  }
+
+  void fireEvent() {
+    if (searchText.isNotEmpty) {
+      SearchEvent event = currentTabIndex == 0
+          ? SearchItem(searchText)
+          : SearchStore(searchText);
+      bloc..add(event);
+    }
   }
 
   void onTabTap(int index) {
     setState(() {
       currentTabIndex = index;
+      fireEvent();
     });
   }
 
-  String searchText = '';
+  void textInput(String value) {
+    setState(() {
+      searchText = value;
+      fireEvent();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +86,7 @@ class _HomePageViewState extends State<HomePageView> {
         isStoreExists: widget.isStoreExists,
         scaffoldKey: _scaffoldKey,
         account: account,
+        store: store,
       ),
       bottomNavigationBar: Container(
         color: Colour.skeletonColor,
@@ -137,9 +165,7 @@ class _HomePageViewState extends State<HomePageView> {
                   ),
                   CustomTextField(
                     onChanged: (value) {
-                      setState(() {
-                        searchText = value;
-                      });
+                      textInput(value);
                     },
                     textAlignment: TextAlign.start,
                     hintText: 'Search',
@@ -204,19 +230,9 @@ class _HomePageViewState extends State<HomePageView> {
                   SizedBox(
                     height: screen.vertical(50),
                   ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: 2,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          // print('Tapped');
-                        },
-                        child: ListingCard(),
-                      );
-                    },
-                  ),
+                  SearchProvider(
+                    bloc: bloc,
+                  )
                 ],
               ),
             ),
@@ -231,11 +247,19 @@ class NavigationDrawer extends StatelessWidget {
   final bool isStoreExists;
   final GlobalKey scaffoldKey;
   final Account account;
+  final Store store;
   NavigationDrawer(
-      {this.isStoreExists = false, this.scaffoldKey, this.account});
+      {this.isStoreExists = false, this.scaffoldKey, this.account, this.store});
+
+  NavigationBloc bloc;
+
+  void navigate<T>(T event) {
+    bloc.push(MaterialProviderRoute<T>(route: event));
+  }
 
   @override
   Widget build(BuildContext context) {
+    bloc = BlocProvider.of<NavigationBloc>(context);
     Scale scale = Scale(context);
     return Drawer(
       child: Container(
@@ -250,7 +274,7 @@ class NavigationDrawer extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: scale.vertical(20)),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                    color: Colour.textfieldColor,
+                    // color: Colour.textfieldColor,
                     borderRadius: BorderRadius.circular(8)),
                 child: Wrap(
                   direction: Axis.vertical,
@@ -284,6 +308,11 @@ class NavigationDrawer extends StatelessWidget {
               ),
               if (isStoreExists)
                 InkWell(
+                  onTap: () {
+                    navigate<StoreWidgetProvider>(StoreWidgetProvider(
+                      sid: store.id,
+                    ));
+                  },
                   child: ListTile(
                     leading: Icon(
                       Icons.storefront_outlined,
@@ -292,7 +321,50 @@ class NavigationDrawer extends StatelessWidget {
                     ),
                     title: LatoText("Store", size: 18),
                   ),
-                )
+                ),
+              if (isStoreExists)
+                InkWell(
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.local_mall_outlined,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                    title: LatoText("Listings", size: 18),
+                  ),
+                ),
+              if (isStoreExists)
+                InkWell(
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.work,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                    title: LatoText("Previous Works", size: 18),
+                  ),
+                ),
+              if (isStoreExists)
+                InkWell(
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.message_outlined,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                    title: LatoText("Reviews", size: 18),
+                  ),
+                ),
+              InkWell(
+                child: ListTile(
+                  leading: Icon(
+                    Icons.phone,
+                    color: Colors.green[400],
+                    size: 28,
+                  ),
+                  title: LatoText("Contact Us", size: 18),
+                ),
+              ),
             ],
           )),
     );

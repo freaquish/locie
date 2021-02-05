@@ -8,6 +8,7 @@ import 'package:locie/singleton.dart';
 import 'package:locie/views/Store_view/about_store.dart';
 import 'package:locie/views/Store_view/product.dart';
 import 'package:locie/views/Store_view/reviews.dart';
+import 'package:locie/views/Store_view/store_view.dart';
 import 'package:locie/views/Store_view/work.dart';
 
 /// Bloc used to populate store view ...
@@ -56,20 +57,52 @@ class StoreViewBuilder extends StatelessWidget {
             singleton.examples = state.examples;
             return StoreWorksWidget(singleton.examples);
           } else if (state is FetchedStoreProducts) {
-            // print(state.listings);
-            Listing li = state.listings[0];
-            li.id = '23';
-            Listing li2 = state.listings[0];
-            li.id = '232';
-            Listing li3 = state.listings[0];
-            li.id = '233';
-            state.listings.add(li);
-            state.listings.add(li2);
-            state.listings.add(li3);
             return StoreProductWidget(state.listings);
           } else if (state is FetchedStoreReviews) {
             return StoreReviewsWidget(state.reviews);
           }
+        },
+      ),
+    );
+  }
+}
+
+class StoreWidgetProvider extends StatelessWidget {
+  final StoreViewEvent event;
+  final String sid;
+  StoreWidgetProvider({this.event, this.sid});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: BlocProvider<StoreViewBloc>(
+        create: (context) => StoreViewBloc()..add(FetchStore(sid)),
+        child: StoreWidgetBuilder(event),
+      ),
+    );
+  }
+}
+
+class StoreWidgetBuilder extends StatelessWidget {
+  final StoreViewEvent event;
+  StoreWidgetBuilder(this.event);
+  @override
+  Widget build(BuildContext context) {
+    return PrimaryContainer(
+      widget: BlocBuilder<StoreViewBloc, StoreViewState>(
+        cubit: BlocProvider.of<StoreViewBloc>(context),
+        builder: (context, state) {
+          if (state is ShowingStoreViewWidget) {
+            return StoreViewWidget(
+              event: event,
+              store: state.store,
+              sid: state.store.id,
+            );
+          }
+          return Center(
+            child: Container(
+              child: CircularProgressIndicator(),
+            ),
+          );
         },
       ),
     );

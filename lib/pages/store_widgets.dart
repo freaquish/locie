@@ -4,16 +4,20 @@ import 'package:locie/bloc/navigation_bloc.dart';
 import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/bloc/store_bloc.dart';
 import 'package:locie/components/primary_container.dart';
+import 'package:locie/models/store.dart';
 import 'package:locie/views/create_store/address.dart';
 import 'package:locie/views/create_store/avatar_name.dart';
 import 'package:locie/views/create_store/meta_data.dart';
 
 class CreateOrEditStoreWidget extends StatelessWidget {
+  final Store store;
+  CreateOrEditStoreWidget({this.store});
   final CreateOrEditStoreBloc bloc = CreateOrEditStoreBloc();
 
   @override
   Widget build(BuildContext context) {
-    StoreEvent initialEvent = InitializeCreateOrEditStore();
+    print(store.toString() + "coesw");
+    StoreEvent initialEvent = InitializeCreateOrEditStore(store: store);
     return Container(
       child: BlocProvider<CreateOrEditStoreBloc>(
         create: (context) => bloc..add(initialEvent),
@@ -33,6 +37,7 @@ class CreateOrEditStoreBuilder extends StatelessWidget {
         cubit: bloc,
         builder: (context, state) {
           if (state is InitializingCreateOrEditStore) {
+            print(state.store.toString() + "coesb");
             return CreateStoreWidget(
               bloc: bloc,
               store: state.store,

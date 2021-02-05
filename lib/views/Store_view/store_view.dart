@@ -3,6 +3,7 @@ import 'package:locie/bloc/store_view_bloc.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
+import 'package:locie/components/rich_image.dart';
 import 'package:locie/components/text_field.dart';
 import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/screen_size.dart';
@@ -16,12 +17,11 @@ import 'package:locie/repo/store_view_repo.dart';
 import 'package:locie/singleton.dart';
 // import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-// TODO: Product View
-
 class StoreViewWidget extends StatefulWidget {
   final String sid;
   final StoreViewEvent event;
-  StoreViewWidget({this.sid, this.event});
+  final Store store;
+  StoreViewWidget({this.sid, this.event, this.store});
   @override
   _StoreViewWidgetState createState() => _StoreViewWidgetState();
 }
@@ -45,7 +45,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
     singleton = StoreViewGlobalStateSingleton();
     bloc = StoreViewBloc();
     if (widget.event == null) {
-      event = FetchStore(widget.sid);
+      event = FetchStoreView(widget.store);
     }
     tabController = TabController(initialIndex: 0, length: 4, vsync: this);
     tabController.addListener(handleTabSelection);
@@ -85,7 +85,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
       if (!singleton.isStoreNull) {
         return InjectStoreView(FetchedStore(singleton.store));
       } else {
-        return FetchStore(widget.sid);
+        return FetchStoreView(widget.store);
       }
     } else if (tabController.index == 1) {
       // Product tab; if listing is empty then send FetchProduct with startAt
@@ -132,18 +132,14 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
         widget: Stack(
           children: [
             Container(
-              //TODO: Static image needed to be changed
               height: screen.vertical(420),
               width: screen.horizontal(100),
-              decoration: BoxDecoration(
-                  color: Colour.skeletonColor,
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/placeholder.png'),
-                    fit: BoxFit.cover,
-                  )),
+              child: RichImage(
+                image: widget.store.image,
+              ),
             ),
             Positioned(
-              top: screen.vertical(10),
+              top: screen.vertical(25),
               left: screen.vertical(10),
               child: IconButton(
                 color: Colors.grey,
