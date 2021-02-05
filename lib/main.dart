@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/helper/dynamic_link_service.dart';
 
-import 'package:locie/pages/myQuotation.dart';
 import 'package:locie/pages/navigation_track.dart';
 
 void main() {
@@ -31,6 +30,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
+    firebaseSetUp();
     fcm.configure(
         onMessage: (Map<String, dynamic> message) async {},
         onResume: (Map<String, dynamic> message) async {},
@@ -40,11 +40,10 @@ class _MainPageState extends State<MainPage> {
 
   final FirebaseMessaging fcm = FirebaseMessaging();
 
-  Future<NavigationEvent> firebaseSetUp() async {
+  Future<void> firebaseSetUp() async {
     await Firebase.initializeApp();
     var event = await dynmaicLinksService.getDynamicEvent();
     print(event);
-    return null;
   }
 
   @override

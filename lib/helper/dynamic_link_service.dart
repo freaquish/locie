@@ -8,12 +8,16 @@ class DynamicLinksService {
   Future<void> handleDynamicLink() async {
     final PendingDynamicLinkData dynamicLinkData =
         await FirebaseDynamicLinks.instance.getInitialLink();
-    await _handleDynamicLink(dynamicLinkData);
+
+    if (dynamicLinkData != null) {
+      await _handleDynamicLink(dynamicLinkData);
+    }
 
     // Into foreground process
     FirebaseDynamicLinks.instance.onLink(
         onSuccess: (PendingDynamicLinkData dynamicLink) async {
       if (dynamicLink != null) {
+        // print(object)
         await _handleDynamicLink(dynamicLink);
       }
     }, onError: (OnLinkErrorException e) async {
@@ -23,6 +27,7 @@ class DynamicLinksService {
 
   Future<void> _handleDynamicLink(PendingDynamicLinkData data) async {
     // Dynamic Link must should check for store, and product coded as(storeId and listingId)
+
     bool storeIdInPath = data.link.pathSegments.contains("storeId");
     if (storeIdInPath) {
       String sid = data.link.queryParameters["storeId"];

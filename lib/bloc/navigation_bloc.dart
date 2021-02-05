@@ -64,6 +64,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   void pop() {
     // print(route.length);
     route.pop();
+    print(route.length);
     if (route.length > 0) {
       this..add(route.current());
     } else {

@@ -14,6 +14,7 @@ import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/listing.dart';
 import 'package:locie/pages/myQuotation.dart';
+import 'package:locie/pages/store_bloc_view.dart';
 import 'package:locie/views/Store_view/store_view.dart';
 import 'package:locie/workers/sharing_wrokers.dart';
 // import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -40,8 +41,8 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
   void onGoToStoreClick(BuildContext context) {
     // print('clicked');
     BlocProvider.of<NavigationBloc>(context).push(
-        MaterialProviderRoute<StoreViewWidget>(
-            route: StoreViewWidget(sid: widget.listing.store)));
+        MaterialProviderRoute<StoreWidgetProvider>(
+            route: StoreWidgetProvider(sid: widget.listing.store)));
   }
 
   void onBackClick(BuildContext context) {

@@ -43,8 +43,9 @@ class SearchRepository {
 
   Future<List<Listing>> searchListing(String text,
       [DocumentSnapshot startAt]) async {
-    Query query = listingRef.where("n_gram",
-        arrayContainsAny: [text]).orderBy("created", descending: true);
+    Query query = listingRef.where("n_gram", arrayContainsAny: [
+      text.toLowerCase().split(" ").join("")
+    ]).orderBy("created", descending: true);
     if (startAt != null) {
       query = query.startAfterDocument(startAt);
     }
@@ -55,7 +56,8 @@ class SearchRepository {
   Future<List<Store>> searchStore(String text) async {
     QuerySnapshot snapshots = await instance
         .collection("stores")
-        .where("n_gram", arrayContainsAny: [text])
+        .where("n_gram",
+            arrayContainsAny: [text.toLowerCase().split(" ").join("")])
         .orderBy("rating", descending: true)
         .orderBy("no_of_reviews", descending: false)
         .get();

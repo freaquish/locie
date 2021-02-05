@@ -40,7 +40,7 @@ String generateId({String text}) {
   return uuid.v4();
 }
 
-List<String> nGram(String data) {
+List<String> _nGram(String data) {
   List<String> grams = List<String>();
   for (var index = 0; index < data.length; index++) {
     grams.add(data.substring(0, index + 1));
@@ -48,7 +48,11 @@ List<String> nGram(String data) {
   return grams;
 }
 
-List<String> trigramNGram(String data) {
+List<String> nGram(String data) {
+  return _nGram(data.toLowerCase().split(" ").join(""));
+}
+
+List<String> _trigramNGram(String data) {
   List<String> grams = [];
   int currentIndex = 0;
   if (data.length > 3) {
@@ -60,4 +64,8 @@ List<String> trigramNGram(String data) {
     currentIndex++;
   }
   return grams;
+}
+
+List<String> trigramNGram(String data) {
+  return _trigramNGram(data.toLowerCase().split(" ").join(""));
 }

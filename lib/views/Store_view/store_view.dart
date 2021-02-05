@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/navigation_bloc.dart';
 import 'package:locie/bloc/store_view_bloc.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/font_text.dart';
@@ -63,6 +65,10 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
     }
   }
 
+  void onBackClick(BuildContext context) {
+    BlocProvider.of<NavigationBloc>(context).pop();
+  }
+
   @override
   void dispose() {
     tabController.dispose();
@@ -117,127 +123,135 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colour.submitButtonColor,
-        child: Icon(
-          Icons.edit,
-          color: Colors.white,
+    return WillPopScope(
+      onWillPop: () async {
+        onBackClick(context);
+        return true;
+      },
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colour.submitButtonColor,
+          child: Icon(
+            Icons.edit,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            showBottomReviewSheet(context, screen);
+          },
         ),
-        onPressed: () {
-          showBottomReviewSheet(context, screen);
-        },
-      ),
-      body: PrimaryContainer(
-        widget: Stack(
-          children: [
-            Container(
-              height: screen.vertical(420),
-              width: screen.horizontal(100),
-              child: RichImage(
-                image: widget.store.image,
+        body: PrimaryContainer(
+          widget: Stack(
+            children: [
+              Container(
+                height: screen.vertical(420),
+                width: screen.horizontal(100),
+                child: RichImage(
+                  image: widget.store.image,
+                ),
               ),
-            ),
-            Positioned(
-              top: screen.vertical(25),
-              left: screen.vertical(10),
-              child: IconButton(
-                color: Colors.grey,
-                icon: Icon(Icons.keyboard_backspace),
-                onPressed: () {},
+              Positioned(
+                top: screen.vertical(25),
+                left: screen.vertical(10),
+                child: IconButton(
+                  color: Colors.grey,
+                  icon: Icon(Icons.keyboard_backspace),
+                  onPressed: () {
+                    onBackClick(context);
+                  },
+                ),
               ),
-            ),
-            DraggableScrollableSheet(
-              initialChildSize: 1 - 0.38,
-              minChildSize: 1 - 0.38,
-              maxChildSize: 1,
-              builder:
-                  (BuildContext context, ScrollController scrollController) {
-                // print(scrollController.position.pixels);
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colour.bgColor,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(
-                        screen.horizontal(8),
-                      ),
-                      topRight: Radius.circular(
-                        screen.horizontal(8),
-                      ),
-                    ),
-                  ),
-                  child: ListView(
-                    physics: BouncingScrollPhysics(),
-                    controller: _scrollController,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(
-                            screen.horizontal(2),
-                            screen.vertical(50),
-                            screen.horizontal(2),
-                            screen.vertical(50)),
-                        child: TabBar(
-                          indicatorColor: Colors.white,
-                          indicator: UnderlineTabIndicator(
-                              insets: EdgeInsets.only(
-                            left: screen.horizontal(2),
-                            right: screen.horizontal(2),
-                          )),
-                          tabs: [
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(bottom: screen.horizontal(2)),
-                              child: LatoText(
-                                'About',
-                                fontColor: tabController.index == 0
-                                    ? Colors.white
-                                    : Color(0xff6c6c6c),
-                                size: 16,
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(bottom: screen.horizontal(2)),
-                              child: LatoText('Product',
-                                  fontColor: tabController.index == 1
-                                      ? Colors.white
-                                      : Color(0xff6c6c6c),
-                                  size: 16),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(bottom: screen.horizontal(2)),
-                              child: LatoText('Work',
-                                  fontColor: tabController.index == 2
-                                      ? Colors.white
-                                      : Color(0xff6c6c6c),
-                                  size: 16),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(bottom: screen.horizontal(2)),
-                              child: LatoText('Review',
-                                  fontColor: tabController.index == 3
-                                      ? Colors.white
-                                      : Color(0xff6c6c6c),
-                                  size: 16),
-                            ),
-                          ],
-                          controller: tabController,
+              DraggableScrollableSheet(
+                initialChildSize: 1 - 0.38,
+                minChildSize: 1 - 0.38,
+                maxChildSize: 1,
+                builder:
+                    (BuildContext context, ScrollController scrollController) {
+                  // print(scrollController.position.pixels);
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colour.bgColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(
+                          screen.horizontal(8),
+                        ),
+                        topRight: Radius.circular(
+                          screen.horizontal(8),
                         ),
                       ),
-                      StoreViewProvider(
-                        event,
-                        singleton: singleton,
-                        bloc: bloc,
-                      )
-                    ],
-                  ),
-                );
-              },
-            ),
-            //
-          ],
+                    ),
+                    child: ListView(
+                      physics: BouncingScrollPhysics(),
+                      controller: _scrollController,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                              screen.horizontal(2),
+                              screen.vertical(50),
+                              screen.horizontal(2),
+                              screen.vertical(50)),
+                          child: TabBar(
+                            indicatorColor: Colors.white,
+                            indicator: UnderlineTabIndicator(
+                                insets: EdgeInsets.only(
+                              left: screen.horizontal(2),
+                              right: screen.horizontal(2),
+                            )),
+                            tabs: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: screen.horizontal(2)),
+                                child: LatoText(
+                                  'About',
+                                  fontColor: tabController.index == 0
+                                      ? Colors.white
+                                      : Color(0xff6c6c6c),
+                                  size: 16,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: screen.horizontal(2)),
+                                child: LatoText('Product',
+                                    fontColor: tabController.index == 1
+                                        ? Colors.white
+                                        : Color(0xff6c6c6c),
+                                    size: 16),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: screen.horizontal(2)),
+                                child: LatoText('Work',
+                                    fontColor: tabController.index == 2
+                                        ? Colors.white
+                                        : Color(0xff6c6c6c),
+                                    size: 16),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: screen.horizontal(2)),
+                                child: LatoText('Review',
+                                    fontColor: tabController.index == 3
+                                        ? Colors.white
+                                        : Color(0xff6c6c6c),
+                                    size: 16),
+                              ),
+                            ],
+                            controller: tabController,
+                          ),
+                        ),
+                        StoreViewProvider(
+                          event,
+                          singleton: singleton,
+                          bloc: bloc,
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
+              //
+            ],
+          ),
         ),
       ),
     );

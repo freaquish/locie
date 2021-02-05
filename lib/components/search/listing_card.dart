@@ -1,19 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/navigation_bloc.dart';
+import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/rich_image.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/listing.dart';
 import 'package:locie/models/store.dart';
+import 'package:locie/pages/store_bloc_view.dart';
 
 class ListingCard extends StatelessWidget {
   final Listing listing;
   ListingCard({this.listing});
+
+  void onTap(BuildContext context) {
+    BlocProvider.of<NavigationBloc>(context).push(LaunchItemView(listing.id));
+  }
+
   @override
   Widget build(BuildContext context) {
     Scale scale = Scale(context);
     return InkWell(
+      onTap: () {
+        onTap(context);
+      },
       child: Container(
         margin: EdgeInsets.only(bottom: scale.vertical(20)),
         padding: EdgeInsets.symmetric(vertical: scale.vertical(20)),
@@ -47,10 +59,21 @@ class StoreCard extends StatelessWidget {
 
   StoreCard({this.store});
 
+  void onTap(BuildContext context) {
+    BlocProvider.of<NavigationBloc>(context)
+        .push(MaterialProviderRoute<StoreWidgetProvider>(
+            route: StoreWidgetProvider(
+      sid: store.id,
+    )));
+  }
+
   @override
   Widget build(BuildContext context) {
     Scale scale = Scale(context);
     return InkWell(
+      onTap: () {
+        onTap(context);
+      },
       child: Container(
         margin: EdgeInsets.only(bottom: scale.vertical(20)),
         padding: EdgeInsets.symmetric(vertical: scale.vertical(40)),

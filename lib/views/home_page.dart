@@ -152,6 +152,7 @@ class _HomePageViewState extends State<HomePageView> {
                   GestureDetector(
                     onTap: () {
                       _scaffoldKey.currentState.openDrawer();
+                      FocusScope.of(context).unfocus();
                     },
                     child: Container(
                       height: screen.vertical(30),

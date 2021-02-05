@@ -119,9 +119,11 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     if (storage == null) {
       storage = CloudStorage();
     }
-    var task = storage.uploadFile(store.imageFile);
-    store.image = await storage.getDownloadUrl(task);
-    store.imageFile = null;
+    if (store.imageFile != null) {
+      var task = storage.uploadFile(store.imageFile);
+      store.image = await storage.getDownloadUrl(task);
+      store.imageFile = null;
+    }
     try {
       var location = await determinePosition();
       store.location =
