@@ -117,6 +117,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
   Widget build(BuildContext context) {
     final screen = Scale(context);
     return Scaffold(
+      backgroundColor: Colour.bgColor,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colour.submitButtonColor,
         child: Icon(
@@ -131,6 +132,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
+              backgroundColor: Colour.bgColor,
               expandedHeight: screen.vertical(420),
               floating: false,
               pinned: true,
