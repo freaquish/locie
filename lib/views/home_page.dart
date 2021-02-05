@@ -279,7 +279,7 @@ class _HomePageViewState extends State<HomePageView> {
                     : ListTile(
                       onTap: (){},
                         leading: Icon(
-                          Icons.storefront_outlined,
+                          Icons.add_business,
                           color: Colors.white,
                         ),
                         title: LatoText('Create Store'),
