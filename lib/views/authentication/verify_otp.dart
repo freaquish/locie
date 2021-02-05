@@ -24,7 +24,8 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController textEditingController = TextEditingController();
   int timeLeft = 120;
-  final  oneSecond = Duration(seconds: 1);
+  Timer timer;
+  final oneSecond = Duration(seconds: 1);
 
   void retry() {
     widget.bloc..add(InitiateLogin());
@@ -32,10 +33,11 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
 
   @override
   void initState() {
-    Timer.periodic(oneSecond, (timer){
+    timer = Timer.periodic(oneSecond, (timer) {
       setState(() {
+        // this.timer = timer;
         timeLeft -= 1;
-        if(timeLeft == 0){
+        if (timeLeft == 0) {
           timer.cancel();
         }
       });
@@ -44,7 +46,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
   }
 
   String getTimer() {
-    if(timeLeft > 0){
+    if (timeLeft > 0) {
       return timeLeft.toString() + ' ';
     }
     return '';
@@ -53,6 +55,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
   @override
   void dispose() {
     textEditingController.dispose();
+    timer.cancel();
     super.dispose();
   }
 
@@ -106,7 +109,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                         height: screen.vertical(30),
                       ),
                       LatoText(
-                        'Please type the verification code\nsent to 8574047383',
+                        'Please type the verification code\nsent to ${widget.auth.phoneNumber}',
                         size: 18,
                         fontColor: Colors.grey,
                       ),
@@ -158,11 +161,10 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                       ),
                       SubmitButton(
                         onPressed: () {
-                          if(timeLeft == 0){
+                          if (timeLeft == 0) {
                             textEditingController.clear();
                             retry();
                           }
-
                         },
                         buttonName: '${getTimer()}Retry',
                         buttonColor: Colour.bgColor,

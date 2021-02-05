@@ -5,6 +5,7 @@ import 'package:locie/helper/firestore_auth.dart';
 import 'package:locie/helper/firestore_query.dart';
 import 'package:locie/helper/local_storage.dart';
 import 'package:locie/models/account.dart';
+import 'package:locie/models/store.dart';
 
 class AuthenticationState {}
 
@@ -13,9 +14,10 @@ class ShowSplashScreen extends AuthenticationState {}
 class InitialState extends AuthenticationState {}
 
 class CommonAuthenticationError extends AuthenticationState {}
+
 class AccountRegistrationFailed extends AuthenticationState {}
 
-class RedirectingToHome extends AuthenticationState {}
+class AuthenticationCompleted extends AuthenticationState {}
 
 class ShowingPhoneAuthenticationPage extends AuthenticationState {}
 
@@ -106,6 +108,11 @@ class RegisterAccount extends RegisteringEvents {
   RegisterAccount(this.account);
 }
 
+class SetupStore extends AuthenticationEvent {
+  final String accountId;
+  SetupStore(this.accountId);
+}
+
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   LocalStorage localStorage = LocalStorage();
@@ -116,7 +123,6 @@ class AuthenticationBloc
   Stream<AuthenticationState> mapEventToState(
       AuthenticationEvent event) async* {
     await localStorage.init();
-    // await storeQuery.securityCheck();
     try {
       if (event is TriggerSplashScreen) {
         // Show splash screen untill we check internet connection
@@ -124,7 +130,7 @@ class AuthenticationBloc
         // otherwise initiate login page
         yield ShowSplashScreen();
         if (localStorage.prefs.containsKey("uid")) {
-          yield RedirectingToHome();
+          yield AuthenticationCompleted();
         } else {
           this..add(InitiateLogin());
         }
@@ -144,14 +150,21 @@ class AuthenticationBloc
         if (exist) {
           Account account = Account.fromJson(snapshot.data());
           localStorage.setAccount(account);
-          yield RedirectingToHome();
+          this..add(SetupStore(account.uid));
         } else {
           this..add(InitiateRegistration());
         }
       } else if (event is RegisteringEvents) {
         yield* mapAccountRegistration(event);
+      } else if (event is SetupStore) {
+        Store store = await storeQuery.fetchStore(event.accountId);
+        if (store != null) {
+          await localStorage.setStore(store);
+        }
+        yield AuthenticationCompleted();
       }
     } catch (e) {
+      print(e);
       yield CommonAuthenticationError();
     }
   }
@@ -191,21 +204,22 @@ class AuthenticationBloc
 
   Stream<AuthenticationState> mapAccountRegistration(
       RegisteringEvents event) async* {
-    try{
-    if (event is InitiateRegistration) {
-      if (localStorage.prefs.containsKey("uid") &&
-          localStorage.prefs.containsKey("name")) {
-        yield RedirectingToHome();
-      } else {
-        yield ShowingRegistrationPage();
+    try {
+      if (event is InitiateRegistration) {
+        if (localStorage.prefs.containsKey("uid") &&
+            localStorage.prefs.containsKey("name")) {
+          yield AuthenticationCompleted();
+        } else {
+          yield ShowingRegistrationPage();
+        }
+      } else if (event is RegisterAccount) {
+        yield RegisteringAccount();
+        Account account =
+            await PhoneAuthentication.createAccount(event.account);
+        localStorage.setAccount(account);
+        yield AuthenticationCompleted();
       }
-    } else if (event is RegisterAccount) {
-      yield RegisteringAccount();
-      Account account = await PhoneAuthentication.createAccount(event.account);
-      localStorage.setAccount(account);
-      yield RedirectingToHome();
-    }
-    }catch (e) {
+    } catch (e) {
       yield AccountRegistrationFailed();
     }
   }

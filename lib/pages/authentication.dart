@@ -16,7 +16,6 @@ class AuthenticationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Change InitialLogin to Splash Screen
     AuthenticationEvent initialEvent = InitiateLogin();
     return Container(
       child: BlocProvider<AuthenticationBloc>(
@@ -35,6 +34,7 @@ class AuthenticationBuilder extends StatelessWidget {
       widget: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         cubit: bloc,
         builder: (BuildContext context, AuthenticationState state) {
+          // print(state);
           if (state is InitialState) {
             return CircularLoading();
           } else if (state is ShowingPhoneAuthenticationPage) {
@@ -48,9 +48,14 @@ class AuthenticationBuilder extends StatelessWidget {
             return RegistrationScreen(
               bloc: bloc,
             );
-          } else if (state is RedirectingToHome) {
-            BlocProvider.of<NavigationBloc>(context)..add(NavigateToHome());
-            // //printstate);
+          } else if (state is AuthenticationCompleted) {
+            NavigationBloc navBloc = BlocProvider.of<NavigationBloc>(context);
+            // print(navBloc.route.length);
+            if (navBloc.route.length > 1) {
+              navBloc.pop();
+            } else {
+              navBloc..add(NavigateToHome());
+            }
             return Container();
           }
           return CircularLoading();

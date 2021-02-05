@@ -5,6 +5,8 @@ import 'package:locie/models/listing.dart';
 import 'package:locie/models/review.dart';
 import 'package:locie/models/store.dart';
 import 'package:locie/repo/store_view_repo.dart';
+import 'package:locie/singleton.dart';
+import 'package:locie/views/Store_view/product_view.dart';
 
 class StoreViewState {}
 
@@ -32,11 +34,6 @@ class FetchedStoreReviews extends StoreViewState {
   FetchedStoreReviews(this.reviews);
 }
 
-class ShowingParticularItemView extends StoreViewState {
-  final Listing listing;
-  ShowingParticularItemView(this.listing);
-}
-
 class NotItemFoundInStore extends StoreViewState {}
 
 class StoreViewEvent {}
@@ -59,11 +56,6 @@ class FetchStoreWorks extends StoreViewEvent {
   );
 }
 
-class LaunchItemView extends StoreViewEvent {
-  final String lid;
-  LaunchItemView(this.lid);
-}
-
 class InjectStoreView extends StoreViewEvent {
   final StoreViewState state;
   InjectStoreView(this.state);
@@ -79,14 +71,17 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
   StoreViewBloc() : super(LoadingState());
   LocalStorage localStorage = LocalStorage();
   StoreViewRepo repo = StoreViewRepo();
+  StoreViewGlobalStateSingleton singleton = StoreViewGlobalStateSingleton();
+  final int cacheTime = 3;
 
   @override
   Stream<StoreViewState> mapEventToState(StoreViewEvent event) async* {
     // yield LoadingState();
     if (event is FetchStore) {
       yield LoadingState();
-      Store store = await repo.fetchStore(event.sid);
-      // //printstore);
+      Store store;
+      store = await repo.fetchStore(event.sid);
+
       yield FetchedStore(store);
     } else if (event is FetchStoreProducts) {
       yield LoadingState();
@@ -104,14 +99,6 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
       yield FetchedStoreReviews(reviews);
     } else if (event is InjectStoreView) {
       yield event.state;
-    } else if(event is LaunchItemView){
-      yield LoadingState();
-      Listing listing = await repo.fetchItem(event.lid);
-      if(listing == null){
-        yield NotItemFoundInStore();
-      }else {
-        yield ShowingParticularItemView(listing);
-      }
     }
   }
 }

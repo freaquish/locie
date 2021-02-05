@@ -17,6 +17,10 @@ class CustomTextField extends StatelessWidget {
   final int maxLines;
   final int maxLength;
   final int minLines;
+  final Color fillColor;
+  final double borderWidth;
+  final BorderStyle borderStyle;
+  final Color borderColor;
   CustomTextField(
       {@required this.textAlignment,
       this.onChanged,
@@ -27,10 +31,14 @@ class CustomTextField extends StatelessWidget {
       this.preffixWidget,
       this.helperText,
       @required this.hintText,
-      @required this.textController,
+      this.textController,
       this.validator,
       this.label,
-      @required this.keyboard});
+      this.fillColor = Colour.textfieldColor,
+      this.borderWidth = 0,
+      this.borderColor = Colors.transparent,
+      this.borderStyle = BorderStyle.none,
+      this.keyboard = TextInputType.name});
 
   @override
   Widget build(BuildContext context) {
@@ -52,29 +60,23 @@ class CustomTextField extends StatelessWidget {
         prefixStyle: GoogleFonts.lato(
             fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
         filled: true,
-        fillColor: Colour.textfieldColor,
+        fillColor: fillColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(12),
           ),
           borderSide: BorderSide(
-            width: 0,
-            style: BorderStyle.none,
-          ),
+              width: borderWidth, style: borderStyle, color: borderColor),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide(
-            width: 0,
-            style: BorderStyle.none,
-          ),
+              width: borderWidth, style: borderStyle, color: borderColor),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide(
-            width: 0,
-            style: BorderStyle.none,
-          ),
+              width: borderWidth, style: borderStyle, color: borderColor),
         ),
         labelText: label,
         labelStyle: GoogleFonts.lato(

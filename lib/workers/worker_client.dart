@@ -16,6 +16,12 @@ class WorkerClient {
       await launch(url);
     }
   }
+
+  // Share product view deep link
+  Future<void> shareProduct(String lid) async {}
+
+  // Share store view
+  Future<void> shareStore(String sid) async {}
 }
 
 final rupeeSign = "";

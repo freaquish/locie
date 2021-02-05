@@ -1,4 +1,4 @@
-1. retry in phone authentication
+1. retry in phone authentication -d
 2. Error Pages
   a. No Item Found in store
   b. Nominal Error (random)
@@ -11,13 +11,13 @@
 9. Deep link
 
 Views 
-1. Item View 
+1. Item View -d
 2. My Store View 
 3. My Items View 
 4. Search
-5. My Invoices
+5. My Invoices 
     1. Recived
-    2. Created
+    2. Created -d
 6. Create Review 
 7. Send Quotation (through Whatsapp)
 8 . Share button in About of store view

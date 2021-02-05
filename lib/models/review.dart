@@ -7,6 +7,7 @@ class Review {
   String user;
   String userName;
   String userImage;
+  String id;
   DateTime created;
   DocumentSnapshot snapshot;
 
@@ -14,6 +15,7 @@ class Review {
       {this.text,
       this.rating,
       this.store,
+      this.id,
       this.snapshot,
       this.user,
       this.userName,
@@ -26,6 +28,7 @@ class Review {
     user = json['user'];
     userName = json['user_name'];
     userImage = json['user_image'];
+    id = json['id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -37,6 +40,7 @@ class Review {
     data['user_name'] = this.userName;
     data['user_image'] = this.userImage;
     data['created'] = this.created == null ? DateTime.now() : this.created;
+    data['id'] = id;
     return data;
   }
 }

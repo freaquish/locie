@@ -5,7 +5,15 @@ class NavigationEvent {}
 
 class NavigateToAuthentication extends NavigationEvent {}
 
-class NavigateToHome extends NavigationEvent {}
+class NavigateToHome extends NavigationEvent {
+  final bool isStoreExists;
+  NavigateToHome({this.isStoreExists = false});
+}
+
+class LaunchItemView extends NavigationEvent {
+  final String lid;
+  LaunchItemView(this.lid);
+}
 
 class NavigateToSelectCategory extends NavigationEvent {}
 
@@ -17,6 +25,13 @@ class NavigateToCreateListing extends NavigationEvent {
 class NavigateToCreateStore extends NavigationEvent {}
 
 class NavigateToEditStore extends NavigationEvent {}
+
+class MaterialProviderRoute<T> extends NavigationEvent {
+  final T route;
+  MaterialProviderRoute({this.route});
+
+  Type get type => T;
+}
 
 class NavigateToEditListing extends NavigationEvent {
   final Listing listing;

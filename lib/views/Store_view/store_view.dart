@@ -4,10 +4,18 @@ import 'package:locie/components/color.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/components/text_field.dart';
+import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/screen_size.dart';
+import 'package:locie/models/account.dart';
+import 'package:locie/models/review.dart';
+import 'package:locie/models/store.dart';
 import 'package:locie/pages/store_bloc_view.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:locie/components/flatActionButton.dart';
+import 'package:locie/repo/store_view_repo.dart';
+import 'package:locie/singleton.dart';
+
+// TODO: Product View
 
 class StoreViewWidget extends StatefulWidget {
   final String sid;
@@ -22,13 +30,14 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
   String imageUrl;
 
   TextEditingController textEditingControllerReview = TextEditingController();
+  double rating = 0;
 
   TabController tabController;
 
   StoreViewGlobalStateSingleton singleton;
   StoreViewBloc bloc;
   StoreViewEvent event;
-  ScrollController _scrollController;
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -39,7 +48,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
     }
     tabController = TabController(initialIndex: 0, length: 4, vsync: this);
     tabController.addListener(handleTabSelection);
-    _scrollController.addListener(scrollListener);
+    // _scrollController.addListener(scrollListener);
     super.initState();
   }
 
@@ -48,7 +57,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
         tabController.index % 2 != 0 &&
         _scrollController.position.pixels != 0) {
       // As Products and Reviews are on 1 and 3
-      bloc..add(getEvent());
+      // bloc..add(getEvent());
     }
   }
 
@@ -145,7 +154,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
               maxChildSize: 1,
               builder:
                   (BuildContext context, ScrollController scrollController) {
-                _scrollController = scrollController;
+                // _scrollController = scrollController;
                 return Container(
                   decoration: BoxDecoration(
                     color: Colour.bgColor,
@@ -167,7 +176,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                             screen.horizontal(2),
                             screen.vertical(50),
                             screen.horizontal(2),
-                            screen.vertical(30)),
+                            screen.vertical(50)),
                         child: TabBar(
                           indicatorColor: Colors.white,
                           indicator: UnderlineTabIndicator(
@@ -235,21 +244,34 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
     );
   }
 
+  Future<void> callCreateReviewApi(BuildContext context) async {
+    Store store = singleton.store;
+    Account account = await LocalStorage().getAccount();
+    Review review = Review(
+      rating: rating,
+      store: store.id,
+      text: textEditingControllerReview.text,
+      user: account.uid,
+      userImage: account.avatar,
+      userName: account.name,
+    );
+    StoreViewRepo().createReview(review);
+    Navigator.of(context).pop();
+  }
+
   showBottomReviewSheet(BuildContext parentContext, Scale screen) {
-    return showModalBottomSheet(
+    return showDialog(
       context: parentContext,
       builder: (builder) {
-        return Container(
-          height: screen.vertical(400),
-          color: Colour.bgColor,
+        return Dialog(
+          backgroundColor: Colour.bgColor,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Container(
+            padding: EdgeInsets.symmetric(vertical: screen.vertical(20)),
             decoration: new BoxDecoration(
-              color: Colors.white,
-              borderRadius: new BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
-            ),
+                color: Colour.bgColor,
+                borderRadius: new BorderRadius.circular(16)),
             child: ListView(
               physics: BouncingScrollPhysics(),
               shrinkWrap: true,
@@ -257,16 +279,6 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.all(screen.horizontal(3)),
-                      child: Text(
-                        'Select Image',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontFamily: 'Mulish'),
-                      ),
-                    ),
                     IconButton(
                       icon: Icon(Icons.close, color: Colors.red),
                       onPressed: () {
@@ -275,57 +287,87 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                     )
                   ],
                 ),
-                RatingBar.builder(
-                  initialRating: 3,
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    switch (index) {
-                      case 0:
-                        return Icon(
-                          Icons.sentiment_very_dissatisfied,
-                          color: Colors.red,
-                        );
-                      case 1:
-                        return Icon(
-                          Icons.sentiment_dissatisfied,
-                          color: Colors.redAccent,
-                        );
-                      case 2:
-                        return Icon(
-                          Icons.sentiment_neutral,
-                          color: Colors.amber,
-                        );
-                      case 3:
-                        return Icon(
-                          Icons.sentiment_satisfied,
-                          color: Colors.lightGreen,
-                        );
-                      case 4:
-                        return Icon(
-                          Icons.sentiment_very_satisfied,
-                          color: Colors.green,
-                        );
-                    }
-                  },
-                  onRatingUpdate: (rating) {
-                    print(rating);
-                  },
+                Padding(
+                  padding: EdgeInsets.all(screen.horizontal(3)),
+                  child: Text(
+                    'Please share your experience with us',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontFamily: 'Mulish'),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: screen.horizontal(4)),
+                  child: RatingBar.builder(
+                    initialRating: 0,
+                    itemCount: 5,
+                    unratedColor: Colors.grey,
+                    itemBuilder: (context, index) {
+                      switch (index) {
+                        case 0:
+                          return Icon(
+                            Icons.sentiment_very_dissatisfied,
+                            color: Colors.red,
+                          );
+                        case 1:
+                          return Icon(
+                            Icons.sentiment_dissatisfied,
+                            color: Colors.redAccent,
+                          );
+                        case 2:
+                          return Icon(
+                            Icons.sentiment_neutral,
+                            color: Colors.amber,
+                          );
+                        case 3:
+                          return Icon(
+                            Icons.sentiment_satisfied,
+                            color: Colors.lightGreen,
+                          );
+                        case 4:
+                          return Icon(
+                            Icons.sentiment_very_satisfied,
+                            color: Colors.green,
+                          );
+                      }
+                    },
+                    onRatingUpdate: (rating) {
+                      setState(() {
+                        this.rating = rating;
+                      });
+                    },
+                  ),
                 ),
                 SizedBox(
                   height: screen.vertical(50),
                 ),
-                CustomTextField(
-                    textAlignment: TextAlign.start,
-                    hintText: 'Review',
-                    textController: textEditingControllerReview,
-                    keyboard: TextInputType.multiline),
-                SizedBox(
-                  height: screen.vertical(50),
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: screen.horizontal(4)),
+                  child: CustomTextField(
+                      textAlignment: TextAlign.start,
+                      hintText: 'Review',
+                      textController: textEditingControllerReview,
+                      keyboard: TextInputType.multiline),
                 ),
-                SubmitButton(
-                  buttonColor: Colour.submitButtonColor,
-                  buttonName: 'Post',
-                  onPressed: () {},
+                SizedBox(
+                  height: screen.vertical(30),
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: screen.horizontal(4)),
+                  child: SubmitButton(
+                    buttonColor: Colour.submitButtonColor,
+                    buttonName: 'Post',
+                    onPressed: () {
+                      if (textEditingControllerReview.text.isNotEmpty ||
+                          rating > 0) {
+                        callCreateReviewApi(context);
+                      }
+                    },
+                  ),
                 )
               ],
             ),

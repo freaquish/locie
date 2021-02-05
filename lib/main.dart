@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:locie/bloc/invoice_bloc.dart';
-import 'package:locie/pages/invoice_view.dart';
-import 'package:locie/views/Invoice/invoice_item_billing.dart';
-import 'package:locie/views/Invoice/search_invoice_user.dart';
+import 'package:locie/bloc/navigation_event.dart';
+import 'package:locie/bloc/store_view_bloc.dart';
+import 'package:locie/helper/dynamic_link_service.dart';
+import 'package:locie/pages/navigation_track.dart';
+import 'package:locie/pages/store_bloc_view.dart';
+import 'package:locie/views/home_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,9 +27,18 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  DynamicLinksService dynmaicLinksService = DynamicLinksService();
+
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<NavigationEvent> firebaseSetUp() async {
+    await Firebase.initializeApp();
+    var event = await dynmaicLinksService.getDynamicEvent();
+    print(event);
+    return null;
   }
 
   @override
@@ -41,8 +52,8 @@ class _MainPageState extends State<MainPage> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return InvoiceProvider(
-              event: FetchMyInvoices(),
+            return NavigationProvider(
+              event: LaunchItemView("1ee9b16a-62a4-5cd9-b086-4549248ba280"),
             );
           }
         },

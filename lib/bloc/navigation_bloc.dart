@@ -1,16 +1,22 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/navigation_event.dart';
+import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/navigation_stack.dart';
 import 'package:locie/models/category.dart';
 import 'package:locie/models/listing.dart';
+import 'package:locie/repo/store_view_repo.dart';
 
 class NavigationState {}
 
 class TransitionState extends NavigationState {}
 
+class LoadingState extends NavigationState {}
+
 class NavigatedToCategorySelection extends NavigationState {}
 
 class NavigatedToCreateStore extends NavigationState {}
+
+class NotItemFound extends NavigationState {}
 
 class NavigatedToCreateListing extends NavigationState {
   final Category category;
@@ -22,16 +28,34 @@ class NavigatedToEditingListing extends NavigationState {
   NavigatedToEditingListing(this.listing);
 }
 
+class ShowingParticularItemView extends NavigationState {
+  final Listing listing;
+  ShowingParticularItemView(this.listing);
+}
+
+class NavigatedToHome extends NavigationState {
+  final bool isStoreExists;
+  NavigatedToHome({this.isStoreExists = false});
+}
+
+class MaterialBuilder<T> extends NavigationState {
+  final T route;
+  MaterialBuilder(this.route);
+}
+
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   NavigationBloc() : super(TransitionState());
   NavigationStack route = NavigationStack();
+  LocalStorage localStorage = LocalStorage();
 
   void push(NavigationEvent event) {
     route.push(event);
-    this..add(route.current());
+    // print(route.current());
+    add(route.current());
   }
 
-  void pop(NavigationEvent event) {
+  void pop() {
+    print(route.length);
     route.pop();
     if (route.length > 0) {
       this..add(route.current());
@@ -43,8 +67,15 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
     this..add(route.current());
   }
 
+  void pushEventList(List<NavigationEvent> events) {
+    route.pushList(events);
+    this..add(route.current());
+  }
+
   @override
   Stream<NavigationState> mapEventToState(NavigationEvent event) async* {
+    await localStorage.init();
+    print(route.length);
     if (event is NavigateToSelectCategory) {
       yield NavigatedToCategorySelection();
     } else if (event is NavigateToCreateListing) {
@@ -52,11 +83,22 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
     } else if (event is NavigateToAuthentication) {
       yield TransitionState();
     } else if (event is NavigateToHome) {
-      yield NavigatedToCategorySelection();
+      bool isStoreExists = localStorage.prefs.containsKey("sid");
+      yield NavigatedToHome(isStoreExists: isStoreExists);
     } else if (event is NavigateToCreateStore) {
       yield NavigatedToCreateStore();
-    } else if(event is NavigateToEditListing){
+    } else if (event is NavigateToEditListing) {
       yield NavigatedToEditingListing(event.listing);
+    } else if (event is MaterialProviderRoute) {
+      yield MaterialBuilder(event.route);
+    } else if (event is LaunchItemView) {
+      yield LoadingState();
+      Listing listing = await StoreViewRepo().fetchItem(event.lid);
+      if (listing == null) {
+        yield NotItemFound();
+      } else {
+        yield ShowingParticularItemView(listing);
+      }
     }
   }
 }

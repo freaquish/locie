@@ -7,6 +7,7 @@ class Quotation {
   String listingName;
   String listingId;
   double price;
+  String id;
   int quantity;
   String timestamp;
   String userContact;
@@ -16,6 +17,7 @@ class Quotation {
       this.userName,
       this.store,
       this.storeName,
+      this.id,
       this.listing,
       this.listingName,
       this.listingId,
@@ -27,6 +29,7 @@ class Quotation {
   Quotation.fromJson(Map<String, dynamic> json) {
     user = json['user'];
     userName = json['user_name'];
+    id = json['id'];
     store = json['store'];
     storeName = json['store_name'];
     listing = json['listing'];
@@ -50,6 +53,7 @@ class Quotation {
     data['price'] = this.price;
     data['quantity'] = this.quantity;
     data['timestamp'] = this.timestamp;
+    data['id'] = this.id;
     data['user_contact'] = this.userContact;
     return data;
   }

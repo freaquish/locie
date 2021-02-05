@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:locie/helper/local_storage.dart';
+import 'package:locie/helper/minions.dart';
 import 'package:locie/models/listing.dart';
 import 'package:locie/models/review.dart';
 import 'package:locie/models/store.dart';
@@ -35,7 +36,7 @@ class StoreViewRepo {
     query = instance
         .collection("listings")
         .where("store", isEqualTo: sid)
-        .orderBy("created");
+        .orderBy("created", descending: true);
     if (documentSnapshot != null) {
       query = query.startAfterDocument(documentSnapshot);
     }
@@ -78,10 +79,21 @@ class StoreViewRepo {
   }
 
   Future<Listing> fetchItem(String lid) async {
-    DocumentSnapshot snapshot = await instance.collection("listings").doc(lid).get();
-    if(snapshot.exists){
+    print(lid);
+    DocumentSnapshot snapshot =
+        await instance.collection("listings").doc(lid).get();
+    if (!snapshot.exists) {
       return null;
     }
     return Listing.fromJson(snapshot.data());
+  }
+
+  Future<void> createReview(Review review) async {
+    String reviewId = generateId(
+        text: review.store +
+            "_" +
+            DateTime.now().microsecondsSinceEpoch.toString());
+    review.id = reviewId;
+    await instance.collection("reviews").doc(reviewId).set(review.toJson());
   }
 }
