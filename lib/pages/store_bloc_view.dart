@@ -7,6 +7,7 @@ import 'package:locie/models/listing.dart';
 import 'package:locie/singleton.dart';
 import 'package:locie/views/Store_view/about_store.dart';
 import 'package:locie/views/Store_view/product.dart';
+import 'package:locie/views/Store_view/reviews.dart';
 import 'package:locie/views/Store_view/work.dart';
 
 /// Bloc used to populate store view ...
@@ -66,6 +67,8 @@ class StoreViewBuilder extends StatelessWidget {
             state.listings.add(li2);
             state.listings.add(li3);
             return StoreProductWidget(state.listings);
+          } else if (state is FetchedStoreReviews) {
+            return StoreReviewsWidget(state.reviews);
           }
         },
       ),

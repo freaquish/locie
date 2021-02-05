@@ -10,8 +10,10 @@ import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/components/rich_image.dart';
 import 'package:locie/constants.dart';
+import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/listing.dart';
+import 'package:locie/pages/myQuotation.dart';
 import 'package:locie/views/Store_view/store_view.dart';
 import 'package:locie/workers/sharing_wrokers.dart';
 // import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -27,6 +29,7 @@ class SingleProductViewWidget extends StatefulWidget {
 
 class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
   SharingWorkers sharingWorkers = SharingWorkers();
+  LocalStorage localStorage = LocalStorage();
   void onShareClick() async {
     print('object');
     await sharingWorkers.shareListing(widget.listing);
@@ -43,6 +46,12 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
 
   void onBackClick(BuildContext context) {
     BlocProvider.of<NavigationBloc>(context).pop();
+  }
+
+  Future<bool> doesStoreBelongToCurrentUser() async {
+    await localStorage.init();
+    return (localStorage.prefs.containsKey("sid") &&
+        widget.listing.store == localStorage.prefs.getString("sid"));
   }
 
   @override
@@ -177,7 +186,26 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
           onPressed: () {
             showDialog(
               context: context,
-              builder: (context) => QuotationDialoge(),
+              builder: (context) => FutureBuilder<bool>(
+                future: doesStoreBelongToCurrentUser(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: Container(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  } else {
+                    return snapshot.data
+                        ? QuotationDialoge(widget.listing)
+                        : Center(
+                            child: Container(
+                              child: LatoText("You cannot quote"),
+                            ),
+                          );
+                  }
+                },
+              ),
             );
           },
           backgroundColor: Colour.submitButtonColor,

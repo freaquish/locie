@@ -9,9 +9,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:pdf/pdf.dart';
 
 class WorkerClient {
-  Future<void> sendMessage(String phoneNumber, String data) async {
+  static Future<void> sendMessage(String phoneNumber, String data) async {
     String encoded = Uri.encodeFull(data);
     String url = "https://wa.me/${phoneNumber}?text=$encoded";
+    print(url);
     if (await canLaunch(url)) {
       await launch(url);
     }
@@ -24,7 +25,7 @@ class WorkerClient {
   Future<void> shareStore(String sid) async {}
 }
 
-final rupeeSign = "";
+final rupeeSignPdf = "";
 
 class PdfClient {
   final Invoice invoice;
@@ -73,7 +74,7 @@ class PdfClient {
         price: "",
         quantity: "",
         unit: "",
-        amount: rupeeSign + invoice.subTotal.toStringAsFixed(0),
+        amount: rupeeSignPdf + invoice.subTotal.toStringAsFixed(0),
         color: PdfColors.black,
         textColor: PdfColors.white);
   }
@@ -89,7 +90,7 @@ class PdfClient {
             price: e.factor.toStringAsFixed(2) + " %",
             quantity: "",
             unit: "",
-            amount: rupeeSign + e.value.toStringAsFixed(2)))
+            amount: rupeeSignPdf + e.value.toStringAsFixed(2)))
         .toList();
   }
 
@@ -102,7 +103,8 @@ class PdfClient {
           unit: "",
           quantity: "",
           price: invoice.discount.factor.toStringAsFixed(2) + " %",
-          amount: "-" + rupeeSign + invoice.discount.value.toStringAsFixed(2)));
+          amount:
+              "-" + rupeeSignPdf + invoice.discount.value.toStringAsFixed(2)));
     }
     if (invoice.amountPaid != null) {
       widgets.add(ExpandedTile(
@@ -111,7 +113,7 @@ class PdfClient {
           borderEnabled: false,
           unit: "",
           price: "",
-          amount: rupeeSign + invoice.amountPaid.toStringAsFixed(2)));
+          amount: rupeeSignPdf + invoice.amountPaid.toStringAsFixed(2)));
     }
     widgets.add(ExpandedTile(
         color: PdfColors.black,
@@ -120,7 +122,7 @@ class PdfClient {
         price: "",
         unit: "",
         quantity: "",
-        amount: rupeeSign + invoice.grandTotal.toStringAsFixed(2)));
+        amount: rupeeSignPdf + invoice.grandTotal.toStringAsFixed(2)));
     return widgets;
   }
 
@@ -262,8 +264,8 @@ class ExpandedItemList extends StatelessWidget {
         name: item.name,
         quantity: item.quantity.toString(),
         unit: item.unit,
-        price: rupeeSign + item.price.toString(),
-        amount: rupeeSign + item.total.toStringAsFixed(2));
+        price: rupeeSignPdf + item.price.toString(),
+        amount: rupeeSignPdf + item.total.toStringAsFixed(2));
   }
 }
 

@@ -1,11 +1,14 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/font_text.dart';
+import 'package:locie/components/rich_image.dart';
 import 'package:locie/components/search/listing_card.dart';
 import 'package:locie/components/text_field.dart';
+import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:locie/models/account.dart';
+import 'package:locie/models/store.dart';
 
 class HomePageView extends StatefulWidget {
   final bool isStoreExists;
@@ -15,23 +18,32 @@ class HomePageView extends StatefulWidget {
 }
 
 class _HomePageViewState extends State<HomePageView> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  LocalStorage localStorage = LocalStorage();
+  Store store;
+  Account account;
+
   int currentTabIndex = 1;
+
+  Future<void> getStoreAndAccount() async {
+    await localStorage.init();
+    account = await localStorage.getAccount();
+    if (localStorage.prefs.containsKey("sid")) {
+      store = await localStorage.getStore();
+    }
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getStoreAndAccount();
+    super.initState();
+  }
 
   void onTabTap(int index) {
     setState(() {
       currentTabIndex = index;
     });
-  }
-
-  final FirebaseMessaging fcm = FirebaseMessaging();
-
-  @override
-  initState() {
-    super.initState();
-    fcm.configure(
-        onMessage: (Map<String, dynamic> message) async {},
-        onResume: (Map<String, dynamic> message) async {},
-        onLaunch: (Map<String, dynamic> message) async {});
   }
 
   String searchText = '';
@@ -40,7 +52,14 @@ class _HomePageViewState extends State<HomePageView> {
   Widget build(BuildContext context) {
     final screen = Scale(context);
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colour.bgColor,
+      endDrawerEnableOpenDragGesture: false,
+      drawer: NavigationDrawer(
+        isStoreExists: widget.isStoreExists,
+        scaffoldKey: _scaffoldKey,
+        account: account,
+      ),
       bottomNavigationBar: Container(
         color: Colour.skeletonColor,
         child: Padding(
@@ -103,7 +122,9 @@ class _HomePageViewState extends State<HomePageView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      _scaffoldKey.currentState.openDrawer();
+                    },
                     child: Container(
                       height: screen.vertical(30),
                       width: screen.horizontal(8),
@@ -202,6 +223,78 @@ class _HomePageViewState extends State<HomePageView> {
           ],
         )),
       ),
+    );
+  }
+}
+
+class NavigationDrawer extends StatelessWidget {
+  final bool isStoreExists;
+  final GlobalKey scaffoldKey;
+  final Account account;
+  NavigationDrawer(
+      {this.isStoreExists = false, this.scaffoldKey, this.account});
+
+  @override
+  Widget build(BuildContext context) {
+    Scale scale = Scale(context);
+    return Drawer(
+      child: Container(
+          padding: EdgeInsets.symmetric(
+              vertical: scale.vertical(40), horizontal: scale.horizontal(4)),
+          color: Colour.bgColor,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(vertical: scale.vertical(20)),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    color: Colour.textfieldColor,
+                    borderRadius: BorderRadius.circular(8)),
+                child: Wrap(
+                  direction: Axis.vertical,
+                  children: [
+                    Container(
+                      child: Container(
+                        // alignment: Alignment.center,
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(account.avatar),
+                          radius: scale.horizontal(15),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: scale.vertical(30),
+                    ),
+                    Container(
+                      child: Container(
+                        // alignment: Alignment.center,
+                        child: LatoText(
+                          account.name,
+                          size: 18,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: scale.vertical(30),
+              ),
+              if (isStoreExists)
+                InkWell(
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.storefront_outlined,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                    title: LatoText("Store", size: 18),
+                  ),
+                )
+            ],
+          )),
     );
   }
 }

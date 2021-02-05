@@ -6,7 +6,10 @@ import 'package:locie/components/text_field.dart';
 import 'package:locie/components/units_dialog.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/invoice.dart';
+import 'package:locie/models/listing.dart';
+import 'package:locie/models/quotations.dart';
 import 'package:locie/models/unit.dart';
+import 'package:locie/repo/listing_repo.dart';
 
 class AddItemInvoiceDialogue extends StatefulWidget {
   final void Function(Items) onPressed;
@@ -690,8 +693,8 @@ class _AddReceivedDialogState extends State<AddReceivedDialog> {
 }
 
 class QuotationDialoge extends StatefulWidget {
-  // final Function onPressed;
-  // QuotationDialoge({@required this.onPressed});
+  final Listing listing;
+  QuotationDialoge(this.listing);
   @override
   _QuotationDialogeState createState() => _QuotationDialogeState();
 }
@@ -700,6 +703,30 @@ class _QuotationDialogeState extends State<QuotationDialoge> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController textEditingControllerPrice = TextEditingController();
   TextEditingController textEditingControllerQuantity = TextEditingController();
+  ListingQuery query = ListingQuery();
+
+  bool isUploadingQuotation = false;
+
+  void onClickNext(BuildContext context) async {
+    setState(() {
+      isUploadingQuotation = true;
+    });
+    Quotation quotation = Quotation(
+      store: widget.listing.store,
+      listing: widget.listing.id,
+      listingName: widget.listing.name,
+      listingUnit: widget.listing.unit,
+      storeName: widget.listing.storeName,
+      price: double.parse(textEditingControllerPrice.text),
+      quantity: double.parse(textEditingControllerQuantity.text),
+    );
+    await query.createQuotation(quotation);
+    setState(() {
+      isUploadingQuotation = false;
+    });
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
@@ -716,85 +743,92 @@ class _QuotationDialogeState extends State<QuotationDialoge> {
           onTap: () {
             FocusScope.of(context).unfocus();
           },
-          child: Container(
-            height: screen.vertical(400),
-            width: screen.horizontal(80),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: screen.horizontal(4),
-                  vertical: screen.vertical(10)),
-              child: Form(
-                key: _formKey,
-                child: ListView(
-                  physics: BouncingScrollPhysics(),
-                  children: [
-                    SizedBox(
-                      height: screen.vertical(20),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        LatoText(''),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Icon(
-                            Icons.close,
-                            size: 16,
-                            color: Colors.red,
+          child: (isUploadingQuotation)
+              ? Center(
+                  child: Container(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : Container(
+                  height: screen.vertical(400),
+                  width: screen.horizontal(80),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screen.horizontal(4),
+                        vertical: screen.vertical(10)),
+                    child: Form(
+                      key: _formKey,
+                      child: ListView(
+                        physics: BouncingScrollPhysics(),
+                        children: [
+                          SizedBox(
+                            height: screen.vertical(20),
                           ),
-                        )
-                      ],
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              LatoText(''),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Icon(
+                                  Icons.close,
+                                  size: 16,
+                                  color: Colors.red,
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: screen.vertical(20),
+                          ),
+                          Container(
+                            width: screen.horizontal(32),
+                            child: CustomTextField(
+                                validator: (value) {
+                                  if (value.isEmpty || value == null) {
+                                    return 'Required field';
+                                  }
+                                },
+                                textAlignment: TextAlign.start,
+                                hintText: 'Price',
+                                textController: textEditingControllerPrice,
+                                keyboard: TextInputType.number),
+                          ),
+                          SizedBox(
+                            height: screen.vertical(20),
+                          ),
+                          Container(
+                            width: screen.horizontal(32),
+                            child: CustomTextField(
+                                validator: (value) {
+                                  if (value.isEmpty || value == null) {
+                                    return 'Required field';
+                                  }
+                                },
+                                textAlignment: TextAlign.start,
+                                hintText: 'Quantity',
+                                textController: textEditingControllerQuantity,
+                                keyboard: TextInputType.number),
+                          ),
+                          SizedBox(
+                            height: screen.vertical(20),
+                          ),
+                          SubmitButton(
+                              onPressed: () {
+                                if (_formKey.currentState.validate()) {
+                                  debugPrint('Done');
+                                  onClickNext(context);
+                                }
+                              },
+                              buttonName: 'Add',
+                              buttonColor: Colour.submitButtonColor)
+                        ],
+                      ),
                     ),
-                    SizedBox(
-                      height: screen.vertical(20),
-                    ),
-                    Container(
-                      width: screen.horizontal(32),
-                      child: CustomTextField(
-                          validator: (value) {
-                            if (value.isEmpty || value == null) {
-                              return 'Required field';
-                            }
-                          },
-                          textAlignment: TextAlign.start,
-                          hintText: 'Price',
-                          textController: textEditingControllerPrice,
-                          keyboard: TextInputType.number),
-                    ),
-                    SizedBox(
-                      height: screen.vertical(20),
-                    ),
-                    Container(
-                      width: screen.horizontal(32),
-                      child: CustomTextField(
-                          validator: (value) {
-                            if (value.isEmpty || value == null) {
-                              return 'Required field';
-                            }
-                          },
-                          textAlignment: TextAlign.start,
-                          hintText: 'Quantity',
-                          textController: textEditingControllerQuantity,
-                          keyboard: TextInputType.number),
-                    ),
-                    SizedBox(
-                      height: screen.vertical(20),
-                    ),
-                    SubmitButton(
-                        onPressed: () {
-                          if (_formKey.currentState.validate()) {
-                            debugPrint('Done');
-                          }
-                        },
-                        buttonName: 'Add',
-                        buttonColor: Colour.submitButtonColor)
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
         ));
   }
 }

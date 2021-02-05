@@ -67,9 +67,10 @@ class ListingQuery {
     quotation.id = generateId(
         text: quotation.storeName +
             DateTime.now().microsecondsSinceEpoch.toString());
-    Store store = await localStorage.getStore();
-    quotation.store = store.id;
-    quotation.storeName = store.name;
+    Account account = await localStorage.getAccount();
+    quotation.user = account.uid;
+    quotation.userName = account.name;
+    quotation.userContact = account.phoneNumber;
     await instance
         .collection("quotations")
         .doc(quotation.id)

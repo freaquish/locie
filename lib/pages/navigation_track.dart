@@ -42,7 +42,7 @@ class NavigationBuilder extends StatelessWidget {
       widget: BlocBuilder<NavigationBloc, NavigationState>(
         cubit: bloc,
         builder: (context, state) {
-          print(state);
+          // print(state);
           if (state is NavigatedToCategorySelection) {
             return CategoryProvider();
           } else if (state is NavigatedToCreateListing) {
@@ -66,6 +66,7 @@ class NavigationBuilder extends StatelessWidget {
           } else if (state is ShowingParticularItemView) {
             return SingleProductViewWidget(
               listing: state.listing,
+              isEditable: state.isEditable,
             );
           }
           return Center(

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/helper/screen_size.dart';
+import 'package:locie/models/review.dart';
 
-//TODO List of user and their review will be given to this widget
 class StoreReviewsWidget extends StatelessWidget {
+  final List<Review> reviews;
+  StoreReviewsWidget(this.reviews);
+
   final String description =
       'Shopping is an activity in which a customer browses the available goods or services presented by one or more retailers with the potential intent to purchase a suitable selection of them. ';
 
@@ -57,21 +60,7 @@ class StoreReviewsWidget extends StatelessWidget {
                     backgroundImage: AssetImage('assets/images/user.png'),
                   ),
                 );
-              })
-          // child: Column(
-          //   mainAxisAlignment: MainAxisAlignment.start,
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          //   children: [
-          //     Row(
-          //       children: [
-          //         CircleAvatar(
-
-          //         )
-          //       ],
-          //     )
-          //   ],
-          // ),
-          ),
+              })),
     );
   }
 }

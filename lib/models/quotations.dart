@@ -5,22 +5,22 @@ class Quotation {
   String storeName;
   String listing;
   String listingName;
-  String listingId;
+  String listingUnit;
   double price;
   String id;
-  int quantity;
-  String timestamp;
+  double quantity;
+  DateTime timestamp;
   String userContact;
 
   Quotation(
       {this.user,
       this.userName,
+      this.listingUnit,
       this.store,
       this.storeName,
       this.id,
       this.listing,
       this.listingName,
-      this.listingId,
       this.price,
       this.quantity,
       this.timestamp,
@@ -34,11 +34,12 @@ class Quotation {
     storeName = json['store_name'];
     listing = json['listing'];
     listingName = json['listing_name'];
-    listingId = json['listing_id'];
+    // listingId = json['listing_id'];
     price = json['price'];
     quantity = json['quantity'];
-    timestamp = json['timestamp'];
+    timestamp = json['timestamp'].toDate();
     userContact = json['user_contact'];
+    listingUnit = json['listing_unit'];
   }
 
   Map<String, dynamic> toJson() {
@@ -49,12 +50,14 @@ class Quotation {
     data['store_name'] = this.storeName;
     data['listing'] = this.listing;
     data['listing_name'] = this.listingName;
-    data['listing_id'] = this.listingId;
+    // data['listing_id'] = this.listingId;
     data['price'] = this.price;
     data['quantity'] = this.quantity;
-    data['timestamp'] = this.timestamp;
+    data['timestamp'] =
+        this.timestamp == null ? DateTime.now() : this.timestamp;
     data['id'] = this.id;
     data['user_contact'] = this.userContact;
+    data['listing_unit'] = this.listingUnit;
     return data;
   }
 }

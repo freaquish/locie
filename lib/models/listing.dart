@@ -18,7 +18,7 @@ class Listing {
   DateTime created;
   bool inStock;
   File imageFile;
-  List nGram;
+  List<String> nGram;
   Category category;
   DocumentSnapshot snapshot;
   double noOfQuotes;
@@ -53,7 +53,7 @@ class Listing {
     description = json['description'];
     created = json['created'].toDate();
     inStock = json['in_stock'];
-    nGram = json['n_gram'];
+    nGram = (json['n_gram'] as List<dynamic>).map((e) => e.toString()).toList();
     storeName = json['store_name'];
     if (json.containsKey("no_of_quotes")) {
       noOfQuotes = double.parse(json['no_of_quotes'].toString());

@@ -14,6 +14,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/repo/store_view_repo.dart';
 import 'package:locie/singleton.dart';
+// import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // TODO: Product View
 
@@ -53,6 +54,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
   }
 
   void scrollListener() {
+    print(_scrollController.position.pixels);
     if (_scrollController.position.atEdge &&
         tabController.index % 2 != 0 &&
         _scrollController.position.pixels != 0) {
@@ -130,6 +132,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
         widget: Stack(
           children: [
             Container(
+              //TODO: Static image needed to be changed
               height: screen.vertical(420),
               width: screen.horizontal(100),
               decoration: BoxDecoration(
@@ -154,7 +157,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
               maxChildSize: 1,
               builder:
                   (BuildContext context, ScrollController scrollController) {
-                // _scrollController = scrollController;
+                // print(scrollController.position.pixels);
                 return Container(
                   decoration: BoxDecoration(
                     color: Colour.bgColor,
@@ -169,7 +172,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                   ),
                   child: ListView(
                     physics: BouncingScrollPhysics(),
-                    controller: scrollController,
+                    controller: _scrollController,
                     children: [
                       Padding(
                         padding: EdgeInsets.fromLTRB(

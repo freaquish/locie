@@ -33,7 +33,9 @@ class Account {
     avatar = json['avatar'];
     isStoreOwner = json['is_store_owner'];
     phoneNumber = json['phone_number'];
-    tokens = json.containsKey("tokens") ? json['tokens'] : [];
+    tokens = json.containsKey("tokens")
+        ? (json['tokens'] as List<dynamic>).map((e) => e.toString()).toList()
+        : [];
   }
 
   Map<String, dynamic> toJson() {

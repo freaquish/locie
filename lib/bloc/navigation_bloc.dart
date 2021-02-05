@@ -30,7 +30,8 @@ class NavigatedToEditingListing extends NavigationState {
 
 class ShowingParticularItemView extends NavigationState {
   final Listing listing;
-  ShowingParticularItemView(this.listing);
+  final bool isEditable;
+  ShowingParticularItemView(this.listing, {this.isEditable = false});
 }
 
 class NavigatedToHome extends NavigationState {
@@ -55,10 +56,12 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   }
 
   void pop() {
-    print(route.length);
+    // print(route.length);
     route.pop();
     if (route.length > 0) {
       this..add(route.current());
+    } else {
+      this..add(NavigateToHome());
     }
   }
 
@@ -94,10 +97,12 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
     } else if (event is LaunchItemView) {
       yield LoadingState();
       Listing listing = await StoreViewRepo().fetchItem(event.lid);
+      bool isEditable = localStorage.prefs.containsKey("sid") &&
+          (localStorage.prefs.getString("sid") == listing.store);
       if (listing == null) {
         yield NotItemFound();
       } else {
-        yield ShowingParticularItemView(listing);
+        yield ShowingParticularItemView(listing, isEditable: isEditable);
       }
     }
   }

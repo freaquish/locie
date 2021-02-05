@@ -124,50 +124,50 @@ class AuthenticationBloc
   Stream<AuthenticationState> mapEventToState(
       AuthenticationEvent event) async* {
     await localStorage.init();
-    try {
-      if (event is TriggerSplashScreen) {
-        // Show splash screen untill we check internet connection
-        // verify that account exist and then redirect to home
-        // otherwise initiate login page
-        yield ShowSplashScreen();
-        if (localStorage.prefs.containsKey("uid")) {
-          yield AuthenticationCompleted();
-        } else {
-          this..add(InitiateLogin());
-        }
-      } else if (event is LoginEvent) {
-        // Login Event mapping to another function for handling
-        yield* mapPhoneAuthentication(event);
-      } else if (event is FetchCurrentAccount) {
-        // This handle will fetch current user by uid
-        // If no users exist than trigger registration process
-        // else redirect to Home
-        yield FetchingCurrentAccount();
-        var uid = localStorage.prefs.getString("uid");
-        var snapshot = await storeQuery.getAccountSnapshot(uid: uid);
-
-        bool exist = storeQuery.accountExist(snapshot);
-        // print('$snapshot $exist');
-        if (exist) {
-          Account account = Account.fromJson(snapshot.data());
-          localStorage.setAccount(account);
-          this..add(SetupStore(account.uid));
-        } else {
-          this..add(InitiateRegistration());
-        }
-      } else if (event is RegisteringEvents) {
-        yield* mapAccountRegistration(event);
-      } else if (event is SetupStore) {
-        Store store = await storeQuery.fetchStore(event.accountId);
-        if (store != null) {
-          await localStorage.setStore(store);
-        }
+    // try {
+    if (event is TriggerSplashScreen) {
+      // Show splash screen untill we check internet connection
+      // verify that account exist and then redirect to home
+      // otherwise initiate login page
+      yield ShowSplashScreen();
+      if (localStorage.prefs.containsKey("uid")) {
         yield AuthenticationCompleted();
+      } else {
+        this..add(InitiateLogin());
       }
-    } catch (e) {
-      print(e);
-      yield CommonAuthenticationError();
+    } else if (event is LoginEvent) {
+      // Login Event mapping to another function for handling
+      yield* mapPhoneAuthentication(event);
+    } else if (event is FetchCurrentAccount) {
+      // This handle will fetch current user by uid
+      // If no users exist than trigger registration process
+      // else redirect to Home
+      yield FetchingCurrentAccount();
+      var uid = localStorage.prefs.getString("uid");
+      var snapshot = await storeQuery.getAccountSnapshot(uid: uid);
+
+      bool exist = storeQuery.accountExist(snapshot);
+      // print('$snapshot $exist');
+      if (exist) {
+        Account account = Account.fromJson(snapshot.data());
+        localStorage.setAccount(account);
+        this..add(SetupStore(account.uid));
+      } else {
+        this..add(InitiateRegistration());
+      }
+    } else if (event is RegisteringEvents) {
+      yield* mapAccountRegistration(event);
+    } else if (event is SetupStore) {
+      Store store = await storeQuery.fetchStore(event.accountId);
+      if (store != null) {
+        await localStorage.setStore(store);
+      }
+      yield AuthenticationCompleted();
     }
+    // } catch (e) {
+    //   print(e);
+    //   yield CommonAuthenticationError();
+    // }
   }
 
   Stream<AuthenticationState> mapPhoneAuthentication(LoginEvent event) async* {

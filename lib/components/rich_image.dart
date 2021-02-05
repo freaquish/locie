@@ -40,7 +40,7 @@ class RichImage extends StatelessWidget {
           : BorderRadius.all(Radius.circular(8)),
       child: Image(
           image: getImage(),
-          fit: BoxFit.fill,
+          fit: BoxFit.cover,
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress == null) return child;
             return SkeletonAnimation(
