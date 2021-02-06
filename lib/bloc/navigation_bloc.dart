@@ -56,6 +56,9 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   LocalStorage localStorage = LocalStorage();
 
   void push(NavigationEvent event) {
+    if (event is NavigateToHome) {
+      route.clear();
+    }
     route.push(event);
     // print(route.current());
     add(route.current());
@@ -64,12 +67,16 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   void pop() {
     // print(route.length);
     route.pop();
-    print(route.length);
+    print(route);
     if (route.length > 0) {
       this..add(route.current());
     } else {
       this..add(NavigateToHome());
     }
+  }
+
+  void clear() {
+    route.clear();
   }
 
   void replace(NavigationEvent event) {

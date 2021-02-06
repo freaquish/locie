@@ -96,7 +96,7 @@ class _QuotationWidgetState extends State<QuotationWidget>
     return WillPopScope(
       onWillPop: () async {
         onBackClick(context);
-        return true;
+        return false;
       },
       child: Scaffold(
         backgroundColor: Colour.bgColor,

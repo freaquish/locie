@@ -22,16 +22,6 @@ class RichImage extends StatelessWidget {
     return AssetImage(placeholder);
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //         borderRadius: borderRadius != null
-  //             ? borderRadius
-  //             : BorderRadius.all(Radius.circular(8)),
-  //         image: DecorationImage(image: getImage(), fit: BoxFit.cover)),
-  //   );
-  // }
   @override
   Widget build(BuildContext context) {
     return ClipRRect(

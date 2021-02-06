@@ -9,6 +9,7 @@ class StoreWorksWidget extends StatelessWidget {
   StoreWorksWidget(this.examples);
   @override
   Widget build(BuildContext context) {
+    print(examples.examples.length);
     final screen = Scale(context);
     return Container(
       child: Padding(

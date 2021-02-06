@@ -99,22 +99,27 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
       yield CreatingInvoice();
       await repo.createInvoice(event.invoice);
       // if even.invoice.recipient != null --> send notification
-      if (event.invoice.recipient != null){
-        dynamic token = await notification.getToken(userId: event.invoice.recipient);
+      if (event.invoice.recipient != null) {
+        dynamic token =
+            await notification.getToken(userId: event.invoice.recipient);
         notification.sendNotification(
           tokens: token,
           sender: event.invoice.id,
           notificationType: 'Invoice',
           notificationTitle: 'New Invoice',
-          message: event.invoice.generatorName + " has created an Invoice for you, with Invoice number "+event.invoice.id,
+          message: event.invoice.generatorName +
+              " has created an Invoice for you, with Invoice number " +
+              event.invoice.id,
         );
       }
       this..add(FetchMyInvoices());
     } else if (event is FetchMyInvoices) {
       yield LoadingState();
-      List<Invoice> invoices =
-          await repo.fetchInvoices(received: event.received);
       bool isStoreExists = localStorage.prefs.containsKey("sid");
+      bool showRecieved =
+          (event.received == true || (event.received == null && isStoreExists));
+      List<Invoice> invoices = await repo.fetchInvoices(received: showRecieved);
+
       yield ShowingInvoices(
           received: event.received,
           invoices: invoices,

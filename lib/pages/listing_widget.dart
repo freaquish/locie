@@ -8,7 +8,7 @@ import 'package:locie/models/category.dart';
 import 'package:locie/models/listing.dart';
 import 'package:locie/views/add_item/add_item.dart';
 import 'package:locie/views/add_item/item_meta_data.dart';
-import 'package:locie/views/add_item/my_items.dart';
+import 'package:locie/views/my_store/my_items.dart';
 
 class ListingOperationViewProvider extends StatelessWidget {
   final Category category;
@@ -18,7 +18,7 @@ class ListingOperationViewProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ListingEvent initialEvent = event == null
-        ? InitiateListingCreation(category, listing: listing)
+        ? InitiateListingCreation(category: category, listing: listing)
         : event;
     return Container(
       child: BlocProvider<ListingBloc>(
@@ -61,9 +61,12 @@ class ListingOperationBuilder extends StatelessWidget {
               listings: state.listings,
             );
           } else if (state is CreatedListing) {
-            //TODO: Remove
-            BlocProvider.of<NavigationBloc>(context)
-              ..add(NavigateToSelectCategory());
+            NavigationBloc bloc = BlocProvider.of<NavigationBloc>(context);
+            if (bloc.route.isEmpty) {
+              bloc.push(NavigateToHome());
+            } else {
+              bloc.pop();
+            }
             return Container();
           }
         },

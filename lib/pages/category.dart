@@ -35,8 +35,6 @@ class CategoryBuilder extends StatelessWidget {
               ),
             );
           } else if (state is ShowingCategorySelectionPage) {
-            // //printBlocProvider.of<NavigationBloc>(context));
-            // //printstate.category);
             return CategorySelection(bloc: bloc, categories: state.category);
           } else if (state is ShowingAddNewCategoryPage) {
             return CreateNewCategoryWidget(

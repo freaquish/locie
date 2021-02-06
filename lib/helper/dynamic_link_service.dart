@@ -53,4 +53,9 @@ class DynamicLinksService {
     String urlPrefix = "https://locie.page.link/jofZ";
     return urlPrefix + "?storeId=$sid";
   }
+
+  static String generateInvoiceLink(String sid) {
+    String urlPrefix = "https://locie.page.link/jofZ";
+    return urlPrefix + "?invoice=1";
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/invoice_bloc.dart';
 import 'package:locie/bloc/navigation_bloc.dart';
 import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/bloc/search_bloc.dart';
@@ -10,11 +11,15 @@ import 'package:locie/components/font_text.dart';
 import 'package:locie/components/rich_image.dart';
 import 'package:locie/components/search/listing_card.dart';
 import 'package:locie/components/text_field.dart';
+import 'package:locie/get_it.dart';
 import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:locie/models/account.dart';
 import 'package:locie/models/store.dart';
+import 'package:locie/pages/category.dart';
+import 'package:locie/pages/invoice_view.dart';
+import 'package:locie/pages/myQuotation.dart';
 import 'package:locie/pages/search_view.dart';
 import 'package:locie/pages/store_bloc_view.dart';
 
@@ -101,7 +106,10 @@ class _HomePageViewState extends State<HomePageView> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    NavigationController.of(context)
+                        .push<QuotationWidget>(route: QuotationWidget());
+                  },
                   child: SvgPicture.asset(
                     'assets/images/Home_Icon.svg',
                     height: screen.vertical(30),
@@ -116,7 +124,9 @@ class _HomePageViewState extends State<HomePageView> {
                     size: screen.horizontal(6),
                     color: Colors.white,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    showBottomSheet(screen, context);
+                  },
                 ),
                 IconButton(
                   splashRadius: 1,
@@ -125,7 +135,12 @@ class _HomePageViewState extends State<HomePageView> {
                     size: screen.horizontal(6),
                     color: Colors.white,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    NavigationController.of(context).push<InvoiceProvider>(
+                        route: InvoiceProvider(
+                      event: FetchMyInvoices(),
+                    ));
+                  },
                 )
               ],
             ),
@@ -248,12 +263,12 @@ class _HomePageViewState extends State<HomePageView> {
       enableDrag: false,
       context: context,
       builder: (builder) {
-        return new Container(
+        return Container(
           height: screen.vertical(250),
           color: Colour.bgColor, //Color(0xff111117),
           child: new Container(
             decoration: new BoxDecoration(
-              color: Colors.white,
+              color: Colour.bgColor,
               borderRadius: new BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -276,7 +291,12 @@ class _HomePageViewState extends State<HomePageView> {
                     ? Column(
                         children: [
                           ListTile(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              NavigationController.of(context)
+                                  .push<CategoryProvider>(
+                                      route: CategoryProvider());
+                            },
                             leading: Icon(
                               Icons.local_mall_outlined,
                               color: Colors.white,
@@ -328,6 +348,7 @@ class NavigationDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<NavigationBloc>(context);
     Scale scale = Scale(context);
+    FocusScope.of(context).unfocus();
     return Drawer(
       child: Container(
           padding: EdgeInsets.symmetric(
@@ -350,7 +371,9 @@ class NavigationDrawer extends StatelessWidget {
                       child: Container(
                         // alignment: Alignment.center,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(account.avatar),
+                          backgroundImage: account.avatar != null
+                              ? NetworkImage(account.avatar)
+                              : AssetImage('assets/images/user.png'),
                           radius: scale.horizontal(15),
                         ),
                       ),
@@ -391,6 +414,13 @@ class NavigationDrawer extends StatelessWidget {
                 ),
               if (isStoreExists)
                 InkWell(
+                  onTap: () {
+                    print("listing");
+                    navigate<StoreWidgetProvider>(StoreWidgetProvider(
+                      sid: store.id,
+                      event: FetchStoreProducts(store.id),
+                    ));
+                  },
                   child: ListTile(
                     leading: Icon(
                       Icons.local_mall_outlined,

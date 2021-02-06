@@ -29,95 +29,116 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
   bool inStockSwitch = true;
   bool isListLoaded = false;
 
+  @override
+  void initState() {
+    print(widget.listing.priceMax);
+    if (widget.listing.priceMax != null) {
+      textEditingControllerMax.value =
+          TextEditingValue(text: widget.listing.priceMax.toString());
+      textEditingControllerMin.value =
+          TextEditingValue(text: widget.listing.priceMin.toString());
+      unit = widget.listing.unit;
+      inStockSwitch = widget.listing.inStock;
+    }
+    super.initState();
+  }
+
   void onBackClick() {
-    widget.bloc..add(InitiateListingCreation(widget.listing.category, listing: widget.listing.id !=null? widget.listing : null));
+    widget.bloc
+      ..add(InitiateListingCreation(
+          category: widget.listing.category, listing: widget.listing));
   }
 
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
-    return Scaffold(
-      backgroundColor: Colour.bgColor,
-      appBar: Appbar().appbar(
-        context: context,
-        onTap: (){
-          onBackClick();
-        },
-        title: LatoText(
-          '',
-          size: 22,
-          weight: FontWeight.bold,
+    return WillPopScope(
+      onWillPop: () async {
+        onBackClick();
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Colour.bgColor,
+        appBar: Appbar().appbar(
+          context: context,
+          onTap: () {
+            onBackClick();
+          },
+          title: LatoText(
+            '',
+            size: 22,
+            weight: FontWeight.bold,
+          ),
         ),
-      ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: PrimaryContainer(
-            widget: Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: screen.horizontal(4),
-                  horizontal: screen.horizontal(6)),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: screen.vertical(60),
-                    ),
-                    RailwayText(
-                      'Price',
-                      size: 32,
-                      weight: FontWeight.bold,
-                    ),
-                    SizedBox(
-                      height: screen.vertical(50),
-                    ),
-                    Flexible(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: screen.horizontal(40),
-                            child: CustomTextField(
-                                validator: (value) {
-                                  if (value.isEmpty || value == null) {
-                                    return 'Required field';
-                                  }
-                                },
-                                textAlignment: TextAlign.start,
-                                hintText: 'Max',
-                                maxLines: 3,
-                                minLines: 2,
-                                textController: textEditingControllerMax,
-                                keyboard: TextInputType.number),
-                          ),
-                          Container(
-                            width: screen.horizontal(40),
-                            child: CustomTextField(
-                                validator: (value) {
-                                  if (value.isEmpty || value == null) {
-                                    return 'Required field';
-                                  }
-                                },
-                                textAlignment: TextAlign.start,
-                                hintText: 'Min',
-                                maxLines: 3,
-                                minLines: 2,
-                                textController: textEditingControllerMin,
-                                keyboard: TextInputType.number),
-                          ),
-                        ],
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: PrimaryContainer(
+              widget: Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: screen.horizontal(4),
+                    horizontal: screen.horizontal(6)),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: screen.vertical(60),
                       ),
-                    ),
-                    SizedBox(
-                      height: screen.vertical(50),
-                    ),
-                    Container(
-                      child: InkWell(
+                      RailwayText(
+                        'Price',
+                        size: 32,
+                        weight: FontWeight.bold,
+                      ),
+                      SizedBox(
+                        height: screen.vertical(50),
+                      ),
+                      Flexible(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: screen.horizontal(40),
+                              child: CustomTextField(
+                                  validator: (value) {
+                                    if (value.isEmpty || value == null) {
+                                      return 'Required field';
+                                    }
+                                  },
+                                  textAlignment: TextAlign.start,
+                                  hintText: 'Max',
+                                  maxLines: 3,
+                                  minLines: 2,
+                                  textController: textEditingControllerMax,
+                                  keyboard: TextInputType.number),
+                            ),
+                            Container(
+                              width: screen.horizontal(40),
+                              child: CustomTextField(
+                                  validator: (value) {
+                                    if (value.isEmpty || value == null) {
+                                      return 'Required field';
+                                    }
+                                  },
+                                  textAlignment: TextAlign.start,
+                                  hintText: 'Min',
+                                  maxLines: 3,
+                                  minLines: 2,
+                                  textController: textEditingControllerMin,
+                                  keyboard: TextInputType.number),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: screen.vertical(50),
+                      ),
+                      Container(
+                        child: InkWell(
                           onTap: () {
                             showDialog(
                                 context: context,
@@ -130,80 +151,82 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
                                     }));
                           },
                           child: Container(
-                              width: screen.horizontal(100),
-                              // height: screen.vertical(80),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: screen.vertical(30),
-                                  horizontal: screen.horizontal(6)),
-                              decoration: BoxDecoration(
-                                  color: Colour.textfieldColor,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(screen.horizontal(4)))),
-                              child: LatoText(
-                                unit,
-                                size: 18,
-                                weight: FontWeight.bold,
-                              ))),
-                    ),
-                    SizedBox(
-                      height: screen.vertical(50),
-                    ),
-                    Container(
-                      height: screen.vertical(50),
-                      width: screen.horizontal(100),
-                      decoration: BoxDecoration(
-                          color: Colour.bgColor,
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(screen.horizontal(4)))),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding:
-                                EdgeInsets.only(left: screen.horizontal(3.5)),
+                            width: screen.horizontal(100),
+                            // height: screen.vertical(80),
+                            padding: EdgeInsets.symmetric(
+                                vertical: screen.vertical(30),
+                                horizontal: screen.horizontal(6)),
+                            decoration: BoxDecoration(
+                                color: Colour.textfieldColor,
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(screen.horizontal(4)))),
                             child: LatoText(
-                              'Item in Stock',
-                              size: 20,
-                              fontColor: Colors.grey[200],
-                              weight: FontWeight.normal,
+                              unit,
+                              size: 18,
+                              weight: FontWeight.bold,
                             ),
                           ),
-                          Padding(
-                            padding:
-                                EdgeInsets.only(right: screen.horizontal(2.5)),
-                            child: CustomSwitch(
-                              value: inStockSwitch,
-                              onChanged: (bool val) {
-                                setState(() {
-                                  inStockSwitch = val;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: screen.vertical(270),
-                    ),
-                    SubmitButton(
-                      //TODO run a function for next page
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          debugPrint('submit');
-                          widget.listing.priceMax =
-                              double.parse(textEditingControllerMax.value.text);
-                          widget.listing.priceMin =
-                              double.parse(textEditingControllerMin.value.text);
-                          widget.listing.unit = unit;
-                          widget.listing.inStock = inStockSwitch;
-                          widget.bloc..add(CreateListing(widget.listing));
-                        }
-                      },
-                      buttonName: 'Done',
-                      buttonColor: Colour.submitButtonColor,
-                    )
-                  ],
+                      SizedBox(
+                        height: screen.vertical(50),
+                      ),
+                      Container(
+                        height: screen.vertical(50),
+                        width: screen.horizontal(100),
+                        decoration: BoxDecoration(
+                            color: Colour.bgColor,
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(screen.horizontal(4)))),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: screen.horizontal(3.5)),
+                              child: LatoText(
+                                'Item in Stock',
+                                size: 20,
+                                fontColor: Colors.grey[200],
+                                weight: FontWeight.normal,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  right: screen.horizontal(2.5)),
+                              child: CustomSwitch(
+                                value: inStockSwitch,
+                                onChanged: (bool val) {
+                                  setState(() {
+                                    inStockSwitch = val;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: screen.vertical(270),
+                      ),
+                      SubmitButton(
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            debugPrint('submit');
+                            widget.listing.priceMax = double.parse(
+                                textEditingControllerMax.value.text);
+                            widget.listing.priceMin = double.parse(
+                                textEditingControllerMin.value.text);
+                            widget.listing.unit = unit;
+                            widget.listing.inStock = inStockSwitch;
+                            widget.bloc..add(CreateListing(widget.listing));
+                          }
+                        },
+                        buttonName: 'Done',
+                        buttonColor: Colour.submitButtonColor,
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -33,7 +33,12 @@ class ListingCard extends StatelessWidget {
             color: Colour.textfieldColor,
             borderRadius: BorderRadius.circular(8)),
         child: ListTile(
-          leading: RichImage(),
+          leading: Container(
+            width: scale.horizontal(8),
+            child: RichImage(
+              image: listing.image,
+            ),
+          ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -115,7 +120,12 @@ class StoreCard extends StatelessWidget {
             color: Colour.textfieldColor,
             borderRadius: BorderRadius.circular(8)),
         child: ListTile(
-          leading: RichImage(),
+          leading: Container(
+            width: scale.horizontal(16),
+            child: RichImage(
+              image: store.image,
+            ),
+          ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

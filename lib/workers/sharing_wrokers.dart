@@ -1,4 +1,5 @@
 import 'package:locie/helper/dynamic_link_service.dart';
+import 'package:locie/models/invoice.dart';
 import 'package:locie/models/listing.dart';
 import 'package:locie/models/store.dart';
 import 'package:share/share.dart';

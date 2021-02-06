@@ -18,14 +18,12 @@ import 'package:locie/repo/store_view_repo.dart';
 
 import '../../singleton.dart';
 
-//TODO back button not working
-//TODO work not working
-
 class StoreViewWidget extends StatefulWidget {
   final String sid;
   final StoreViewEvent event;
   final Store store;
-  StoreViewWidget({this.sid, this.event, this.store});
+  final bool isEditable;
+  StoreViewWidget({this.sid, this.event, this.store, this.isEditable = false});
   @override
   _StoreViewWidgetState createState() => _StoreViewWidgetState();
 }
@@ -50,9 +48,13 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
     bloc = StoreViewBloc();
     if (widget.event == null) {
       event = FetchStoreView(widget.store);
+    } else {
+      event = widget.event;
     }
-    tabController = TabController(initialIndex: 0, length: 4, vsync: this);
+    tabController =
+        TabController(initialIndex: getTabIndex(), length: 4, vsync: this);
     tabController.addListener(handleTabSelection);
+
     // _scrollController.addListener(scrollListener);
     super.initState();
   }
@@ -64,6 +66,16 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
         _scrollController.position.pixels != 0) {
       // As Products and Reviews are on 1 and 3
       // bloc..add(getEvent());
+    }
+  }
+
+  int getTabIndex() {
+    if (event != null) {
+      if (event is FetchStoreView) {
+        return 0;
+      } else if (event is FetchStoreProducts) {
+        return 1;
+      }
     }
   }
 
@@ -127,21 +139,26 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
     final screen = Scale(context);
     return WillPopScope(
       onWillPop: () async {
+        print("back click");
         onBackClick(context);
-        return true;
+
+        return false;
       },
       child: Scaffold(
+        // appBar: ,
         backgroundColor: Colour.bgColor,
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colour.submitButtonColor,
-          child: Icon(
-            Icons.edit,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            showBottomReviewSheet(context, screen);
-          },
-        ),
+        floatingActionButton: widget.isEditable
+            ? null
+            : FloatingActionButton(
+                backgroundColor: Colour.submitButtonColor,
+                child: Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  showBottomReviewSheet(context, screen);
+                },
+              ),
         body: NestedScrollView(
           physics: BouncingScrollPhysics(),
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -149,8 +166,13 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
               SliverAppBar(
                 backgroundColor: Colour.bgColor,
                 expandedHeight: screen.vertical(420),
-                toolbarHeight: 0,
+                toolbarHeight: 50,
                 floating: false,
+                leading: IconButton(
+                    icon: Icon(Icons.keyboard_backspace, color: Colors.white),
+                    onPressed: () {
+                      onBackClick(context);
+                    }),
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
                   background:

@@ -54,6 +54,7 @@ class AuthenticationBuilder extends StatelessWidget {
             if (navBloc.route.length > 1) {
               navBloc.pop();
             } else {
+              navBloc.clear();
               navBloc..add(NavigateToHome());
             }
             return Container();

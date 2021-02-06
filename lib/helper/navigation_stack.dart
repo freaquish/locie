@@ -4,6 +4,15 @@ class NavigationStack {
   NavigationStack._internal() {
     _events = [];
   }
+
+  toString() {
+    return _events.toString();
+  }
+
+  void clear() {
+    _events = [];
+  }
+
   static final NavigationStack _instance = NavigationStack._internal();
   List<NavigationEvent> _events;
   // NavigationBloc bloc;

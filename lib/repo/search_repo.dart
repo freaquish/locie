@@ -43,9 +43,9 @@ class SearchRepository {
 
   Future<List<Listing>> searchListing(String text,
       [DocumentSnapshot startAt]) async {
-    Query query = listingRef.where("n_gram", arrayContainsAny: [
-      text.toLowerCase().split(" ").join("")
-    ]).orderBy("created", descending: true);
+    Query query = listingRef
+        .where("n_gram", arrayContains: text.toLowerCase().split(" ").join(""))
+        .orderBy("created", descending: true);
     if (startAt != null) {
       query = query.startAfterDocument(startAt);
     }

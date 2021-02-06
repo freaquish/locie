@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 // import 'package:locie/constants.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:locie/models/invoice.dart';
@@ -41,11 +42,13 @@ class PdfClient {
     return list.data;
   }
 
-  Future<void> save() async {
+  Future<File> save() async {
     final output = await getExternalStorageDirectory();
     final file = File("${output.path}/${invoice.id}.pdf");
     print(file.path);
-    await file.writeAsBytes(await pdf.save());
+    File generated = await file.writeAsBytes(await pdf.save());
+    OpenFile.open(generated.path);
+    return generated;
   }
 
   Future<Uint8List> getBytes() async {
@@ -198,7 +201,7 @@ class PdfClient {
                                       ])))),
 
                                   // Logo of generator
-                                  if (byteImage != null)
+                                  if (false && byteImage != null)
                                     Expanded(
                                         child: Container(
                                             width: 80,

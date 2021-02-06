@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/navigation_bloc.dart';
 import 'package:locie/bloc/navigation_event.dart';
+import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/rich_image.dart';
 import 'package:locie/constants.dart';
@@ -89,25 +90,17 @@ class _StoreProductWidgetState extends State<StoreProductWidget> {
                         ),
                       ),
                     ),
-                    Padding(
-                      key: Key(widget.listings[index].id),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: screen.horizontal(3),
-                          vertical: screen.vertical(10)),
-                      child: RailwayText(
-                        widget.listings[index].name,
-                        key: Key(widget.listings[index].id),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: screen.horizontal(3)),
-                      child: LatoText(
-                        '$rupeeSign ${widget.listings[index].priceMax} - $rupeeSign ${widget.listings[index].priceMin}',
-                        fontColor: Color(0xffFF7A00),
-                        key: Key(widget.listings[index].id),
-                        size: 12,
-                      ),
-                    ),
+                    ListTile(
+                        title: RailwayText(
+                          widget.listings[index].name,
+                          key: Key(widget.listings[index].id),
+                        ),
+                        subtitle: LatoText(
+                          '$rupeeSign ${widget.listings[index].priceMax} - $rupeeSign ${widget.listings[index].priceMin}',
+                          fontColor: Color(0xffFF7A00),
+                          key: Key(widget.listings[index].id),
+                          size: 12,
+                        )),
                   ],
                 ),
               ),

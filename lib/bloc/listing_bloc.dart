@@ -41,7 +41,7 @@ class ListingEvent {}
 class InitiateListingCreation extends ListingEvent {
   final Listing listing;
   final Category category;
-  InitiateListingCreation(this.category, {this.listing});
+  InitiateListingCreation({this.category, this.listing});
 }
 
 class InitiateListingUpdate extends ListingEvent {
@@ -71,6 +71,7 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
   Stream<ListingState> mapEventToState(ListingEvent event) async* {
     try {
       if (event is InitiateListingCreation) {
+        // print(event.listing.priceMax);
         yield ShowingListingPage(
             category: event.category, listing: event.listing);
       } else if (event is ProceedToMetaDataPage) {
@@ -88,7 +89,7 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
         } else {
           yield ShowingStoreListings(sid: event.sid, listings: listings);
         }
-      }else if(event is InitiateListingUpdate){
+      } else if (event is InitiateListingUpdate) {
         yield ShowingListingPage(listing: event.listing);
       }
     } catch (e) {

@@ -50,7 +50,7 @@ class FireStoreQuery implements AbstractFireStoreQuery {
   @override
   FirebaseFirestore firestore;
   CloudStorage storage;
-  LocalStorage localStorage;
+  LocalStorage localStorage = LocalStorage();
 
   FireStoreQuery() {
     firestore = FirebaseFirestore.instance;

@@ -13,6 +13,7 @@ import 'package:locie/constants.dart';
 import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/listing.dart';
+import 'package:locie/pages/listing_widget.dart';
 import 'package:locie/pages/myQuotation.dart';
 import 'package:locie/pages/store_bloc_view.dart';
 import 'package:locie/views/Store_view/store_view.dart';
@@ -36,7 +37,12 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
     await sharingWorkers.shareListing(widget.listing);
   }
 
-  void onEditClick() {}
+  void onEditClick(BuildContext context) {
+    BlocProvider.of<NavigationBloc>(context).push(MaterialProviderRoute(
+        route: ListingOperationViewProvider(
+      listing: widget.listing,
+    )));
+  }
 
   void onGoToStoreClick(BuildContext context) {
     // print('clicked');
@@ -61,7 +67,7 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
     return WillPopScope(
       onWillPop: () async {
         onBackClick(context);
-        return true;
+        return false;
       },
       child: Scaffold(
         appBar: Appbar().appbar(
@@ -73,7 +79,9 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
               if (widget.isEditable)
                 IconButton(
                     icon: Icon(Icons.edit, color: Colors.white),
-                    onPressed: null)
+                    onPressed: () {
+                      onEditClick(context);
+                    })
             ]),
         body: PrimaryContainer(
           widget: Padding(
@@ -141,35 +149,36 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
                 ),
                 Row(
                   children: [
-                    InkWell(
-                      onTap: () {
-                        onGoToStoreClick(context);
-                      },
-                      child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: screen.horizontal(2),
-                              vertical: screen.vertical(10)),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colour.textfieldColor.withOpacity(0.65)),
-                          child: Wrap(
-                            children: [
-                              Icon(
-                                Icons.storefront,
-                                color: Colors.white,
-                                size: 28,
-                              ),
-                              SizedBox(
-                                width: screen.horizontal(3),
-                              ),
-                              LatoText(
-                                "Go to Store",
-                                weight: FontWeight.bold,
-                                size: 18,
-                              )
-                            ],
-                          )),
-                    ),
+                    if (!widget.isEditable)
+                      InkWell(
+                        onTap: () {
+                          onGoToStoreClick(context);
+                        },
+                        child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: screen.horizontal(2),
+                                vertical: screen.vertical(10)),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Colour.textfieldColor.withOpacity(0.65)),
+                            child: Wrap(
+                              children: [
+                                Icon(
+                                  Icons.storefront,
+                                  color: Colors.white,
+                                  size: 28,
+                                ),
+                                SizedBox(
+                                  width: screen.horizontal(3),
+                                ),
+                                LatoText(
+                                  "Go to Store",
+                                  weight: FontWeight.bold,
+                                  size: 18,
+                                )
+                              ],
+                            )),
+                      ),
                   ],
                 ),
                 SizedBox(
@@ -183,38 +192,40 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => FutureBuilder<bool>(
-                future: doesStoreBelongToCurrentUser(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: Container(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  } else {
-                    return snapshot.data
-                        ? QuotationDialoge(widget.listing)
-                        : Center(
+        floatingActionButton: widget.isEditable
+            ? null
+            : FloatingActionButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => FutureBuilder<bool>(
+                      future: doesStoreBelongToCurrentUser(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(
                             child: Container(
-                              child: LatoText("You cannot quote"),
+                              child: CircularProgressIndicator(),
                             ),
                           );
-                  }
+                        } else {
+                          return snapshot.data
+                              ? QuotationDialoge(widget.listing)
+                              : Center(
+                                  child: Container(
+                                    child: LatoText("You cannot quote"),
+                                  ),
+                                );
+                        }
+                      },
+                    ),
+                  );
                 },
+                backgroundColor: Colour.submitButtonColor,
+                child: Icon(
+                  Icons.inventory,
+                  color: Colors.white,
+                ),
               ),
-            );
-          },
-          backgroundColor: Colour.submitButtonColor,
-          child: Icon(
-            Icons.inventory,
-            color: Colors.white,
-          ),
-        ),
       ),
     );
   }

@@ -56,12 +56,12 @@ class StoreViewBuilder extends StatelessWidget {
             return StoreAboutWidget(singleton.store);
           } else if (state is FetchedStoreWorks) {
             singleton.examples = state.examples;
-            print(state.examples.sid);
+            // print(state.examples.examples);
             return StoreWorksWidget(singleton.examples);
           } else if (state is FetchedStoreProducts) {
             return StoreProductWidget(state.listings);
           } else if (state is FetchedStoreReviews) {
-            print(state);
+            // print(state);
             return StoreReviewsWidget(state.reviews);
           }
           return Center(
@@ -104,6 +104,7 @@ class StoreWidgetBuilder extends StatelessWidget {
               event: event,
               store: state.store,
               sid: state.store.id,
+              isEditable: state.isEditable,
             );
           }
           return Center(

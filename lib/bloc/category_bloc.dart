@@ -74,12 +74,16 @@ class CreateCategory extends CategoryEvent {
   CreateCategory(this.category);
 }
 
+class JumpBackToCategorySelection extends CategoryEvent {}
+
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   CategoryBloc() : super(InitialState());
 
   List<List<Category>> categoriesAcrossPages = [];
   LocalStorage localStorage = LocalStorage();
   FireStoreQuery storeQuery = FireStoreQuery();
+
+  // List<CategoryEvent> events = [];
 
   @override
   Stream<CategoryState> mapEventToState(CategoryEvent event) async* {
@@ -137,6 +141,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       yield ShowingCategorySelectionPage(
           category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
     } else if (event is CreateNewToSelection) {
+      yield ShowingCategorySelectionPage(
+          category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
+    } else if (event is JumpBackToCategorySelection) {
       yield ShowingCategorySelectionPage(
           category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
     }

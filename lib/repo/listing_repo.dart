@@ -37,11 +37,12 @@ class ListingQuery {
     listing.store = store.id;
     listing.storeName = store.name;
     listing.nGram = nGram(listing.name);
-    listing.nGram += nGram(store.name).sublist(3);
-    listing.nGram += nGram(listing.parentName).sublist(3);
+    listing.nGram += trigramNGram(store.name);
+    //
     if (listing.id == null) {
       var lid = generateId(text: 'item-${listing.name}-${store.name}');
       listing.id = lid;
+      listing.nGram += trigramNGram(listing.parentName);
     }
     listingRef.doc(listing.id).set(listing.toJson());
   }
@@ -77,19 +78,21 @@ class ListingQuery {
         .collection("quotations")
         .doc(quotation.id)
         .set(quotation.toJson());
-    DocumentSnapshot snapshot = await instance.collection("stores").doc(quotation.store).get();
-    if(snapshot.exists){
+    DocumentSnapshot snapshot =
+        await instance.collection("stores").doc(quotation.store).get();
+    if (snapshot.exists) {
       Store store = Store.fromJson(snapshot.data());
-      dynamic token = await notification.getToken(userId:store.owner);
+      dynamic token = await notification.getToken(userId: store.owner);
       await notification.sendNotification(
         sender: quotation.user,
-        message: '${quotation.userName} sent you Enquiry for product ${quotation.listingName}',
+        message:
+            '${quotation.userName} sent you Enquiry for product ${quotation.listingName}',
         tokens: token,
         notificationTitle: 'Enquiry',
         notificationType: 'Quotation',
       );
     }
-    // ait 
+    // ait
   }
 
   Future<List<Quotation>> fetchQuotations({bool sent = false}) async {
