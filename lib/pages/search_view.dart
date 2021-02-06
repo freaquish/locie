@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/search_bloc.dart';
 import 'package:locie/components/primary_container.dart';
+import 'package:locie/views/error_widget.dart';
 import 'package:locie/views/search_list_view.dart';
 
 class SearchProvider extends StatelessWidget {
@@ -33,6 +34,8 @@ class SearchBuilder extends StatelessWidget {
               listings: state.listings,
               stores: state.stores,
             );
+          } else if (state is CommonSearchError) {
+            return ErrorScreen();
           }
           return Center(
             child: Container(

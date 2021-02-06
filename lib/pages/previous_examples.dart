@@ -4,6 +4,7 @@ import 'package:locie/bloc/previous_examples_bloc.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/get_it.dart';
 import 'package:locie/views/Example/previous_example.dart';
+import 'package:locie/views/error_widget.dart';
 
 class PreviousExampleProvider extends StatelessWidget {
   final String sid;
@@ -43,6 +44,8 @@ class PreviousExampleBuilder extends StatelessWidget {
           } else if (state is InsertedExample) {
             NavigationController.of(context).pop();
             return Container();
+          } else if (state is CommonWorkError) {
+            return ErrorScreen();
           }
         },
       ),

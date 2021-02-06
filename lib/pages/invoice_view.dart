@@ -7,6 +7,7 @@ import 'package:locie/views/Invoice/my_invoices.dart';
 import 'package:locie/views/Invoice/search_invoice_result.dart';
 import 'package:locie/views/Invoice/search_invoice_user.dart';
 import 'package:locie/views/Invoice/taxes_discount.dart';
+import 'package:locie/views/error_widget.dart';
 
 class InvoiceProvider extends StatelessWidget {
   final InvoiceEvent event;
@@ -46,6 +47,8 @@ class InvoiceBuilder extends StatelessWidget {
           } else if (state is ShowingInvoices) {
             return MyInvoices(state.invoices,
                 received: state.received, storeExists: state.storeExists);
+          } else if (state is CommonInvoiceError) {
+            return ErrorScreen();
           }
           return Center(
             child: Container(
@@ -88,6 +91,8 @@ class MyInvoiceBuilder extends StatelessWidget {
         print(state.toString() + "bu");
         if (state is ShowingTabInvoices) {
           return MyInvoicesListWidget(state.invoices);
+        } else if (state is CommonInvoiceError) {
+          return ErrorScreen();
         }
         return Center(
           child: Container(

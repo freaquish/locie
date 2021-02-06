@@ -24,6 +24,8 @@ import 'package:locie/pages/myQuotation.dart';
 import 'package:locie/pages/previous_examples.dart';
 import 'package:locie/pages/search_view.dart';
 import 'package:locie/pages/store_bloc_view.dart';
+import 'package:locie/pages/store_widgets.dart';
+import 'package:locie/views/contact.dart';
 
 class HomePageView extends StatefulWidget {
   final bool isStoreExists;
@@ -367,7 +369,12 @@ class _HomePageViewState extends State<HomePageView> {
                         ],
                       )
                     : ListTile(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          NavigationController.of(context)
+                              .push<CreateOrEditStoreWidget>(
+                                  route: CreateOrEditStoreWidget());
+                        },
                         leading: Icon(
                           Icons.add_business,
                           color: Colors.white,
@@ -518,6 +525,10 @@ class NavigationDrawer extends StatelessWidget {
                   ),
                 ),
               InkWell(
+                onTap: () {
+                  NavigationController.of(context)
+                      .push<ContactPage>(route: ContactPage());
+                },
                 child: ListTile(
                   leading: Icon(
                     Icons.phone,

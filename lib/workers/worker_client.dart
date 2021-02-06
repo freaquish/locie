@@ -2,9 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 // import 'package:locie/constants.dart';
 import 'package:downloads_path_provider/downloads_path_provider.dart';
-import 'package:locie/workers/file_manager.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:locie/models/invoice.dart';
 import 'package:pdf/widgets.dart';
@@ -20,12 +18,6 @@ class WorkerClient {
       await launch(url);
     }
   }
-
-  // Share product view deep link
-  Future<void> shareProduct(String lid) async {}
-
-  // Share store view
-  Future<void> shareStore(String sid) async {}
 }
 
 final rupeeSignPdf = "";

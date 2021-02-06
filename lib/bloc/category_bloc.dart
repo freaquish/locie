@@ -8,6 +8,8 @@ class CategoryState {}
 
 class LoadingStates extends CategoryState {}
 
+class CommonCategoryError extends CategoryState {}
+
 class InitialState extends LoadingStates {}
 
 class RedirectToStoreCreation extends CategoryState {}
@@ -88,64 +90,70 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   @override
   Stream<CategoryState> mapEventToState(CategoryEvent event) async* {
     // //printevent);
-    await localStorage.init();
-    if (event is InitiateCategorySelection) {
-      if (!localStorage.prefs.containsKey("sid")) {
-        yield RedirectToStoreCreation();
-      } else {
-        yield ShowingCategorySelectionPage();
-
-        List<Category> categories = [];
-        if (event.current == null) {
-          categories = await storeQuery.fetchCategories();
+    try {
+      await localStorage.init();
+      if (event is InitiateCategorySelection) {
+        if (!localStorage.prefs.containsKey("sid")) {
+          yield RedirectToStoreCreation();
         } else {
-          var sid = localStorage.prefs.getString("sid");
-          categories = await storeQuery.fetchCategories(
-              current: event.current, store: sid);
+          yield ShowingCategorySelectionPage();
+
+          List<Category> categories = [];
+          if (event.current == null) {
+            categories = await storeQuery.fetchCategories();
+          } else {
+            var sid = localStorage.prefs.getString("sid");
+            categories = await storeQuery.fetchCategories(
+                current: event.current, store: sid);
+          }
+          // //printcategories);
+          if (categories.isNotEmpty) {
+            categoriesAcrossPages.add(categories);
+          }
+
+          yield ShowingCategorySelectionPage(
+              category:
+                  categoriesAcrossPages[categoriesAcrossPages.length - 1]);
         }
-        // //printcategories);
+      } else if (event is ProceedToNextCategoryPage) {
+        var sid = localStorage.prefs.getString("sid");
+        //print'${event.current} $sid');
+        var categories = await storeQuery.fetchCategories(
+            current: event.current, store: sid);
+        // //print'$categories ${event.current}');
         if (categories.isNotEmpty) {
           categoriesAcrossPages.add(categories);
         }
-
+        //printcategoriesAcrossPages.length);
+        // //printcategoriesAcrossPages[1].length);
+        yield ShowingCategorySelectionPage(
+            category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
+      } else if (event is ProceedToLastCategoryPage) {
+        categoriesAcrossPages.removeLast();
+        yield ShowingCategorySelectionPage(
+            category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
+      } else if (event is InitiateAddNewCategory) {
+        yield ShowingAddNewCategoryPage(event.current);
+      } else if (event is CreateCategory) {
+        yield CreatingCategegory();
+        Category category = await storeQuery.createNewCategory(event.category);
+        var parentExist =
+            categoriesAcrossPages[categoriesAcrossPages.length - 1]
+                .any((element) => category.parent == element.id);
+        if (!parentExist) {
+          categoriesAcrossPages[categoriesAcrossPages.length - 1].add(category);
+        }
+        yield ShowingCategorySelectionPage(
+            category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
+      } else if (event is CreateNewToSelection) {
+        yield ShowingCategorySelectionPage(
+            category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
+      } else if (event is JumpBackToCategorySelection) {
         yield ShowingCategorySelectionPage(
             category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
       }
-    } else if (event is ProceedToNextCategoryPage) {
-      var sid = localStorage.prefs.getString("sid");
-      //print'${event.current} $sid');
-      var categories =
-          await storeQuery.fetchCategories(current: event.current, store: sid);
-      // //print'$categories ${event.current}');
-      if (categories.isNotEmpty) {
-        categoriesAcrossPages.add(categories);
-      }
-      //printcategoriesAcrossPages.length);
-      // //printcategoriesAcrossPages[1].length);
-      yield ShowingCategorySelectionPage(
-          category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
-    } else if (event is ProceedToLastCategoryPage) {
-      categoriesAcrossPages.removeLast();
-      yield ShowingCategorySelectionPage(
-          category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
-    } else if (event is InitiateAddNewCategory) {
-      yield ShowingAddNewCategoryPage(event.current);
-    } else if (event is CreateCategory) {
-      yield CreatingCategegory();
-      Category category = await storeQuery.createNewCategory(event.category);
-      var parentExist = categoriesAcrossPages[categoriesAcrossPages.length - 1]
-          .any((element) => category.parent == element.id);
-      if (!parentExist) {
-        categoriesAcrossPages[categoriesAcrossPages.length - 1].add(category);
-      }
-      yield ShowingCategorySelectionPage(
-          category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
-    } else if (event is CreateNewToSelection) {
-      yield ShowingCategorySelectionPage(
-          category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
-    } else if (event is JumpBackToCategorySelection) {
-      yield ShowingCategorySelectionPage(
-          category: categoriesAcrossPages[categoriesAcrossPages.length - 1]);
+    } catch (e) {
+      yield CommonCategoryError();
     }
   }
 }

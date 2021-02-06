@@ -12,6 +12,8 @@ class ShowingPreviousExamples extends PreviousExampleState {
   ShowingPreviousExamples({this.examples});
 }
 
+class CommonWorkError extends PreviousExampleState {}
+
 class ShowingMyPreviousExamples extends PreviousExampleState {
   final PreviousExamples examples;
   ShowingMyPreviousExamples({this.examples});
@@ -48,21 +50,25 @@ class PreviousExamplesBloc
   @override
   Stream<PreviousExampleState> mapEventToState(
       PreviousExampleEvent event) async* {
-    if (event is FetchPreviousExamples) {
-      await localStorage.init();
-      yield LoadingState();
-      PreviousExamples examples = await repo.fetchWorks(id: event.store);
-      if (localStorage.prefs.getString("sid") == examples.sid) {
-        yield ShowingMyPreviousExamples(examples: examples);
-      } else {
-        yield ShowingPreviousExamples(examples: examples);
+    try {
+      if (event is FetchPreviousExamples) {
+        await localStorage.init();
+        yield LoadingState();
+        PreviousExamples examples = await repo.fetchWorks(id: event.store);
+        if (localStorage.prefs.getString("sid") == examples.sid) {
+          yield ShowingMyPreviousExamples(examples: examples);
+        } else {
+          yield ShowingPreviousExamples(examples: examples);
+        }
+      } else if (event is InitiateAddNewPreviousExample) {
+        yield ShowingAddNewExamplePage();
+      } else if (event is AddPreviousExample) {
+        yield InsertingNewExample();
+        await repo.insertWork(event.example);
+        yield InsertedExample();
       }
-    } else if (event is InitiateAddNewPreviousExample) {
-      yield ShowingAddNewExamplePage();
-    } else if (event is AddPreviousExample) {
-      yield InsertingNewExample();
-      await repo.insertWork(event.example);
-      yield InsertedExample();
+    } catch (e) {
+      yield CommonWorkError();
     }
   }
 }

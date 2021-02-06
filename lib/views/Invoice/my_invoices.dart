@@ -154,6 +154,7 @@ class _InvoiceCardState extends State<InvoiceCard> {
 
   void onShareClick() async {
     // File file = await client.save();
+    await client.build();
     es.Share.file("Invoice to ${widget.invoice.recipientName}",
         "${widget.invoice.id}.pdf", await client.getBytes(), "application/pdf");
     // Share.shareFiles([file.path],
@@ -177,10 +178,7 @@ class _InvoiceCardState extends State<InvoiceCard> {
         ),
         title: InkWell(
           onTap: () async {
-            print("running");
-
-            await client.build();
-            await client.save();
+            onShareClick();
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -194,8 +192,8 @@ class _InvoiceCardState extends State<InvoiceCard> {
           ),
         ),
         trailing: IconButton(
-          onPressed: () async {
-            await client.build();
+          onPressed: () {
+            // await client.build();
             onShareClick();
           },
           icon: Icon(

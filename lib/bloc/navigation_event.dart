@@ -6,6 +6,8 @@ class NavigationEvent {}
 
 class NavigateToAuthentication extends NavigationEvent {}
 
+class CheckInternetConnection extends NavigationEvent {}
+
 class NavigateToHome extends NavigationEvent {
   final bool isStoreExists;
   NavigateToHome({this.isStoreExists = false});

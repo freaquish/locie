@@ -9,6 +9,7 @@ import 'package:locie/pages/store_bloc_view.dart';
 import 'package:locie/views/create_store/address.dart';
 import 'package:locie/views/create_store/avatar_name.dart';
 import 'package:locie/views/create_store/meta_data.dart';
+import 'package:locie/views/error_widget.dart';
 
 class CreateOrEditStoreWidget extends StatelessWidget {
   final Store store;
@@ -68,6 +69,8 @@ class CreateOrEditStoreBuilder extends StatelessWidget {
                   route: StoreWidgetProvider(sid: state.store.id)));
             }
             return Container();
+          } else if (state is CommonStoreCreationError) {
+            return ErrorScreen();
           }
           return Center(child: CircularProgressIndicator());
         },

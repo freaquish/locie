@@ -11,6 +11,7 @@ import 'package:locie/views/Store_view/reviews.dart';
 import 'package:locie/views/Store_view/store_view.dart';
 import 'package:locie/views/Store_view/store_widget.dart';
 import 'package:locie/views/Store_view/work.dart';
+import 'package:locie/views/error_widget.dart';
 
 /// Bloc used to populate store view ...
 
@@ -106,6 +107,8 @@ class StoreWidgetBuilder extends StatelessWidget {
               sid: state.store.id,
               isEditable: state.isEditable,
             );
+          } else if (state is CommonStoreViewError) {
+            return ErrorScreen();
           }
           return Center(
             child: Container(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/navigation_bloc.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
@@ -46,7 +48,9 @@ class ErrorScreen extends StatelessWidget {
                 horizontal: screen.horizontal(25)),
             child: SubmitButton(
                 //TODO check error status
-                onPressed: () {},
+                onPressed: () {
+                  BlocProvider.of<NavigationBloc>(context).pop();
+                },
                 buttonName: 'Try Again',
                 buttonColor: Colour.submitButtonColor),
           )

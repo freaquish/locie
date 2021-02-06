@@ -4,11 +4,11 @@ import 'package:locie/bloc/listing_bloc.dart';
 import 'package:locie/bloc/navigation_bloc.dart';
 import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/components/primary_container.dart';
-import 'package:locie/get_it.dart';
 import 'package:locie/models/category.dart';
 import 'package:locie/models/listing.dart';
 import 'package:locie/views/add_item/add_item.dart';
 import 'package:locie/views/add_item/item_meta_data.dart';
+import 'package:locie/views/error_widget.dart';
 import 'package:locie/views/my_store/my_items.dart';
 
 class ListingOperationViewProvider extends StatelessWidget {
@@ -80,6 +80,8 @@ class ListingOperationBuilder extends StatelessWidget {
               onComplete();
             }
             return Container();
+          } else if (state is CreationErrorState) {
+            return ErrorScreen();
           }
         },
       ),

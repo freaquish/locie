@@ -60,6 +60,8 @@ class ShowMyStorePage extends StoreState {
   ShowMyStorePage(this.store, {this.afterEdit = false});
 }
 
+class CommonStoreCreationError extends StoreState {}
+
 class StoreEvent {}
 
 // This event whill trigger initialising state and starts store creation page
@@ -136,54 +138,58 @@ class CreateOrEditStoreBloc extends Bloc<StoreEvent, StoreState> {
 
   @override
   Stream<StoreState> mapEventToState(StoreEvent event) async* {
-    await localStorage.init();
-    print(event);
-    if (event is InitializeCreateStore) {
-      /**
+    try {
+      await localStorage.init();
+      print(event);
+      if (event is InitializeCreateStore) {
+        /**
        * [InitiakizeCreateOrEditStore] will handle Store Creation or editing
        * if events store is null then event is triggered for store creation
        * otherwise for editing, everything is same except in case of editing 
        * the `TextEditingControllers` will have provided store values as default which could be changed
        */
-      events.add(event);
-      Store store;
-      if (localStorage.prefs.containsKey("uid")) {
-        var uid = localStorage.prefs.getString("uid");
-        store = await storeQuery.fetchStore(uid);
+        events.add(event);
+        Store store;
+        if (localStorage.prefs.containsKey("uid")) {
+          var uid = localStorage.prefs.getString("uid");
+          store = await storeQuery.fetchStore(uid);
+        }
+        if (store != null) {
+          localStorage.setStore(store);
+          yield RedirectToHomeFromCreateStore();
+        } else {
+          yield InitializingCreateOrEditStore();
+        }
+      } else if (event is CreateStore) {
+        events.add(event);
+        // CreateStore commands set store data in the database
+        yield UploadingStore();
+        // FireStoreQuery storeQuery = FireStoreQuery();
+        var account = await localStorage.getAccount();
+        Store store = await storeQuery.createStore(event.store, account);
+        yield ShowMyStorePage(store);
+      } else if (event is EditStore) {
+        events.add(event);
+        // Fetch store data using shared prefs
+        yield UploadingStore();
+        FireStoreQuery storeQuery = FireStoreQuery();
+        Store store = await storeQuery.editStore(event.store);
+        yield ShowMyStorePage(store, afterEdit: true);
+      } else if (event is ProceedToAddressPage) {
+        events.add(event);
+        yield ShowingAddressPage(event.store);
+      } else if (event is ProceedToMetaDataPage) {
+        events.add(event);
+        yield ShowingMetaDataPage(event.store);
+      } else if (event is PreviousExamplesEvent) {
+        events.add(event);
+        yield* mapAddPreviousExample(event);
+      } else if (event is InitializeEditStore) {
+        events.add(event);
+        yield InitializedEditPage(event.store);
       }
-      if (store != null) {
-        localStorage.setStore(store);
-        yield RedirectToHomeFromCreateStore();
-      } else {
-        yield InitializingCreateOrEditStore();
-      }
-    } else if (event is CreateStore) {
-      events.add(event);
-      // CreateStore commands set store data in the database
-      yield UploadingStore();
-      // FireStoreQuery storeQuery = FireStoreQuery();
-      var account = await localStorage.getAccount();
-      Store store = await storeQuery.createStore(event.store, account);
-      yield ShowMyStorePage(store);
-    } else if (event is EditStore) {
-      events.add(event);
-      // Fetch store data using shared prefs
-      yield UploadingStore();
-      FireStoreQuery storeQuery = FireStoreQuery();
-      Store store = await storeQuery.editStore(event.store);
-      yield ShowMyStorePage(store, afterEdit: true);
-    } else if (event is ProceedToAddressPage) {
-      events.add(event);
-      yield ShowingAddressPage(event.store);
-    } else if (event is ProceedToMetaDataPage) {
-      events.add(event);
-      yield ShowingMetaDataPage(event.store);
-    } else if (event is PreviousExamplesEvent) {
-      events.add(event);
-      yield* mapAddPreviousExample(event);
-    } else if (event is InitializeEditStore) {
-      events.add(event);
-      yield InitializedEditPage(event.store);
+    } catch (e) {
+      yield CommonStoreCreationError();
     }
   }
 

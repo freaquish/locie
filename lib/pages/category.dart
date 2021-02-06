@@ -6,6 +6,7 @@ import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/views/category/create.dart';
 import 'package:locie/views/category/selection.dart';
+import 'package:locie/views/error_widget.dart';
 
 class CategoryProvider extends StatelessWidget {
   @override
@@ -47,6 +48,8 @@ class CategoryBuilder extends StatelessWidget {
             // navBloc.route.push(NavigateToCreateStore());
             // navBloc
             return Container();
+          } else if (state is CommonCategoryError) {
+            return ErrorScreen();
           }
         },
       ),

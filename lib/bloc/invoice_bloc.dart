@@ -9,7 +9,7 @@ class InvoiceState {}
 
 class LoadingState extends InvoiceState {}
 
-class ErrorState extends InvoiceState {}
+// class ErrorState extends InvoiceState {}
 
 class ShowingPhoneInputPage extends InvoiceState {}
 
@@ -40,6 +40,8 @@ class ShowingInvoices extends InvoiceState {
   final bool storeExists;
   ShowingInvoices({this.received = false, this.invoices, this.storeExists});
 }
+
+class CommonInvoiceError extends InvoiceState {}
 
 class CreatingInvoice extends LoadingState {}
 
@@ -94,65 +96,69 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
 
   @override
   Stream<InvoiceState> mapEventToState(InvoiceEvent event) async* {
-    await localStorage.init();
-    if (event is InvoiceCustomerPhoneInputPageLaunch) {
-      lastEvent = event;
-      yield ShowingPhoneInputPage();
-    } else if (event is SearchCustomerForInvoice) {
-      yield LoadingState();
-      Account account = await repo.searchAccount(event.phoneNumber);
-      yield ShowingCustomerResultPage(
-          account: account, phoneNumber: event.phoneNumber);
-    } else if (event is ItemInputPageLaunch) {
-      yield ShowingItemInputPage(event.invoice);
-    } else if (event is FinanceInputPageLaunch) {
-      lastEvent = event;
-      yield ShowingFinanceInputPage(event.invoice);
-    } else if (event is CreateInvoiceOnServer) {
-      yield CreatingInvoice();
-      await repo.createInvoice(event.invoice);
-      // if even.invoice.recipient != null --> send notification
-      if (event.invoice.recipient != null) {
-        dynamic token =
-            await notification.getToken(userId: event.invoice.recipient);
-        notification.sendNotification(
-          tokens: token,
-          sender: event.invoice.id,
-          notificationType: 'Invoice',
-          notificationTitle: 'New Invoice',
-          message: event.invoice.generatorName +
-              " has created an Invoice for you, with Invoice number " +
-              event.invoice.id,
-        );
-      }
-      this..add(FetchMyInvoices());
-    } else if (event is FetchMyInvoices) {
-      yield LoadingState();
-      bool isStoreExists = localStorage.prefs.containsKey("sid");
-      // bool showRecieved =
-      //     (event.received == true || (event.received == null && isStoreExists));
-      // List<Invoice> invoices = await repo.fetchInvoices(received: showRecieved);
+    try {
+      await localStorage.init();
+      if (event is InvoiceCustomerPhoneInputPageLaunch) {
+        lastEvent = event;
+        yield ShowingPhoneInputPage();
+      } else if (event is SearchCustomerForInvoice) {
+        yield LoadingState();
+        Account account = await repo.searchAccount(event.phoneNumber);
+        yield ShowingCustomerResultPage(
+            account: account, phoneNumber: event.phoneNumber);
+      } else if (event is ItemInputPageLaunch) {
+        yield ShowingItemInputPage(event.invoice);
+      } else if (event is FinanceInputPageLaunch) {
+        lastEvent = event;
+        yield ShowingFinanceInputPage(event.invoice);
+      } else if (event is CreateInvoiceOnServer) {
+        yield CreatingInvoice();
+        await repo.createInvoice(event.invoice);
+        // if even.invoice.recipient != null --> send notification
+        if (event.invoice.recipient != null) {
+          dynamic token =
+              await notification.getToken(userId: event.invoice.recipient);
+          notification.sendNotification(
+            tokens: token,
+            sender: event.invoice.id,
+            notificationType: 'Invoice',
+            notificationTitle: 'New Invoice',
+            message: event.invoice.generatorName +
+                " has created an Invoice for you, with Invoice number " +
+                event.invoice.id,
+          );
+        }
+        this..add(FetchMyInvoices());
+      } else if (event is FetchMyInvoices) {
+        yield LoadingState();
+        bool isStoreExists = localStorage.prefs.containsKey("sid");
+        // bool showRecieved =
+        //     (event.received == true || (event.received == null && isStoreExists));
+        // List<Invoice> invoices = await repo.fetchInvoices(received: showRecieved);
 
-      yield ShowingInvoices(
-          received: event.received, invoices: [], storeExists: isStoreExists);
-    } else if (event is RetreieveTabbedInvoices) {
-      print(event);
-      yield LoadingState();
-      bool isStoreExists = localStorage.prefs.containsKey("sid");
-      bool isSent = event.sent == null && isStoreExists ? true : event.sent;
-      List<Invoice> invoices = [];
-      if (isSent) {
-        if (sent == null) {
-          sent = await repo.fetchInvoices(received: false);
+        yield ShowingInvoices(
+            received: event.received, invoices: [], storeExists: isStoreExists);
+      } else if (event is RetreieveTabbedInvoices) {
+        print(event);
+        yield LoadingState();
+        bool isStoreExists = localStorage.prefs.containsKey("sid");
+        bool isSent = event.sent == null && isStoreExists ? true : event.sent;
+        List<Invoice> invoices = [];
+        if (isSent) {
+          if (sent == null) {
+            sent = await repo.fetchInvoices(received: false);
+          }
+          invoices = sent;
+        } else {
+          if (recieved == null) {
+            recieved = await repo.fetchInvoices(received: false);
+          }
+          invoices = recieved;
         }
-        invoices = sent;
-      } else {
-        if (recieved == null) {
-          recieved = await repo.fetchInvoices(received: false);
-        }
-        invoices = recieved;
+        yield ShowingTabInvoices(invoices);
       }
-      yield ShowingTabInvoices(invoices);
+    } catch (e) {
+      yield CommonInvoiceError();
     }
   }
 }

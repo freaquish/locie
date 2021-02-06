@@ -6,7 +6,6 @@ import 'package:locie/models/review.dart';
 import 'package:locie/models/store.dart';
 import 'package:locie/repo/store_view_repo.dart';
 import 'package:locie/singleton.dart';
-import 'package:locie/views/Store_view/product_view.dart';
 
 class StoreViewState {}
 
@@ -71,6 +70,8 @@ class FetchStoreWorks extends StoreViewEvent {
   );
 }
 
+class CommonStoreViewError extends StoreViewState {}
+
 class InjectStoreView extends StoreViewEvent {
   final StoreViewState state;
   InjectStoreView(this.state);
@@ -98,35 +99,42 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
   Stream<StoreViewState> mapEventToState(StoreViewEvent event) async* {
     // yield LoadingState();
     // await localStorage.init();
-    store = await localStorage.getStore();
-    if (event is FetchStore) {
-      // This event will show complete widget
-      yield LoadingState();
-      Store store;
-      store = await repo.fetchStore(event.sid);
+    try {
+      store = await localStorage.getStore();
+      if (event is FetchStore) {
+        // This event will show complete widget
+        yield LoadingState();
+        Store store;
+        store = await repo.fetchStore(event.sid);
 
-      yield ShowingStoreViewWidget(
-          store: store, isEditable: storeIsSame(event.sid));
-    } else if (event is FetchStoreProducts) {
-      yield LoadingState();
-      List<Listing> listings =
-          await repo.fetchStoreListing(event.sid, event.startAt);
-      yield FetchedStoreProducts(listings, isStoreMine: storeIsSame(event.sid));
-    } else if (event is FetchStoreWorks) {
-      yield LoadingState();
-      PreviousExamples examples = await repo.fetchWorks(event.sid);
-      //printexamples);
-      yield FetchedStoreWorks(examples, isStoreMine: storeIsSame(event.sid));
-    } else if (event is FetchStoreReviews) {
-      yield FetchingList();
-      List<Review> reviews = await repo.fetchReviews(event.sid, event.startAt);
-      print(reviews);
-      yield FetchedStoreReviews(reviews, isStoreMine: storeIsSame(event.sid));
-    } else if (event is InjectStoreView) {
-      yield event.state;
-    } else if (event is FetchStoreView) {
-      yield LoadingState();
-      yield FetchedStore(event.store, isStoreMine: storeIsSame(event.store.id));
+        yield ShowingStoreViewWidget(
+            store: store, isEditable: storeIsSame(event.sid));
+      } else if (event is FetchStoreProducts) {
+        yield LoadingState();
+        List<Listing> listings =
+            await repo.fetchStoreListing(event.sid, event.startAt);
+        yield FetchedStoreProducts(listings,
+            isStoreMine: storeIsSame(event.sid));
+      } else if (event is FetchStoreWorks) {
+        yield LoadingState();
+        PreviousExamples examples = await repo.fetchWorks(event.sid);
+        //printexamples);
+        yield FetchedStoreWorks(examples, isStoreMine: storeIsSame(event.sid));
+      } else if (event is FetchStoreReviews) {
+        yield FetchingList();
+        List<Review> reviews =
+            await repo.fetchReviews(event.sid, event.startAt);
+        print(reviews);
+        yield FetchedStoreReviews(reviews, isStoreMine: storeIsSame(event.sid));
+      } else if (event is InjectStoreView) {
+        yield event.state;
+      } else if (event is FetchStoreView) {
+        yield LoadingState();
+        yield FetchedStore(event.store,
+            isStoreMine: storeIsSame(event.store.id));
+      }
+    } catch (e) {
+      yield CommonStoreViewError();
     }
   }
 }

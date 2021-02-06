@@ -45,15 +45,6 @@ class NotInternetWidget extends StatelessWidget {
               ),
               SizedBox(
                 height: screen.vertical(20),
-              ),
-              Container(
-                height: screen.vertical(75),
-                width: screen.horizontal(40),
-                child: SubmitButton(
-                    //TODO check Internet connectioon status
-                    onPressed: () {},
-                    buttonName: 'Try Again',
-                    buttonColor: Colour.submitButtonColor),
               )
             ],
           ),

@@ -18,6 +18,8 @@ class ShowingMetaDataPage extends ListingState {
   ShowingMetaDataPage({this.listing});
 }
 
+class CommonListingError extends ListingState {}
+
 class CreatingListing extends ListingState {}
 
 class ShowingMyListings extends ListingState {

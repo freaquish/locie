@@ -4,6 +4,7 @@ import 'package:locie/bloc/authentication_bloc.dart';
 import 'package:locie/bloc/navigation_bloc.dart';
 import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/components/primary_container.dart';
+import 'package:locie/views/error_widget.dart';
 import 'package:locie/views/loadings.dart';
 import 'package:locie/views/authentication/phone_authentication.dart';
 import 'package:locie/views/authentication/registration_screen.dart';
@@ -58,6 +59,8 @@ class AuthenticationBuilder extends StatelessWidget {
               navBloc..add(NavigateToHome());
             }
             return Container();
+          } else if (state is CommonAuthenticationError) {
+            return ErrorScreen();
           }
           return CircularLoading();
         },

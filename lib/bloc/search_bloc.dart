@@ -7,6 +7,8 @@ class SearchState {}
 
 class SearchLoading extends SearchState {}
 
+class CommonSearchError extends SearchState {}
+
 class SearchResults extends SearchState {
   final List<Store> stores;
   final List<Listing> listings;
@@ -33,18 +35,22 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   @override
   Stream<SearchState> mapEventToState(SearchEvent event) async* {
-    if (event is SearchDefaultStoresForHome) {
-      yield SearchLoading();
-      List<Store> stores = await repository.fetchTopStoresForHome();
-      yield SearchResults(stores: stores);
-    } else if (event is SearchItem) {
-      yield SearchLoading();
-      List<Listing> listings = await repository.searchListing(event.text);
-      yield SearchResults(listings: listings);
-    } else if (event is SearchStore) {
-      yield SearchLoading();
-      List<Store> stores = await repository.searchStore(event.text);
-      yield SearchResults(stores: stores);
+    try {
+      if (event is SearchDefaultStoresForHome) {
+        yield SearchLoading();
+        List<Store> stores = await repository.fetchTopStoresForHome();
+        yield SearchResults(stores: stores);
+      } else if (event is SearchItem) {
+        yield SearchLoading();
+        List<Listing> listings = await repository.searchListing(event.text);
+        yield SearchResults(listings: listings);
+      } else if (event is SearchStore) {
+        yield SearchLoading();
+        List<Store> stores = await repository.searchStore(event.text);
+        yield SearchResults(stores: stores);
+      }
+    } catch (e) {
+      yield CommonSearchError();
     }
   }
 }

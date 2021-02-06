@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/helper/local_storage.dart';
@@ -15,7 +17,11 @@ class LoadingState extends NavigationState {}
 
 class NavigatedToCategorySelection extends NavigationState {}
 
+class NoInternetConnectionState extends NavigationState {}
+
 class NavigatedToCreateStore extends NavigationState {}
+
+class NavigationUnknownError extends NavigationState {}
 
 class NotItemFound extends NavigationState {}
 
@@ -89,38 +95,57 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
     this..add(route.current());
   }
 
+  Future<bool> checkConnectivity() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
+  }
+
   @override
   Stream<NavigationState> mapEventToState(NavigationEvent event) async* {
-    await localStorage.init();
-    print(route.length);
-    if (event is NavigateToSelectCategory) {
-      yield NavigatedToCategorySelection();
-    } else if (event is NavigateToCreateListing) {
-      yield NavigatedToCreateListing(event.category);
-    } else if (event is NavigateToAuthentication) {
-      yield TransitionState();
-    } else if (event is NavigateToHome) {
-      bool isStoreExists = localStorage.prefs.containsKey("sid");
-      yield NavigatedToHome(isStoreExists: isStoreExists);
-    } else if (event is NavigateToCreateStore) {
-      yield NavigatedToCreateStore();
-    } else if (event is NavigateToEditListing) {
-      yield NavigatedToEditingListing(event.listing);
-    } else if (event is MaterialProviderRoute) {
-      yield MaterialBuilder(event.route);
-    } else if (event is LaunchItemView) {
-      yield LoadingState();
-      Listing listing = await StoreViewRepo().fetchItem(event.lid);
-      bool isEditable = localStorage.prefs.containsKey("sid") &&
-          (localStorage.prefs.getString("sid") == listing.store);
-      if (listing == null) {
-        yield NotItemFound();
-      } else {
-        yield ShowingParticularItemView(listing, isEditable: isEditable);
+    try {
+      await localStorage.init();
+      bool isConnected = await checkConnectivity();
+      // print(isConnected);
+      // throw Error();
+      if (!isConnected) {
+        yield NoInternetConnectionState();
+      } else if (event is NavigateToSelectCategory) {
+        yield NavigatedToCategorySelection();
+      } else if (event is NavigateToCreateListing) {
+        yield NavigatedToCreateListing(event.category);
+      } else if (event is NavigateToAuthentication) {
+        yield TransitionState();
+      } else if (event is NavigateToHome) {
+        bool isStoreExists = localStorage.prefs.containsKey("sid");
+        yield NavigatedToHome(isStoreExists: isStoreExists);
+      } else if (event is NavigateToCreateStore) {
+        yield NavigatedToCreateStore();
+      } else if (event is NavigateToEditListing) {
+        yield NavigatedToEditingListing(event.listing);
+      } else if (event is MaterialProviderRoute) {
+        yield MaterialBuilder(event.route);
+      } else if (event is LaunchItemView) {
+        yield LoadingState();
+        Listing listing = await StoreViewRepo().fetchItem(event.lid);
+        bool isEditable = localStorage.prefs.containsKey("sid") &&
+            (localStorage.prefs.getString("sid") == listing.store);
+        if (listing == null) {
+          yield NotItemFound();
+        } else {
+          yield ShowingParticularItemView(listing, isEditable: isEditable);
+        }
+      } else if (event is NavigateToEditStore) {
+        print(event.store.toString() + "nb");
+        yield NavigatedToEditStore(event.store);
       }
-    } else if (event is NavigateToEditStore) {
-      print(event.store.toString() + "nb");
-      yield NavigatedToEditStore(event.store);
+    } catch (e) {
+      yield NavigationUnknownError();
     }
   }
 }

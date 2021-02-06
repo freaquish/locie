@@ -4,6 +4,7 @@ import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/text_field.dart';
 import 'package:locie/constants.dart';
+import 'package:locie/helper/dynamic_link_service.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/quotations.dart';
 import 'package:locie/workers/worker_client.dart';
@@ -138,7 +139,10 @@ class _QuotationCardState extends State<QuotationCard> {
           widget.quotation.quantity.toStringAsFixed(2) +
           " " +
           widget.quotation.listingUnit;
+      text +=
+          "\nPlease checkout ${DynamicLinksService.generateListingLink(widget.quotation.listing)}";
       await WorkerClient.sendMessage(widget.quotation.userContact, text);
+      Navigator.of(context).pop();
     }
   }
 

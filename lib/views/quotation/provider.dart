@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/quotation_bloc.dart';
 import 'package:locie/components/primary_container.dart';
+import 'package:locie/views/error_widget.dart';
 import 'package:locie/views/quotation/quotation_view.dart';
 
 class QuotationViewProvider extends StatelessWidget {
@@ -44,6 +45,8 @@ class QuotationBuilder extends StatelessWidget {
                 isSent: false,
               ),
             );
+          } else if (state is CommonQuotationError) {
+            return ErrorScreen();
           }
           return Center(
             child: Container(

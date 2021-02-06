@@ -13,6 +13,8 @@ class FetchedSentQuotations extends QuotationState {
   FetchedSentQuotations({this.quotations = const [], this.isStore = false});
 }
 
+class CommonQuotationError extends QuotationState {}
+
 class FetchedReceivedQuotations extends QuotationState {
   final List<Quotation> quotations;
   final bool isStore;
@@ -32,19 +34,23 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
 
   @override
   Stream<QuotationState> mapEventToState(QuotationEvent event) async* {
-    await localStorage.init();
-    bool isStoreExist = localStorage.prefs.containsKey("sid");
-    print(event);
-    if (event is FetchSentQuotations) {
-      yield LoadingQuotationState();
-      List<Quotation> quotations = await query.fetchQuotations(sent: true);
-      yield FetchedSentQuotations(
-          quotations: quotations, isStore: isStoreExist);
-    } else if (event is FetchReceivedQuotations) {
-      yield LoadingQuotationState();
-      List<Quotation> quotations = await query.fetchQuotations(sent: false);
-      yield FetchedReceivedQuotations(
-          quotations: quotations, isStore: isStoreExist);
+    try {
+      await localStorage.init();
+      bool isStoreExist = localStorage.prefs.containsKey("sid");
+      print(event);
+      if (event is FetchSentQuotations) {
+        yield LoadingQuotationState();
+        List<Quotation> quotations = await query.fetchQuotations(sent: true);
+        yield FetchedSentQuotations(
+            quotations: quotations, isStore: isStoreExist);
+      } else if (event is FetchReceivedQuotations) {
+        yield LoadingQuotationState();
+        List<Quotation> quotations = await query.fetchQuotations(sent: false);
+        yield FetchedReceivedQuotations(
+            quotations: quotations, isStore: isStoreExist);
+      }
+    } catch (e) {
+      yield CommonQuotationError();
     }
   }
 }
