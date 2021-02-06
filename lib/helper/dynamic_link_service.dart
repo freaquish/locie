@@ -1,15 +1,16 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/material.dart';
 import 'package:locie/bloc/navigation_event.dart';
-import 'package:locie/views/Store_view/store_view.dart';
 import 'package:locie/views/Store_view/store_widget.dart';
 
 class DynamicLinksService {
   NavigationEvent event = NavigateToHome();
 
   Future<void> handleDynamicLink() async {
+    // await Firebase.initializeApp();
     final PendingDynamicLinkData dynamicLinkData =
         await FirebaseDynamicLinks.instance.getInitialLink();
-
+    print(dynamicLinkData);
     if (dynamicLinkData != null) {
       await _handleDynamicLink(dynamicLinkData);
     }

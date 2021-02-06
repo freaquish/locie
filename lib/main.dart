@@ -32,10 +32,12 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   DynamicLinksService dynmaicLinksService = DynamicLinksService();
+  NavigationEvent event = NavigateToHome();
 
   @override
   void initState() {
     firebaseSetUp();
+    // Firebase.initializeApp();
     fcm.configure(
         onMessage: (Map<String, dynamic> message) async {},
         onResume: (Map<String, dynamic> message) async {},
@@ -47,15 +49,17 @@ class _MainPageState extends State<MainPage> {
 
   Future<void> firebaseSetUp() async {
     await Firebase.initializeApp();
-    var event = await dynmaicLinksService.getDynamicEvent();
-    if (!(event is NavigateToHome)) {
-      throw Exception(event.toString());
-    }
-    print(event);
+    event = await dynmaicLinksService.getDynamicEvent();
+    // if (!(event is NavigateToHome)) {
+    //   throw Exception(event.toString());
+    // }
+    print(event.toString() +
+        "Piyusdsjghdfkjgkjhdfkjhgkjdfhkjhgkjfhdgjhfkjdgkjdfhgkjhfdkjghdfjkhgkjdfhgkjhdfkghdfkjhgifdhgkjfdhgkjfhdkj");
   }
 
   @override
   Widget build(BuildContext context) {
+    // firebaseSetUp(context);
     return Scaffold(
       body: FutureBuilder(
         future: Firebase.initializeApp(),
@@ -69,7 +73,7 @@ class _MainPageState extends State<MainPage> {
             //     sid: 'abaf3de1-1558-5960-9dd5-e7c04eb54767',
             // event: FetchStore('abaf3de1-1558-5960-9dd5-e7c04eb54767'));
             return NavigationProvider(
-              event: NavigateToHome(),
+              event: event,
             );
             // return QuotationWidget();
           }
