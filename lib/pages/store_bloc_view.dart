@@ -56,12 +56,19 @@ class StoreViewBuilder extends StatelessWidget {
             return StoreAboutWidget(singleton.store);
           } else if (state is FetchedStoreWorks) {
             singleton.examples = state.examples;
+            print(state.examples.sid);
             return StoreWorksWidget(singleton.examples);
           } else if (state is FetchedStoreProducts) {
             return StoreProductWidget(state.listings);
           } else if (state is FetchedStoreReviews) {
+            print(state);
             return StoreReviewsWidget(state.reviews);
           }
+          return Center(
+            child: Container(
+              child: CircularProgressIndicator(),
+            ),
+          );
         },
       ),
     );

@@ -113,7 +113,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
       if (singleton.isReviewNull) {
         return FetchStoreReviews(widget.sid);
       } else if (singleton.isNextReviewFetchViable) {
-        return FetchStoreReviews(widget.sid, startAt: singleton.lastReviewSnap);
+        return FetchStoreReviews(widget.sid);
       }
     }
   }
@@ -173,7 +173,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                     tabs: [
                       Padding(
                         padding: EdgeInsets.only(
-                          bottom: screen.horizontal(2),
+                          bottom: screen.vertical(2),
                           top: screen.vertical(30),
                         ),
                         child: LatoText(
@@ -186,7 +186,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                       ),
                       Padding(
                         padding: EdgeInsets.only(
-                            bottom: screen.horizontal(2),
+                            bottom: screen.vertical(2),
                             top: screen.vertical(30)),
                         child: LatoText('Product',
                             fontColor: tabController.index == 1
@@ -196,7 +196,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                       ),
                       Padding(
                         padding: EdgeInsets.only(
-                            bottom: screen.horizontal(2),
+                            bottom: screen.vertical(2),
                             top: screen.vertical(30)),
                         child: LatoText('Work',
                             fontColor: tabController.index == 2
@@ -206,7 +206,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                       ),
                       Padding(
                         padding: EdgeInsets.only(
-                            bottom: screen.horizontal(2),
+                            bottom: screen.vertical(2),
                             top: screen.vertical(30)),
                         child: LatoText('Review',
                             fontColor: tabController.index == 3

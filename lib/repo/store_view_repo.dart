@@ -66,7 +66,7 @@ class StoreViewRepo {
     Query query = instance
         .collection("reviews")
         .where("store", isEqualTo: sid)
-        .orderBy("rating");
+        .orderBy("rating", descending: true);
     if (documentSnapshot != null) {
       query = query.startAfterDocument(documentSnapshot);
     }

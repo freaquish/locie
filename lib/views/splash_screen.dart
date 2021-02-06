@@ -7,18 +7,18 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screen = Scale(context);
     return Scaffold(
-        backgroundColor: Colour.bgColor,
-          body: Center(
-            child: Container(
-              height: screen.vertical(45),
-              width: screen.horizontal(42),
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.fill,
-                image: AssetImage('assets/images/app_icon.png'),
-              )),
-            ),
-          ),
+      backgroundColor: Color(0xff1F0037),
+      body: Center(
+        child: Container(
+          height: screen.vertical(45),
+          width: screen.horizontal(42),
+          decoration: BoxDecoration(
+              image: DecorationImage(
+            fit: BoxFit.fill,
+            image: AssetImage('assets/images/app_icon.png'),
+          )),
+        ),
+      ),
     );
   }
 }

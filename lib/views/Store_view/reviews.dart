@@ -7,8 +7,34 @@ class StoreReviewsWidget extends StatelessWidget {
   final List<Review> reviews;
   StoreReviewsWidget(this.reviews);
 
-  final String description =
-      'Shopping is an activity in which a customer browses the available goods or services presented by one or more retailers with the potential intent to purchase a suitable selection of them. ';
+  ratingIcon(dynamic rating) {
+    if (rating >= 0 && rating <= 1.0) {
+      return Icon(
+        Icons.sentiment_very_dissatisfied,
+        color: Colors.red,
+      );
+    } else if (rating >= 1 && rating <= 2) {
+      return Icon(
+        Icons.sentiment_dissatisfied,
+        color: Colors.redAccent,
+      );
+    } else if (rating >= 3 && rating <= 4) {
+      return Icon(
+        Icons.sentiment_neutral,
+        color: Colors.amber,
+      );
+    } else if (rating >= 4 && rating <= 5) {
+      return Icon(
+        Icons.sentiment_satisfied,
+        color: Colors.lightGreen,
+      );
+    } else {
+      return Icon(
+        Icons.sentiment_very_satisfied,
+        color: Colors.green,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +46,8 @@ class StoreReviewsWidget extends StatelessWidget {
           child: ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: 10,
-              itemBuilder: (context, i) {
+              itemCount: reviews.length,
+              itemBuilder: (context, index) {
                 return ListTile(
                   trailing: Wrap(
                     children: [
@@ -29,21 +55,20 @@ class StoreReviewsWidget extends StatelessWidget {
                         padding: EdgeInsets.only(
                             top: screen.vertical(10),
                             right: screen.horizontal(2)),
-                        child: LatoText('4.8'),
+                        child: ratingIcon(reviews[index].rating),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: screen.vertical(10)),
-                        child: Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                          size: 16,
-                        ),
+                        padding: EdgeInsets.only(
+                            top: screen.vertical(10),
+                            right: screen.horizontal(3)),
+                        child:
+                            LatoText(reviews[index].rating.toStringAsFixed(1)),
                       ),
                     ],
                   ),
                   tileColor: Colors.transparent,
                   subtitle: RailwayText(
-                    description,
+                    reviews[index].text,
                     size: 14,
                     fontColor: Color(0xffc4c4c4),
                   ),
@@ -51,13 +76,15 @@ class StoreReviewsWidget extends StatelessWidget {
                     padding: EdgeInsets.only(
                         bottom: screen.vertical(12), top: screen.vertical(24)),
                     child: LatoText(
-                      'Suyash Maddhesiya',
-                      size: 22,
+                      reviews[index].userName,
+                      size: 18,
                     ),
                   ),
                   leading: CircleAvatar(
                     radius: screen.horizontal(5),
-                    backgroundImage: AssetImage('assets/images/user.png'),
+                    backgroundImage: reviews[index].userImage != null
+                        ? NetworkImage(reviews[index].userImage)
+                        : AssetImage('assets/images/user.png'),
                   ),
                 );
               })),

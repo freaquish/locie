@@ -22,10 +22,10 @@ class NotInternetWidget extends StatelessWidget {
               ),
               Container(
                 height: screen.vertical(150),
-                width: screen.horizontal(25),
+                width: screen.horizontal(40),
                 child: Image.asset(
                   "assets/images/no_internet.png",
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ),
               SizedBox(
@@ -50,6 +50,7 @@ class NotInternetWidget extends StatelessWidget {
                 height: screen.vertical(75),
                 width: screen.horizontal(40),
                 child: SubmitButton(
+                    //TODO check Internet connectioon status
                     onPressed: () {},
                     buttonName: 'Try Again',
                     buttonColor: Colour.submitButtonColor),
