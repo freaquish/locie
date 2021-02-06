@@ -253,20 +253,22 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                         if (_formKey.currentState.validate() &&
                             textEditingController.text.length > 3) {
                           debugPrint('submit');
-                          widget.listing.name = textEditingController.text;
-                          widget.listing.description =
+                          Listing listing = Listing();
+                          if (widget.listing != null) {
+                            listing = widget.listing;
+                          }
+                          listing.name = textEditingController.text;
+                          listing.description =
                               textEditingControllerDescription.text;
                           if (image is File) {
-                            widget.listing.imageFile = image;
+                            listing.imageFile = image;
                           }
-                          if (widget.category != null &&
-                              widget.listing.id == null) {
-                            widget.listing.parent = widget.category.id;
-                            widget.listing.parentName = widget.category.name;
-                            widget.listing.category = widget.category;
+                          if (widget.category != null && listing.id == null) {
+                            listing.parent = widget.category.id;
+                            listing.parentName = widget.category.name;
+                            listing.category = widget.category;
                           }
-                          widget.bloc
-                            ..add(ProceedToMetaDataPage(widget.listing));
+                          widget.bloc..add(ProceedToMetaDataPage(listing));
                         }
                       },
                       buttonName: 'Next',

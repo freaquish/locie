@@ -31,6 +31,8 @@ class ShowingStoreListings extends ListingState {
   ShowingStoreListings({this.sid, this.listings});
 }
 
+class DeletedItem extends ListingState {}
+
 class CreatedListing extends ListingState {}
 
 class CreationErrorState extends ListingState {}
@@ -64,6 +66,11 @@ class FetchItems extends ListingEvent {
   FetchItems({this.sid});
 }
 
+class DeleteItem extends ListingEvent {
+  final String sid;
+  DeleteItem(this.sid);
+}
+
 class ListingBloc extends Bloc<ListingEvent, ListingState> {
   ListingBloc() : super(InitializingState());
   ListingQuery listingQuery = ListingQuery();
@@ -91,6 +98,10 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
         }
       } else if (event is InitiateListingUpdate) {
         yield ShowingListingPage(listing: event.listing);
+      } else if (event is DeleteItem) {
+        yield InitializingState();
+        await listingQuery.deleteItem(event.sid);
+        yield DeletedItem();
       }
     } catch (e) {
       // //printe);

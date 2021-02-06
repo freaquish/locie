@@ -40,6 +40,8 @@ class InvoiceRepo {
     await localStorage.init();
     Store store = await localStorage.getStore();
     var now = DateTime.now();
+    // print(invoice.recipientName);
+
     invoice.generator = store.id;
     invoice.generatorName = store.name;
     invoice.generatorPhoneNumber = store.contact;

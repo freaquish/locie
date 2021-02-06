@@ -4,6 +4,7 @@ import 'package:locie/bloc/listing_bloc.dart';
 import 'package:locie/bloc/navigation_bloc.dart';
 import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/components/primary_container.dart';
+import 'package:locie/get_it.dart';
 import 'package:locie/models/category.dart';
 import 'package:locie/models/listing.dart';
 import 'package:locie/views/add_item/add_item.dart';
@@ -14,7 +15,9 @@ class ListingOperationViewProvider extends StatelessWidget {
   final Category category;
   final Listing listing;
   final ListingEvent event;
-  const ListingOperationViewProvider({this.category, this.listing, this.event});
+  final Function onComplete;
+  const ListingOperationViewProvider(
+      {this.category, this.listing, this.event, this.onComplete});
   @override
   Widget build(BuildContext context) {
     ListingEvent initialEvent = event == null
@@ -23,13 +26,17 @@ class ListingOperationViewProvider extends StatelessWidget {
     return Container(
       child: BlocProvider<ListingBloc>(
         create: (context) => ListingBloc()..add(initialEvent),
-        child: ListingOperationBuilder(),
+        child: ListingOperationBuilder(
+          onComplete: onComplete,
+        ),
       ),
     );
   }
 }
 
 class ListingOperationBuilder extends StatelessWidget {
+  final Function onComplete;
+  ListingOperationBuilder({this.onComplete});
   @override
   Widget build(BuildContext context) {
     ListingBloc bloc = BlocProvider.of<ListingBloc>(context);
@@ -37,7 +44,7 @@ class ListingOperationBuilder extends StatelessWidget {
       widget: BlocBuilder<ListingBloc, ListingState>(
         cubit: bloc,
         builder: (context, state) {
-          // //printstate);
+          print(state);
           if (state is InitializingState || state is CreatingListing) {
             return Center(
               child: Container(
@@ -66,6 +73,11 @@ class ListingOperationBuilder extends StatelessWidget {
               bloc.push(NavigateToHome());
             } else {
               bloc.pop();
+            }
+            return Container();
+          } else if (state is DeletedItem) {
+            if (onComplete != null) {
+              onComplete();
             }
             return Container();
           }

@@ -75,7 +75,7 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
               horizontal: screen.horizontal(4), vertical: screen.vertical(15)),
           child: Container(
             color: Colour.bgColor,
-            height: screen.vertical(100),
+            height: screen.vertical(70),
             width: screen.horizontal(100),
             child: SubmitButton(
               onPressed: () {

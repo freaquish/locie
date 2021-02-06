@@ -49,19 +49,21 @@ class _InvoiceItemBillingState extends State<InvoiceItemBilling> {
         color: Colour.bgColor,
         child: Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: screen.horizontal(4), vertical: screen.vertical(15)),
+              horizontal: screen.horizontal(4), vertical: screen.vertical(20)),
           child: Container(
             color: Colour.bgColor,
-            height: screen.vertical(100),
+            height: screen.vertical(70),
             width: screen.horizontal(100),
             child: SubmitButton(
               onPressed: () {
                 if (items.isEmpty) {
+                  BuildContext parentContext = context;
                   showDialog(
                     context: context,
                     builder: (context) => ModalDialogueBox(onPressed: (total) {
-                      widget.invoice.subTotal = total;
-                      BlocProvider.of<InvoiceBloc>(context)
+                      widget.invoice.subTotal = double.parse(total);
+                      Navigator.of(context).pop();
+                      BlocProvider.of<InvoiceBloc>(parentContext)
                         ..add(FinanceInputPageLaunch(widget.invoice));
                     }),
                   );

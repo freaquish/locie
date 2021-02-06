@@ -75,6 +75,10 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
         return 0;
       } else if (event is FetchStoreProducts) {
         return 1;
+      } else if (event is FetchStoreWorks) {
+        return 2;
+      } else if (event is FetchStoreReviews) {
+        return 3;
       }
     }
   }
@@ -139,7 +143,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
     final screen = Scale(context);
     return WillPopScope(
       onWillPop: () async {
-        print("back click");
+        // print("back click");
         onBackClick(context);
 
         return false;

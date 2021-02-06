@@ -57,3 +57,44 @@ class InvoiceBuilder extends StatelessWidget {
     );
   }
 }
+
+class MyInvoiceProvider extends StatelessWidget {
+  final MyInvoiceBloc bloc;
+  final InvoiceEvent event;
+  MyInvoiceProvider({this.bloc, this.event});
+  @override
+  Widget build(BuildContext context) {
+    // print(event);
+    return Container(
+      child: BlocProvider<MyInvoiceBloc>(
+        create: (context) => bloc,
+        child: MyInvoiceBuilder(
+          bloc: bloc,
+        ),
+      ),
+    );
+  }
+}
+
+class MyInvoiceBuilder extends StatelessWidget {
+  final MyInvoiceBloc bloc;
+  MyInvoiceBuilder({this.bloc});
+  @override
+  Widget build(BuildContext context) {
+    return PrimaryContainer(
+        widget: BlocBuilder<MyInvoiceBloc, InvoiceState>(
+      cubit: bloc,
+      builder: (context, state) {
+        print(state.toString() + "bu");
+        if (state is ShowingTabInvoices) {
+          return MyInvoicesListWidget(state.invoices);
+        }
+        return Center(
+          child: Container(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    ));
+  }
+}

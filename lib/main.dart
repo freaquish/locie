@@ -48,6 +48,9 @@ class _MainPageState extends State<MainPage> {
   Future<void> firebaseSetUp() async {
     await Firebase.initializeApp();
     var event = await dynmaicLinksService.getDynamicEvent();
+    if (!(event is NavigateToHome)) {
+      throw Exception(event.toString());
+    }
     print(event);
   }
 

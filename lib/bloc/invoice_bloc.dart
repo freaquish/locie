@@ -19,6 +19,11 @@ class ShowingCustomerResultPage extends InvoiceState {
   ShowingCustomerResultPage({this.account, this.phoneNumber});
 }
 
+class ShowingTabInvoices extends InvoiceState {
+  final List<Invoice> invoices;
+  ShowingTabInvoices(this.invoices);
+}
+
 class ShowingItemInputPage extends InvoiceState {
   final Invoice invoice;
   ShowingItemInputPage(this.invoice);
@@ -66,6 +71,11 @@ class CreateInvoiceOnServer extends InvoiceEvent {
   CreateInvoiceOnServer(this.invoice);
 }
 
+class RetreieveTabbedInvoices extends InvoiceEvent {
+  final bool sent;
+  RetreieveTabbedInvoices({this.sent});
+}
+
 class FetchMyInvoices extends InvoiceEvent {
   final bool received;
   FetchMyInvoices({this.received = false});
@@ -78,6 +88,9 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
 
   InvoiceEvent lastEvent;
   final notification = SendNotification();
+
+  List<Invoice> sent;
+  List<Invoice> recieved;
 
   @override
   Stream<InvoiceState> mapEventToState(InvoiceEvent event) async* {
@@ -116,14 +129,63 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
     } else if (event is FetchMyInvoices) {
       yield LoadingState();
       bool isStoreExists = localStorage.prefs.containsKey("sid");
-      bool showRecieved =
-          (event.received == true || (event.received == null && isStoreExists));
-      List<Invoice> invoices = await repo.fetchInvoices(received: showRecieved);
+      // bool showRecieved =
+      //     (event.received == true || (event.received == null && isStoreExists));
+      // List<Invoice> invoices = await repo.fetchInvoices(received: showRecieved);
 
       yield ShowingInvoices(
-          received: event.received,
-          invoices: invoices,
-          storeExists: isStoreExists);
+          received: event.received, invoices: [], storeExists: isStoreExists);
+    } else if (event is RetreieveTabbedInvoices) {
+      print(event);
+      yield LoadingState();
+      bool isStoreExists = localStorage.prefs.containsKey("sid");
+      bool isSent = event.sent == null && isStoreExists ? true : event.sent;
+      List<Invoice> invoices = [];
+      if (isSent) {
+        if (sent == null) {
+          sent = await repo.fetchInvoices(received: false);
+        }
+        invoices = sent;
+      } else {
+        if (recieved == null) {
+          recieved = await repo.fetchInvoices(received: false);
+        }
+        invoices = recieved;
+      }
+      yield ShowingTabInvoices(invoices);
+    }
+  }
+}
+
+class MyInvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
+  MyInvoiceBloc() : super(LoadingState());
+  InvoiceRepo repo = InvoiceRepo();
+  LocalStorage localStorage = LocalStorage();
+  List<Invoice> sent;
+  List<Invoice> recieved;
+
+  @override
+  Stream<InvoiceState> mapEventToState(InvoiceEvent event) async* {
+    await localStorage.init();
+    print(event);
+    if (event is RetreieveTabbedInvoices) {
+      print(event);
+      yield LoadingState();
+      bool isStoreExists = localStorage.prefs.containsKey("sid");
+      bool isSent = event.sent == null && isStoreExists ? true : event.sent;
+      List<Invoice> invoices = [];
+      if (isSent) {
+        if (sent == null) {
+          sent = await repo.fetchInvoices(received: false);
+        }
+        invoices = sent;
+      } else {
+        if (recieved == null) {
+          recieved = await repo.fetchInvoices(received: true);
+        }
+        invoices = recieved;
+      }
+      yield ShowingTabInvoices(invoices);
     }
   }
 }

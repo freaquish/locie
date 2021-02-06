@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 // import 'package:locie/constants.dart';
+import 'package:downloads_path_provider/downloads_path_provider.dart';
+import 'package:locie/workers/file_manager.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
@@ -43,7 +45,8 @@ class PdfClient {
   }
 
   Future<File> save() async {
-    final output = await getExternalStorageDirectory();
+    Directory output = await DownloadsPathProvider.downloadsDirectory;
+
     final file = File("${output.path}/${invoice.id}.pdf");
     print(file.path);
     File generated = await file.writeAsBytes(await pdf.save());
@@ -65,9 +68,11 @@ class PdfClient {
 
   List<Widget> itemsWidget() {
     List<Widget> widgets = [];
-    invoice.items.forEach((element) {
-      widgets.add(ExpandedItemList(element));
-    });
+    if (invoice.items != null) {
+      invoice.items.forEach((element) {
+        widgets.add(ExpandedItemList(element));
+      });
+    }
     return widgets;
   }
 
@@ -180,24 +185,37 @@ class PdfClient {
                                                       "\n",
                                                   style: TextStyle(
                                                       color: PdfColors.black,
+                                                      fontSize: 20,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                   children: <TextSpan>[
                                         TextSpan(
                                             text: "Contact No." +
                                                 invoice.meta.contact +
-                                                "\n"),
-                                        TextSpan(
-                                            text: invoice.meta.address
-                                                .split(",")
-                                                .join("\n")),
-                                        TextSpan(
-                                            text: "\n\n" +
-                                                invoice.meta.gstin +
                                                 "\n",
                                             style: TextStyle(
                                                 color: PdfColors.black,
-                                                fontWeight: FontWeight.bold))
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.normal)),
+                                        TextSpan(
+                                            style: TextStyle(
+                                                color: PdfColors.black,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.normal),
+                                            text: invoice.meta.address
+                                                .split(",")
+                                                .join("\n")),
+                                        if (invoice.meta.gstin != null &&
+                                            invoice.meta.gstin.length > 0)
+                                          TextSpan(
+                                              text: "\n\n" +
+                                                  "GSTIN: " +
+                                                  invoice.meta.gstin +
+                                                  "\n",
+                                              style: TextStyle(
+                                                  color: PdfColors.black,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold))
                                       ])))),
 
                                   // Logo of generator
@@ -223,15 +241,17 @@ class PdfClient {
                             Container(
                                 child: Text("Invoice Id: ${invoice.id}",
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
+                                        fontWeight: FontWeight.normal))),
                             SizedBox(height: 10),
                             Container(
+                                alignment: Alignment.center,
                                 child: Text(
                                     invoice.recipientName != null
                                         ? invoice.recipientName
                                         : "",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold))),
+                            SizedBox(height: 10),
                             ExpandedList(),
                           ] +
                           itemsWidget() +

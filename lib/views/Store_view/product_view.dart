@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:locie/bloc/listing_bloc.dart';
 import 'package:locie/bloc/navigation_bloc.dart';
 import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/bloc/store_view_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/components/rich_image.dart';
 import 'package:locie/constants.dart';
+import 'package:locie/get_it.dart';
 import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/listing.dart';
@@ -55,6 +57,24 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
     BlocProvider.of<NavigationBloc>(context).pop();
   }
 
+  void onDeleteClick(BuildContext context) {
+    print(BlocProvider.of<NavigationBloc>(context).route);
+    BuildContext parentContext = context;
+    showDialog(
+        context: context,
+        builder: (context) => Dialog(
+              child: Container(
+                child: ListingOperationViewProvider(
+                  event: DeleteItem(widget.listing.id),
+                  onComplete: () {
+                    Navigator.of(context).pop();
+                    NavigationController.of(parentContext).pop();
+                  },
+                ),
+              ),
+            ));
+  }
+
   Future<bool> doesStoreBelongToCurrentUser() async {
     await localStorage.init();
     return (localStorage.prefs.containsKey("sid") &&
@@ -81,7 +101,13 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
                     icon: Icon(Icons.edit, color: Colors.white),
                     onPressed: () {
                       onEditClick(context);
-                    })
+                    }),
+              if (widget.isEditable)
+                IconButton(
+                    icon: Icon(Icons.delete_outline, color: Colors.red),
+                    onPressed: () {
+                      onDeleteClick(context);
+                    }),
             ]),
         body: PrimaryContainer(
           widget: Padding(

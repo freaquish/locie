@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/invoice_bloc.dart';
 import 'package:locie/bloc/navigation_bloc.dart';
 import 'package:locie/bloc/navigation_event.dart';
+import 'package:locie/bloc/previous_examples_bloc.dart';
 import 'package:locie/bloc/search_bloc.dart';
 import 'package:locie/bloc/store_bloc.dart';
 import 'package:locie/bloc/store_view_bloc.dart';
@@ -20,6 +21,7 @@ import 'package:locie/models/store.dart';
 import 'package:locie/pages/category.dart';
 import 'package:locie/pages/invoice_view.dart';
 import 'package:locie/pages/myQuotation.dart';
+import 'package:locie/pages/previous_examples.dart';
 import 'package:locie/pages/search_view.dart';
 import 'package:locie/pages/store_bloc_view.dart';
 
@@ -110,32 +112,63 @@ class _HomePageViewState extends State<HomePageView> {
                     NavigationController.of(context)
                         .push<QuotationWidget>(route: QuotationWidget());
                   },
-                  child: SvgPicture.asset(
-                    'assets/images/Home_Icon.svg',
-                    height: screen.vertical(30),
-                    width: screen.horizontal(4),
-                    color: Colors.white,
-                  ),
+                  child: true
+                      ? Wrap(
+                          direction: Axis.vertical,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: screen.horizontal(2.5)),
+                              child: Icon(
+                                Icons.message_outlined,
+                                color: Colors.white,
+                              ),
+                            ),
+                            LatoText(
+                              "Quotations",
+                              size: 10,
+                            )
+                          ],
+                        )
+                      : SvgPicture.asset(
+                          'assets/images/Home_Icon.svg',
+                          height: screen.vertical(30),
+                          width: screen.horizontal(4),
+                          color: Colors.white,
+                        ),
                 ),
                 IconButton(
                   splashRadius: 1,
                   icon: Icon(
                     Icons.add_circle_outline,
-                    size: screen.horizontal(6),
+                    size: 36,
                     color: Colors.white,
                   ),
                   onPressed: () {
                     showBottomSheet(screen, context);
                   },
                 ),
-                IconButton(
-                  splashRadius: 1,
-                  icon: Icon(
-                    Icons.article_outlined,
-                    size: screen.horizontal(6),
-                    color: Colors.white,
+                InkWell(
+                  // splashRadius: 1,
+                  child: Wrap(
+                    // mainAxisSize: MainAxisSize.min,
+                    direction: Axis.vertical,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: screen.horizontal(1)),
+                        child: Icon(
+                          Icons.article_outlined,
+                          size: screen.horizontal(6),
+                          color: Colors.white,
+                        ),
+                      ),
+                      LatoText(
+                        "Invoice",
+                        size: 10,
+                      )
+                    ],
                   ),
-                  onPressed: () {
+                  onTap: () {
                     NavigationController.of(context).push<InvoiceProvider>(
                         route: InvoiceProvider(
                       event: FetchMyInvoices(),
@@ -264,7 +297,7 @@ class _HomePageViewState extends State<HomePageView> {
       context: context,
       builder: (builder) {
         return Container(
-          height: screen.vertical(250),
+          height: screen.vertical(350),
           color: Colour.bgColor, //Color(0xff111117),
           child: new Container(
             decoration: new BoxDecoration(
@@ -304,13 +337,33 @@ class _HomePageViewState extends State<HomePageView> {
                             title: LatoText('Create Listing'),
                           ),
                           ListTile(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              NavigationController.of(context)
+                                  .push<InvoiceProvider>(
+                                      route: InvoiceProvider());
+                            },
                             leading: Icon(
                               Icons.article_outlined,
                               color: Colors.white,
                             ),
                             title: LatoText('Create Invoice'),
                           ),
+                          ListTile(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              NavigationController.of(context)
+                                  .push<PreviousExampleProvider>(
+                                      route: PreviousExampleProvider(
+                                          event:
+                                              InitiateAddNewPreviousExample()));
+                            },
+                            leading: Icon(
+                              Icons.work,
+                              color: Colors.white,
+                            ),
+                            title: LatoText('Add Works'),
+                          )
                         ],
                       )
                     : ListTile(
@@ -415,7 +468,7 @@ class NavigationDrawer extends StatelessWidget {
               if (isStoreExists)
                 InkWell(
                   onTap: () {
-                    print("listing");
+                    // print("listing");
                     navigate<StoreWidgetProvider>(StoreWidgetProvider(
                       sid: store.id,
                       event: FetchStoreProducts(store.id),
@@ -432,6 +485,12 @@ class NavigationDrawer extends StatelessWidget {
                 ),
               if (isStoreExists)
                 InkWell(
+                  onTap: () {
+                    navigate<StoreWidgetProvider>(StoreWidgetProvider(
+                      sid: store.id,
+                      event: FetchStoreWorks(store.id),
+                    ));
+                  },
                   child: ListTile(
                     leading: Icon(
                       Icons.work,
@@ -443,6 +502,12 @@ class NavigationDrawer extends StatelessWidget {
                 ),
               if (isStoreExists)
                 InkWell(
+                  onTap: () {
+                    navigate<StoreWidgetProvider>(StoreWidgetProvider(
+                      sid: store.id,
+                      event: FetchStoreReviews(store.id),
+                    ));
+                  },
                   child: ListTile(
                     leading: Icon(
                       Icons.message_outlined,

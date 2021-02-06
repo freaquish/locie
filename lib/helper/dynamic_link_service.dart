@@ -4,7 +4,7 @@ import 'package:locie/views/Store_view/store_view.dart';
 import 'package:locie/views/Store_view/store_widget.dart';
 
 class DynamicLinksService {
-  NavigationEvent event;
+  NavigationEvent event = NavigateToHome();
 
   Future<void> handleDynamicLink() async {
     final PendingDynamicLinkData dynamicLinkData =
@@ -33,6 +33,7 @@ class DynamicLinksService {
     if (storeIdInPath) {
       String sid = data.link.queryParameters["storeId"];
       event = MaterialProviderRoute(route: StoreViewWidget(sid: sid));
+      print(sid);
     } else if (data.link.pathSegments.contains("listingId")) {
       String lid = data.link.queryParameters['listingId'];
       event = MaterialProviderRoute(route: LaunchItemView(lid));

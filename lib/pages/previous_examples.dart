@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/previous_examples_bloc.dart';
 import 'package:locie/components/primary_container.dart';
+import 'package:locie/get_it.dart';
 import 'package:locie/views/Example/previous_example.dart';
 
 class PreviousExampleProvider extends StatelessWidget {
@@ -39,9 +40,10 @@ class PreviousExampleBuilder extends StatelessWidget {
             );
           } else if (state is ShowingAddNewExamplePage) {
             return PreviousExampleWidget(bloc: bloc);
-          } else if (state is ShowingMyPreviousExamples) {
-            //TODO: Show myexamples if state.examples.sid =
-          } else if (state is ShowingPreviousExamples) {}
+          } else if (state is InsertedExample) {
+            NavigationController.of(context).pop();
+            return Container();
+          }
         },
       ),
     );

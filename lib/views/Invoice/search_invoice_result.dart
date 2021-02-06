@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/invoice_bloc.dart';
 import 'package:locie/components/appBar.dart';
+import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/primary_container.dart';
@@ -44,8 +45,7 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
 
   void onContinueClick(BuildContext context) {
     print('clicked');
-    Invoice invoice = Invoice(
-        recipientPhoneNumber: widget.phoneNumber);
+    Invoice invoice = Invoice(recipientPhoneNumber: widget.phoneNumber);
     if (widget.account != null) {
       invoice.recipient = widget.account.uid;
       invoice.recipientName = widget.account.name;
@@ -64,64 +64,75 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
             onTap: () {
               onBackClick(context);
             }),
-        body: isUserFound
-            ? buildUserFoundScreen(screen)
-            : buildUserNotFoundScreen(screen));
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: isUserFound
+                ? buildUserFoundScreen(screen)
+                : buildUserNotFoundScreen(screen),
+          ),
+        ));
   }
 
   PrimaryContainer buildUserNotFoundScreen(Scale screen) {
     return PrimaryContainer(
       widget: Padding(
         padding: EdgeInsets.symmetric(
-            horizontal: screen.horizontal(4), vertical: screen.horizontal(1)),
+            horizontal: screen.horizontal(4), vertical: screen.vertical(10)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               height: screen.vertical(50),
             ),
-            Container(
-              height: screen.vertical(370),
-              width: screen.horizontal(100),
-              child: Card(
-                color: Colors.black,
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(
-                      screen.horizontal(4),
+            Flexible(
+              child: Container(
+                height: screen.vertical(400),
+                width: screen.horizontal(100),
+                child: Card(
+                  color: Colors.black,
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(
+                        screen.horizontal(4),
+                      ),
                     ),
                   ),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(screen.horizontal(8)),
-                      child: LatoText(
-                        'User with phone number ${widget.phoneNumber} not found !!',
-                        size: 21,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(screen.horizontal(8)),
+                        child: LatoText(
+                          'User with phone number ${widget.phoneNumber} not found !!',
+                          size: 21,
+                        ),
                       ),
-                    ),
-                    CustomTextField(
-                      hintText: "Customer Name",
-                      keyboard: TextInputType.name,
-                      textController: nameTextController,
-                      textAlignment: TextAlign.start,
-                    ),
-                    SizedBox(
-                      height: screen.vertical(40),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(screen.horizontal(5)),
-                      child: SubmitButton(
-                        onPressed: () {
-                          onContinueClick(context);
-                        },
-                        buttonName: 'Create Invoice',
-                        buttonColor: Color(0xff355cfd),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screen.horizontal(4)),
+                        child: CustomTextField(
+                          hintText: "Customer Name",
+                          keyboard: TextInputType.name,
+                          textController: nameTextController,
+                          textAlignment: TextAlign.start,
+                          fillColor: Colour.bgColor,
+                        ),
                       ),
-                    )
-                  ],
+                      SizedBox(
+                        height: screen.vertical(40),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(screen.horizontal(5)),
+                        child: SubmitButton(
+                          onPressed: () {
+                            onContinueClick(context);
+                          },
+                          buttonName: 'Create Invoice',
+                          buttonColor: Color(0xff355cfd),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

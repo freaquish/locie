@@ -108,4 +108,8 @@ class ListingQuery {
     QuerySnapshot snapshots = await query.get();
     return snapshots.docs.map((e) => Quotation.fromJson(e.data())).toList();
   }
+
+  Future<void> deleteItem(String sid) async {
+    await instance.collection("listings").doc(sid).delete();
+  }
 }

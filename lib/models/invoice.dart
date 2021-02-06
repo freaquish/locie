@@ -34,9 +34,9 @@ class Invoice {
 
   Invoice.fromJson(Map<String, dynamic> json) {
     recipient = json['recipient'];
-    if (recipientName != null) {
-      recipientName = json['recipient_name'];
-    }
+    // if (recipientName != null) {
+    recipientName = json['recipient_name'];
+    print(recipientName);
     recipientPhoneNumber = json['recipient_phone_number'];
     generator = json['generator'];
     generatorName = json['generator_name'];
@@ -88,8 +88,8 @@ class Invoice {
     if (this.discount != null) {
       data['discount'] = this.discount.toJson();
     }
-    data['grand_total'] = this.grandTotal;
-    data['amount_paid'] = this.amountPaid;
+    data['grand_total'] = this.grandTotal == null ? 0.0 : this.grandTotal;
+    data['amount_paid'] = this.amountPaid == null ? 0.0 : this.amountPaid;
     return data;
   }
 }

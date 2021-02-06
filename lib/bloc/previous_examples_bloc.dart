@@ -17,6 +17,8 @@ class ShowingMyPreviousExamples extends PreviousExampleState {
   ShowingMyPreviousExamples({this.examples});
 }
 
+class InsertedExample extends PreviousExampleState {}
+
 class ShowingAddNewExamplePage extends PreviousExampleState {}
 
 class InsertingNewExample extends PreviousExampleState {}
@@ -60,7 +62,7 @@ class PreviousExamplesBloc
     } else if (event is AddPreviousExample) {
       yield InsertingNewExample();
       await repo.insertWork(event.example);
-      this..add(FetchPreviousExamples());
+      yield InsertedExample();
     }
   }
 }
