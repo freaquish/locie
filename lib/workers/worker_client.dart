@@ -13,7 +13,7 @@ class WorkerClient {
   static Future<void> sendMessage(String phoneNumber, String data) async {
     String encoded = Uri.encodeFull(data);
     String url = "https://wa.me/${phoneNumber}?text=$encoded";
-    print(url);
+    //(url);
     if (await canLaunch(url)) {
       await launch(url);
     }
@@ -40,7 +40,7 @@ class PdfClient {
     Directory output = await DownloadsPathProvider.downloadsDirectory;
 
     final file = File("${output.path}/${invoice.id}.pdf");
-    print(file.path);
+    //(file.path);
     File generated = await file.writeAsBytes(await pdf.save());
     OpenFile.open(generated.path);
     return generated;

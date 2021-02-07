@@ -28,7 +28,7 @@ class SearchBuilder extends StatelessWidget {
       widget: BlocBuilder<SearchBloc, SearchState>(
         cubit: BlocProvider.of<SearchBloc>(context),
         builder: (context, state) {
-          print(state);
+          //(state);
           if (state is SearchResults) {
             return SearchListView(
               listings: state.listings,

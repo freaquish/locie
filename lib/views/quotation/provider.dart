@@ -27,9 +27,9 @@ class QuotationBuilder extends StatelessWidget {
       widget: BlocBuilder<QuotationBloc, QuotationState>(
         cubit: bloc,
         builder: (context, state) {
-          print(state);
+          //(state);
           if (state is FetchedSentQuotations) {
-            print(state.quotations[0].toJson());
+            //(state.quotations[0].toJson());
             return ListView.builder(
               itemCount: state.quotations.length,
               itemBuilder: (context, index) => QuotationCard(

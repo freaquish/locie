@@ -32,7 +32,7 @@ class PreviousExamplesRepo {
         examples = exampleSnaps[0];
       }
     }
-    // //print'quad $examples');
+    // ////'quad $examples');
     return examples;
   }
 

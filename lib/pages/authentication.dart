@@ -9,6 +9,7 @@ import 'package:locie/views/loadings.dart';
 import 'package:locie/views/authentication/phone_authentication.dart';
 import 'package:locie/views/authentication/registration_screen.dart';
 import 'package:locie/views/authentication/verify_otp.dart';
+import 'package:locie/views/splash_screen.dart';
 
 class AuthenticationWidget extends StatelessWidget {
   final AuthenticationEvent event;
@@ -35,7 +36,7 @@ class AuthenticationBuilder extends StatelessWidget {
       widget: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         cubit: bloc,
         builder: (BuildContext context, AuthenticationState state) {
-          // print(state);
+          // //(state);
           if (state is InitialState) {
             return CircularLoading();
           } else if (state is ShowingPhoneAuthenticationPage) {
@@ -51,7 +52,7 @@ class AuthenticationBuilder extends StatelessWidget {
             );
           } else if (state is AuthenticationCompleted) {
             NavigationBloc navBloc = BlocProvider.of<NavigationBloc>(context);
-            // print(navBloc.route.length);
+            // //(navBloc.route.length);
             if (navBloc.route.length > 1) {
               navBloc.pop();
             } else {
@@ -61,6 +62,8 @@ class AuthenticationBuilder extends StatelessWidget {
             return Container();
           } else if (state is CommonAuthenticationError) {
             return ErrorScreen();
+          } else if (state is ShowSplashScreen) {
+            return SplashScreen();
           }
           return CircularLoading();
         },

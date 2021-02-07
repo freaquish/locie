@@ -44,7 +44,7 @@ class ListingOperationBuilder extends StatelessWidget {
       widget: BlocBuilder<ListingBloc, ListingState>(
         cubit: bloc,
         builder: (context, state) {
-          print(state);
+          //(state);
           if (state is InitializingState || state is CreatingListing) {
             return Center(
               child: Container(

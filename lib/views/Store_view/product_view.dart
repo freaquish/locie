@@ -35,7 +35,7 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
   SharingWorkers sharingWorkers = SharingWorkers();
   LocalStorage localStorage = LocalStorage();
   void onShareClick() async {
-    print('object');
+    //('object');
     await sharingWorkers.shareListing(widget.listing);
   }
 
@@ -47,7 +47,7 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
   }
 
   void onGoToStoreClick(BuildContext context) {
-    // print('clicked');
+    // //('clicked');
     BlocProvider.of<NavigationBloc>(context).push(
         MaterialProviderRoute<StoreWidgetProvider>(
             route: StoreWidgetProvider(sid: widget.listing.store)));
@@ -58,7 +58,7 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
   }
 
   void onDeleteClick(BuildContext context) {
-    print(BlocProvider.of<NavigationBloc>(context).route);
+    //(BlocProvider.of<NavigationBloc>(context).route);
     BuildContext parentContext = context;
     showDialog(
         context: context,

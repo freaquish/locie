@@ -529,7 +529,7 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
                         hintText: 'Percentage',
                         textController: textEditingControllerFactor,
                         onChanged: (value) {
-                          print(widget.subTotal);
+                          //(widget.subTotal);
                           if (value.isNotEmpty) {
                             setState(() {
                               percentage = value.toString().trim();

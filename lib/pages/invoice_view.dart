@@ -32,7 +32,7 @@ class InvoiceBuilder extends StatelessWidget {
       widget: BlocBuilder<InvoiceBloc, InvoiceState>(
         cubit: BlocProvider.of<InvoiceBloc>(context),
         builder: (context, state) {
-          print(state);
+          //(state);
           if (state is ShowingPhoneInputPage) {
             return SearchInvoiceUser();
           } else if (state is ShowingCustomerResultPage) {
@@ -67,7 +67,7 @@ class MyInvoiceProvider extends StatelessWidget {
   MyInvoiceProvider({this.bloc, this.event});
   @override
   Widget build(BuildContext context) {
-    // print(event);
+    // //(event);
     return Container(
       child: BlocProvider<MyInvoiceBloc>(
         create: (context) => bloc,
@@ -88,7 +88,7 @@ class MyInvoiceBuilder extends StatelessWidget {
         widget: BlocBuilder<MyInvoiceBloc, InvoiceState>(
       cubit: bloc,
       builder: (context, state) {
-        print(state.toString() + "bu");
+        //(state.toString() + "bu");
         if (state is ShowingTabInvoices) {
           return MyInvoicesListWidget(state.invoices);
         } else if (state is CommonInvoiceError) {

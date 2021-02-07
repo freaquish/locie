@@ -29,7 +29,7 @@ class _StoreProductWidgetState extends State<StoreProductWidget> {
   }
 
   void onItemClick(BuildContext context, String lid) {
-    print(lid);
+    //(lid);
     BlocProvider.of<NavigationBloc>(context).push(LaunchItemView(lid));
   }
 

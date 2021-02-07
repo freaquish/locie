@@ -44,7 +44,7 @@ class NavigationBuilder extends StatelessWidget {
       widget: BlocBuilder<NavigationBloc, NavigationState>(
         cubit: bloc,
         builder: (context, state) {
-          // print(state);
+          // //(state);
           if (state is NavigatedToCategorySelection) {
             return CategoryProvider();
           } else if (state is NavigatedToCreateListing) {
@@ -71,7 +71,7 @@ class NavigationBuilder extends StatelessWidget {
               isEditable: state.isEditable,
             );
           } else if (state is NavigatedToEditStore) {
-            print(state.store.toString() + "nt");
+            //(state.store.toString() + "nt");
             return CreateOrEditStoreWidget(
               store: state.store,
             );

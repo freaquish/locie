@@ -37,7 +37,7 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
     try {
       await localStorage.init();
       bool isStoreExist = localStorage.prefs.containsKey("sid");
-      print(event);
+      //(event);
       if (event is FetchSentQuotations) {
         yield LoadingQuotationState();
         List<Quotation> quotations = await query.fetchQuotations(sent: true);

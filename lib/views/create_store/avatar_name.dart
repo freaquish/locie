@@ -31,11 +31,11 @@ class _CreateStoreWidgetState extends State<CreateStoreWidget> {
   @override
   void initState() {
     if (widget.store != null) {
-      print(widget.store.name);
+      //(widget.store.name);
       textEditingController.value = TextEditingValue(text: widget.store.name);
       image = widget.store.image;
     }
-    print(widget.store.toString() + "ans");
+    //(widget.store.toString() + "ans");
     super.initState();
   }
 

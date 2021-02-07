@@ -31,7 +31,7 @@ class _AddressWidgetState extends State<AddressWidget> {
 
   @override
   void initState() {
-    print(widget.store);
+    //(widget.store);
     if (widget.store.id != null && widget.store.address != null) {
       textEditingControllerAddress1.value =
           TextEditingValue(text: widget.store.address.body);

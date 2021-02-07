@@ -18,7 +18,7 @@ class LocalStorage {
     if (prefs == null) {
       await init();
     }
-    print(stores);
+    //(stores);
     prefs.setString("stores_for_home",
         jsonEncode(stores.map((e) => e.toJson(storage: true)).toList()));
     prefs.setString("last_stores_fetch", DateTime.now().toIso8601String());

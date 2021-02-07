@@ -13,7 +13,7 @@ class StoreAboutWidget extends StatelessWidget {
   StoreAboutWidget(this.store, {this.isEditable = false});
 
   void onEditClick(BuildContext context) {
-    print(store.toString() + "as");
+    //(store.toString() + "as");
     BlocProvider.of<NavigationBloc>(context).push(NavigateToEditStore(store));
   }
 

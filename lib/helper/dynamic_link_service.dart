@@ -10,7 +10,7 @@ class DynamicLinksService {
     // await Firebase.initializeApp();
     final PendingDynamicLinkData dynamicLinkData =
         await FirebaseDynamicLinks.instance.getInitialLink();
-    print(dynamicLinkData);
+    //(dynamicLinkData);
     if (dynamicLinkData != null) {
       await _handleDynamicLink(dynamicLinkData);
     }
@@ -19,11 +19,11 @@ class DynamicLinksService {
     FirebaseDynamicLinks.instance.onLink(
         onSuccess: (PendingDynamicLinkData dynamicLink) async {
       if (dynamicLink != null) {
-        // print(object)
+        // //(object)
         await _handleDynamicLink(dynamicLink);
       }
     }, onError: (OnLinkErrorException e) async {
-      print(e.message);
+      //(e.message);
     });
   }
 
@@ -34,7 +34,7 @@ class DynamicLinksService {
     if (storeIdInPath) {
       String sid = data.link.queryParameters["storeId"];
       event = MaterialProviderRoute(route: StoreViewWidget(sid: sid));
-      print(sid);
+      //(sid);
     } else if (data.link.pathSegments.contains("listingId")) {
       String lid = data.link.queryParameters['listingId'];
       event = MaterialProviderRoute(route: LaunchItemView(lid));

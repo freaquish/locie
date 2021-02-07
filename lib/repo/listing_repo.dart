@@ -25,7 +25,7 @@ class ListingQuery {
    */
   Future<void> createOrEditListing(Listing listing) async {
     // CollectionReference listingRef = instance.collection("listings");
-    print(listing.imageFile);
+    //(listing.imageFile);
     await localStorage.init();
     Store store = await localStorage.getStore();
     if (listing.imageFile != null) {

@@ -18,7 +18,7 @@ class CreateOrEditStoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(store.toString() + "coesw");
+    //(store.toString() + "coesw");
     StoreEvent initialEvent =
         store == null ? InitializeCreateStore() : InitializeEditStore(store);
     return Container(
@@ -39,7 +39,7 @@ class CreateOrEditStoreBuilder extends StatelessWidget {
       widget: BlocBuilder<CreateOrEditStoreBloc, StoreState>(
         cubit: bloc,
         builder: (context, state) {
-          print(state);
+          //(state);
           if (state is InitializingCreateOrEditStore) {
             return CreateStoreWidget(
               bloc: bloc,
@@ -55,7 +55,7 @@ class CreateOrEditStoreBuilder extends StatelessWidget {
             BlocProvider.of<NavigationBloc>(context).replace(NavigateToHome());
             return Container();
           } else if (state is InitializedEditPage) {
-            print(state.store.toString() + "coesb");
+            //(state.store.toString() + "coesb");
             return CreateStoreWidget(
               bloc: bloc,
               store: state.store,

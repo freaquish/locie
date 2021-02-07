@@ -36,7 +36,7 @@ class Invoice {
     recipient = json['recipient'];
     // if (recipientName != null) {
     recipientName = json['recipient_name'];
-    print(recipientName);
+    //(recipientName);
     recipientPhoneNumber = json['recipient_phone_number'];
     generator = json['generator'];
     generatorName = json['generator_name'];

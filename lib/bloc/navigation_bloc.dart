@@ -66,14 +66,14 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
       route.clear();
     }
     route.push(event);
-    // print(route.current());
+    // //(route.current());
     add(route.current());
   }
 
   void pop() {
-    // print(route.length);
+    // //(route.length);
     route.pop();
-    print(route);
+    //(route);
     if (route.length > 0) {
       this..add(route.current());
     } else {
@@ -111,7 +111,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
     try {
       await localStorage.init();
       bool isConnected = await checkConnectivity();
-      // print(isConnected);
+      // //(isConnected);
       // throw Error();
       if (!isConnected) {
         yield NoInternetConnectionState();
@@ -141,7 +141,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
           yield ShowingParticularItemView(listing, isEditable: isEditable);
         }
       } else if (event is NavigateToEditStore) {
-        print(event.store.toString() + "nb");
+        //(event.store.toString() + "nb");
         yield NavigatedToEditStore(event.store);
       }
     } catch (e) {

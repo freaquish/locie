@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 
-
 class SendNotification {
   final fcm = FirebaseMessaging();
   final db = FirebaseFirestore.instance;
@@ -56,7 +55,7 @@ class SendNotification {
       if (response.statusCode == 200) {
         debugPrint('message sent');
       } else {
-        print('notification sending failed');
+        //('notification sending failed');
         // on failure do sth
       }
     } catch (e) {
@@ -65,5 +64,3 @@ class SendNotification {
     }
   }
 }
-
-

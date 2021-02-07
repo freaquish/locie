@@ -184,7 +184,7 @@ class _HomePageViewState extends State<HomePageView> {
       ),
       body: GestureDetector(
         onTap: () {
-          // print('safe area is tapped');
+          // //('safe area is tapped');
           FocusScope.of(context).unfocus();
         },
         child: SafeArea(
@@ -475,7 +475,7 @@ class NavigationDrawer extends StatelessWidget {
               if (isStoreExists)
                 InkWell(
                   onTap: () {
-                    // print("listing");
+                    // //("listing");
                     navigate<StoreWidgetProvider>(StoreWidgetProvider(
                       sid: store.id,
                       event: FetchStoreProducts(store.id),

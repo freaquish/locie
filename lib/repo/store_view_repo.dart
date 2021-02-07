@@ -79,7 +79,7 @@ class StoreViewRepo {
   }
 
   Future<Listing> fetchItem(String lid) async {
-    // print(lid);
+    // //(lid);
     DocumentSnapshot snapshot =
         await instance.collection("listings").doc(lid).get();
     if (!snapshot.exists) {

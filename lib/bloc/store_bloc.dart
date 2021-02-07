@@ -140,7 +140,7 @@ class CreateOrEditStoreBloc extends Bloc<StoreEvent, StoreState> {
   Stream<StoreState> mapEventToState(StoreEvent event) async* {
     try {
       await localStorage.init();
-      print(event);
+      //(event);
       if (event is InitializeCreateStore) {
         /**
        * [InitiakizeCreateOrEditStore] will handle Store Creation or editing

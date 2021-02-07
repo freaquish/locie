@@ -31,7 +31,7 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
 
   @override
   void initState() {
-    print(widget.listing.priceMax);
+    //(widget.listing.priceMax);
     if (widget.listing.priceMax != null) {
       textEditingControllerMax.value =
           TextEditingValue(text: widget.listing.priceMax.toString());

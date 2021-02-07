@@ -139,7 +139,7 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
         yield ShowingInvoices(
             received: event.received, invoices: [], storeExists: isStoreExists);
       } else if (event is RetreieveTabbedInvoices) {
-        print(event);
+        //(event);
         yield LoadingState();
         bool isStoreExists = localStorage.prefs.containsKey("sid");
         bool isSent = event.sent == null && isStoreExists ? true : event.sent;
@@ -173,9 +173,9 @@ class MyInvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
   @override
   Stream<InvoiceState> mapEventToState(InvoiceEvent event) async* {
     await localStorage.init();
-    print(event);
+    //(event);
     if (event is RetreieveTabbedInvoices) {
-      print(event);
+      //(event);
       yield LoadingState();
       bool isStoreExists = localStorage.prefs.containsKey("sid");
       bool isSent = event.sent == null && isStoreExists ? true : event.sent;

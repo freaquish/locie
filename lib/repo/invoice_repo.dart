@@ -40,7 +40,7 @@ class InvoiceRepo {
     await localStorage.init();
     Store store = await localStorage.getStore();
     var now = DateTime.now();
-    // print(invoice.recipientName);
+    // //(invoice.recipientName);
 
     invoice.generator = store.id;
     invoice.generatorName = store.name;
@@ -61,13 +61,13 @@ class InvoiceRepo {
         .collection("accounts")
         .where("phone_number", isEqualTo: phoneNumber)
         .get();
-    // print(snapshot.docs.length);
+    // //(snapshot.docs.length);
     if (snapshot.docs.length == 0) {
       return null;
     }
     List<Account> accountSnaps =
         snapshot.docs.map((e) => Account.fromJson(e.data())).toList();
-    // print(accountSnaps);
+    // //(accountSnaps);
     return accountSnaps[0];
   }
 

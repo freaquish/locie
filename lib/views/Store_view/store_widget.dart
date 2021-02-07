@@ -60,7 +60,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
   }
 
   void scrollListener() {
-    print(_scrollController.position.pixels);
+    //(_scrollController.position.pixels);
     if (_scrollController.position.atEdge &&
         tabController.index % 2 != 0 &&
         _scrollController.position.pixels != 0) {
@@ -143,7 +143,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
     final screen = Scale(context);
     return WillPopScope(
       onWillPop: () async {
-        // print("back click");
+        // //("back click");
         onBackClick(context);
 
         return false;

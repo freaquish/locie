@@ -80,7 +80,7 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
   Stream<ListingState> mapEventToState(ListingEvent event) async* {
     try {
       if (event is InitiateListingCreation) {
-        // print(event.listing.priceMax);
+        // //(event.listing.priceMax);
         yield ShowingListingPage(
             category: event.category, listing: event.listing);
       } else if (event is ProceedToMetaDataPage) {

@@ -24,7 +24,7 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
 
   @override
   void initState() {
-    // print(widget.account);
+    // //(widget.account);
     nameTextController = TextEditingController();
     isUserFound = widget.account != null;
     super.initState();
@@ -44,7 +44,7 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
   TextEditingController nameTextController;
 
   void onContinueClick(BuildContext context) {
-    print('clicked');
+    //('clicked');
     Invoice invoice = Invoice(recipientPhoneNumber: widget.phoneNumber);
     if (widget.account != null) {
       invoice.recipient = widget.account.uid;

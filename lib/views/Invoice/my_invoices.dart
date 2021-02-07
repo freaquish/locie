@@ -184,14 +184,15 @@ class _InvoiceCardState extends State<InvoiceCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               LatoText(nameText()),
-              Icon(
-                Icons.cloud_download,
-                color: Colors.white,
-              ),
+              // Icon(
+              //   Icons.cloud_download,
+              //   color: Colors.white,
+              // ),
             ],
           ),
         ),
         trailing: IconButton(
+          splashRadius: 4,
           onPressed: () {
             // await client.build();
             onShareClick();

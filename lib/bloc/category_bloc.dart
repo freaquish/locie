@@ -117,10 +117,10 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         }
       } else if (event is ProceedToNextCategoryPage) {
         var sid = localStorage.prefs.getString("sid");
-        //print'${event.current} $sid');
+        ////'${event.current} $sid');
         var categories = await storeQuery.fetchCategories(
             current: event.current, store: sid);
-        // //print'$categories ${event.current}');
+        // ////'$categories ${event.current}');
         if (categories.isNotEmpty) {
           categoriesAcrossPages.add(categories);
         }

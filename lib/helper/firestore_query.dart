@@ -162,16 +162,16 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     CollectionReference ref = firestore.collection('category');
     QuerySnapshot snapshot;
     if (current != null && store != null) {
-      //print'1 ${current != null && store != null}');
+      ////'1 ${current != null && store != null}');
       snapshot = await ref
           .where("parent", isEqualTo: current)
           .where("store", isEqualTo: store)
           .get();
     } else if (categories != null && categories.isNotEmpty) {
-      //print'21 ${categories != null && categories.isNotEmpty}');
+      ////'21 ${categories != null && categories.isNotEmpty}');
       snapshot = await ref.where("id", whereIn: categories).get();
     } else {
-      //print'3');
+      ////'3');
       snapshot = await ref.where("is_default", isEqualTo: true).get();
     }
     var docs = snapshot.docs;
