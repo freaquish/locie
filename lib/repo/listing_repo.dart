@@ -100,12 +100,16 @@ class ListingQuery {
   Future<List<Quotation>> fetchQuotations({bool sent = false}) async {
     CollectionReference ref = instance.collection("quotations");
     Query query;
-    if (sent) {
+    if (!sent) {
       Store store = await localStorage.getStore();
-      query = ref.where("store", isEqualTo: store.id);
+      query = ref
+          .where("store", isEqualTo: store.id)
+          .orderBy("timestamp", descending: true);
     } else {
       Account account = await localStorage.getAccount();
-      query = ref.where("user", isEqualTo: account.uid);
+      query = ref
+          .where("user", isEqualTo: account.uid)
+          .orderBy("timestamp", descending: true);
     }
     QuerySnapshot snapshots = await query.get();
     return snapshots.docs.map((e) => Quotation.fromJson(e.data())).toList();

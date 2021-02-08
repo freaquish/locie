@@ -72,6 +72,7 @@ class _QuotationCardState extends State<QuotationCard> {
     return Container(
       padding: EdgeInsets.symmetric(
           vertical: scale.vertical(5), horizontal: scale.horizontal(4)),
+      margin: EdgeInsets.symmetric(vertical: scale.vertical(10)),
       decoration: BoxDecoration(
           color: Colour.textfieldColor, borderRadius: BorderRadius.circular(8)),
       child: Column(

@@ -78,12 +78,14 @@ class InvoiceRepo {
       snapshots = await ref
           .where("recipient_phone_number",
               isEqualTo: localStorage.prefs.getString("phone_number"))
+          .orderBy("timestamp", descending: true)
           .get();
     } else {
       // Created
       snapshots = await ref
           .where("generator_phone_number",
               isEqualTo: localStorage.prefs.getString("phone_number"))
+          .orderBy("timestamp", descending: true)
           .get();
       // print(snap);
     }

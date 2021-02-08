@@ -144,7 +144,7 @@ class StoreCard extends StatelessWidget {
                 children: [
                   ratingIcon(store.rating),
                   LatoText(
-                    store.rating.toString(),
+                    double.parse(store.rating.toString()).toStringAsFixed(2),
                     size: 12,
                     fontColor: Colors.amberAccent[700],
                   ),
