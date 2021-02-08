@@ -40,7 +40,7 @@ class StoreViewRepo {
     if (documentSnapshot != null) {
       query = query.startAfterDocument(documentSnapshot);
     }
-    snapshot = await query.limit(limit).get();
+    snapshot = await query.get();
     return snapshot.docs.map((e) {
       Listing listing = Listing.fromJson(e.data());
       listing.snapshot = e;
@@ -66,16 +66,19 @@ class StoreViewRepo {
     Query query = instance
         .collection("reviews")
         .where("store", isEqualTo: sid)
-        .orderBy("rating", descending: true);
+        .orderBy("rating", descending: true)
+        .orderBy("created", descending: true);
     if (documentSnapshot != null) {
       query = query.startAfterDocument(documentSnapshot);
     }
-    QuerySnapshot snapshot = await query.limit(limit).get();
-    return snapshot.docs.map((e) {
+    QuerySnapshot snapshot = await query.get();
+    List<Review> reviews = snapshot.docs.map((e) {
       Review review = Review.fromJson(e.data());
       review.snapshot = e;
       return review;
     }).toList();
+    // reviews.sort((a, b) => a.created.compareTo(b.created));
+    return reviews;
   }
 
   Future<Listing> fetchItem(String lid) async {

@@ -33,7 +33,7 @@ class Review {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['text'] = this.text;
+    data['text'] = this.text == null ? "" : this.text;
     data['rating'] = this.rating;
     data['store'] = this.store;
     data['user'] = this.user;

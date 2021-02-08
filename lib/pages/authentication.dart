@@ -52,7 +52,6 @@ class AuthenticationBuilder extends StatelessWidget {
             );
           } else if (state is AuthenticationCompleted) {
             NavigationBloc navBloc = BlocProvider.of<NavigationBloc>(context);
-            // //(navBloc.route.length);
             if (navBloc.route.length > 1) {
               navBloc.pop();
             } else {

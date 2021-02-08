@@ -7,8 +7,6 @@ import 'package:locie/models/account.dart';
 import 'package:locie/models/invoice.dart';
 import 'package:locie/models/store.dart';
 
-import 'package:pdf/pdf.dart';
-
 class InvoiceRepo {
   FirebaseFirestore instance;
   LocalStorage localStorage;
@@ -75,6 +73,7 @@ class InvoiceRepo {
     QuerySnapshot snapshots;
     await localStorage.init();
     CollectionReference ref = instance.collection("invoices");
+    // print(localStorage.prefs.containsKey("sid"));
     if (received || !localStorage.prefs.containsKey("sid")) {
       snapshots = await ref
           .where("recipient_phone_number",
@@ -84,9 +83,13 @@ class InvoiceRepo {
       // Created
       snapshots = await ref
           .where("generator_phone_number",
-              isEqualTo: localStorage.prefs.getString("store_contanct"))
+              isEqualTo: localStorage.prefs.getString("phone_number"))
           .get();
+      // print(snap);
     }
-    return snapshots.docs.map((e) => Invoice.fromJson(e.data())).toList();
+    return snapshots.docs.map((e) {
+      print(e['generator_phone_number']);
+      return Invoice.fromJson(e.data());
+    }).toList();
   }
 }

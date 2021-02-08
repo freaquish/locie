@@ -12,6 +12,7 @@ import 'package:locie/pages/invoice_view.dart';
 import 'package:locie/workers/worker_client.dart';
 // import 'package:share/share.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart' as es;
+import 'package:open_file/open_file.dart';
 
 class MyInvoices extends StatefulWidget {
   final List<Invoice> invoices;
@@ -157,10 +158,14 @@ class _InvoiceCardState extends State<InvoiceCard> {
     await client.build();
     es.Share.file("Invoice to ${widget.invoice.recipientName}",
         "${widget.invoice.id}.pdf", await client.getBytes(), "application/pdf");
-    // Share.shareFiles([file.path],
-    //     mimeTypes: ["*/*"],
-    //     subject: "Invoice for ${widget.invoice.recipientName}",
-    //     text: widget.invoice.id);
+  }
+
+  void openFile() async {
+    await client.build();
+    File file = await client.save();
+    OpenFile.open(
+      file.path,
+    );
   }
 
   @override
@@ -177,8 +182,8 @@ class _InvoiceCardState extends State<InvoiceCard> {
           color: Colors.red,
         ),
         title: InkWell(
-          onTap: () async {
-            onShareClick();
+          onTap: () {
+            openFile();
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

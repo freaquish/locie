@@ -71,6 +71,8 @@ class ListingQuery {
         text: quotation.storeName +
             DateTime.now().microsecondsSinceEpoch.toString());
     Account account = await localStorage.getAccount();
+    print(account.name);
+
     quotation.user = account.uid;
     quotation.userName = account.name;
     quotation.userContact = account.phoneNumber;
@@ -82,12 +84,12 @@ class ListingQuery {
         await instance.collection("stores").doc(quotation.store).get();
     if (snapshot.exists) {
       Store store = Store.fromJson(snapshot.data());
-      dynamic token = await notification.getToken(userId: store.owner);
+      List<String> tokens = await notification.getToken(userId: store.owner);
       await notification.sendNotification(
         sender: quotation.user,
         message:
             '${quotation.userName} sent you Enquiry for product ${quotation.listingName}',
-        tokens: token,
+        tokens: tokens,
         notificationTitle: 'Enquiry',
         notificationType: 'Quotation',
       );

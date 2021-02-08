@@ -76,15 +76,16 @@ class StoreAboutWidget extends StatelessWidget {
                       onPressed: () {
                         SharingWorkers().shareStore(store);
                       }),
-                  IconButton(
-                      splashRadius: 4,
-                      icon: Icon(
-                        Icons.edit,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        onEditClick(context);
-                      })
+                  if (isEditable)
+                    IconButton(
+                        splashRadius: 4,
+                        icon: Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          onEditClick(context);
+                        })
                 ],
               )
             ],

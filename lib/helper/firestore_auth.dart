@@ -1,10 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypt/crypt.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:locie/helper/firestore_storage.dart';
 import 'package:locie/helper/local_storage.dart';
 import 'package:locie/models/account.dart';
+import 'package:pdf/widgets.dart';
 // import 'package:firebase_core/firebase_core.dart';
+
+abstract class PhoneAuthenticationExceptions extends Error {}
+
+class LoginFailed extends PhoneAuthenticationExceptions {}
+
+String encryptPassword(String password, String phoneNumber) {
+  String salt = phoneNumber.substring(4);
+  return Crypt.sha256(password, salt: salt).hash;
+}
 
 class PhoneAuthentication {
   String phoneNumber;
@@ -16,13 +27,13 @@ class PhoneAuthentication {
   User user;
   PhoneAuthentication({@required this.phoneNumber});
 
-  void sendOTP() {
+  void sendOTP(Function onComplete) {
     if (!phoneNumber.contains('+')) phoneNumber = '+91' + phoneNumber;
     auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
-        timeout: Duration(seconds: 30),
+        timeout: Duration(seconds: 120),
         verificationCompleted: (PhoneAuthCredential credential) {
-          signInWithPhoneNumber(credential);
+          signInWithPhoneNumber(credential, onComplete: onComplete);
         },
         verificationFailed: verificationFailed,
         codeSent: codeSent,
@@ -31,9 +42,13 @@ class PhoneAuthentication {
         });
   }
 
-  Future<void> signInWithPhoneNumber(PhoneAuthCredential credential) async {
+  Future<void> signInWithPhoneNumber(PhoneAuthCredential credential,
+      {Function(String) onComplete}) async {
     await auth.signInWithCredential(credential).then((UserCredential value) {
       this.user = value.user;
+      if (onComplete != null) {
+        onComplete(user.uid);
+      }
     });
   }
 
@@ -60,19 +75,18 @@ class PhoneAuthentication {
     return account;
   }
 
-  static Future<void> updateToken(String token) async {
+  static Future<void> updateToken(String token, String uid) async {
     LocalStorage localStorage = LocalStorage();
     await localStorage.init();
-    if (localStorage.prefs.containsKey("uid")) {
-      String uid = localStorage.prefs.getString("uid");
-      await FirebaseFirestore.instance.collection("accounts").doc(uid).update({
-        "tokens": FieldValue.arrayUnion([token])
-      });
-    }
+    await FirebaseFirestore.instance
+        .collection("tokens")
+        .doc(token)
+        .set({"token": token, "uid": uid, "timestamp": DateTime.now()});
   }
 
   verificationFailed(FirebaseAuthException e) {
-    throw e;
+    print(e.message);
+    // throw e;
   }
 
   Future<void> codeSent(String verificationId, int resendToken) async {
@@ -84,5 +98,9 @@ class PhoneAuthentication {
     PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
         verificationId: verificationId, smsCode: otp);
     await signInWithPhoneNumber(phoneAuthCredential);
+  }
+
+  Future<User> getUser() async {
+    return auth.currentUser;
   }
 }

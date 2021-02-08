@@ -5,6 +5,7 @@ import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:open_file/open_file.dart';
 import 'package:dio/dio.dart';
 import 'package:locie/models/invoice.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:pdf/pdf.dart';
@@ -37,7 +38,7 @@ class PdfClient {
   }
 
   Future<File> save() async {
-    Directory output = await DownloadsPathProvider.downloadsDirectory;
+    Directory output = await getExternalStorageDirectory();
 
     final file = File("${output.path}/${invoice.id}.pdf");
     //(file.path);

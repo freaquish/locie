@@ -82,7 +82,8 @@ class StoreReviewsWidget extends StatelessWidget {
                   ),
                   leading: CircleAvatar(
                     radius: screen.horizontal(5),
-                    backgroundImage: reviews[index].userImage != null
+                    backgroundImage: reviews[index].userImage != null &&
+                            reviews[index].userImage.length > 0
                         ? NetworkImage(reviews[index].userImage)
                         : AssetImage('assets/images/user.png'),
                   ),

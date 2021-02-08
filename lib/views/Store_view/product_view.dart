@@ -78,7 +78,7 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
   Future<bool> doesStoreBelongToCurrentUser() async {
     await localStorage.init();
     return (localStorage.prefs.containsKey("sid") &&
-        widget.listing.store == localStorage.prefs.getString("sid"));
+        widget.listing.store != localStorage.prefs.getString("sid"));
   }
 
   @override

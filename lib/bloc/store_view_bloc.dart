@@ -124,7 +124,7 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
         yield FetchingList();
         List<Review> reviews =
             await repo.fetchReviews(event.sid, event.startAt);
-        //(reviews);
+        print(reviews);
         yield FetchedStoreReviews(reviews, isStoreMine: storeIsSame(event.sid));
       } else if (event is InjectStoreView) {
         yield event.state;

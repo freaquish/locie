@@ -111,12 +111,12 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
       // Product tab; if listing is empty then send FetchProduct with startAt
       /// else set startAt = listings[length-1].snapshot [limit=10]
       /// the state will start loading if listings.length > 0  then tell widget to show extent loading else full screen
-      if (singleton.isListingNull) {
-        return FetchStoreProducts(widget.sid);
-      } else if (singleton.isNextListingFetchViable) {
-        return FetchStoreProducts(widget.sid,
-            startAt: singleton.lastListingSnap);
-      }
+      // if (singleton.isListingNull) {
+      return FetchStoreProducts(widget.sid);
+      // } else if (singleton.isNextListingFetchViable) {
+      //   return FetchStoreProducts(widget.sid,
+      //       startAt: singleton.lastListingSnap);
+      // }
     } else if (tabController.index == 2) {
       if (singleton.isExamplesNull) {
         return FetchStoreWorks(widget.sid);
@@ -126,11 +126,11 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
     } else if (tabController.index == 3) {
       // Reviews tab; if reviews is null then fetch without startA
       /// if Reviews is notEmpty and length is [limit=5] then fetch Next
-      if (singleton.isReviewNull) {
-        return FetchStoreReviews(widget.sid);
-      } else if (singleton.isNextReviewFetchViable) {
-        return FetchStoreReviews(widget.sid);
-      }
+      // if (singleton.isReviewNull) {
+      return FetchStoreReviews(widget.sid);
+      // } else if (singleton.isNextReviewFetchViable) {
+      //   return FetchStoreReviews(widget.sid);
+      // }
     }
   }
 

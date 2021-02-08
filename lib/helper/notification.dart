@@ -2,15 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class SendNotification {
   final fcm = FirebaseMessaging();
   final db = FirebaseFirestore.instance;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  SendNotification() {
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  }
 
-  getToken({String userId}) async {
-    List listofTokens = [];
-    final userToken = await db.collection('accounts').doc(userId).get();
-    listofTokens = userToken['tokens'];
+  Future<List<String>> getToken({String userId}) async {
+    List<String> listofTokens = [];
+    final userToken =
+        await db.collection('tokens').where("uid", isEqualTo: userId).get();
+    listofTokens = userToken.docs.map((e) => e["token"].toString()).toList();
     return listofTokens;
   }
 
@@ -19,7 +25,7 @@ class SendNotification {
     String message,
     String notificationType,
     String notificationTitle,
-    dynamic tokens,
+    List<String> tokens,
   }) async {
     final data = {
       "notification": {
@@ -62,5 +68,39 @@ class SendNotification {
       debugPrint(e);
       // debugPrint('exception $e');
     }
+  }
+
+  Future<void> shownotification({
+    BuildContext context,
+    int notificationId,
+    String notificationTitle,
+    String notificationContent,
+    String payload,
+    String channelId = '1234',
+    String channelTitle = 'Android Channel',
+    String channelDescription = 'Default Android Channel for notifications',
+    Priority notificationPriority = Priority.high,
+    Importance notificationImportance = Importance.max,
+  }) async {
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+      channelId,
+      channelTitle,
+      channelDescription,
+      playSound: true,
+      importance: notificationImportance,
+      priority: notificationPriority,
+    );
+    var iOSPlatformChannelSpecifics =
+        new IOSNotificationDetails(presentSound: false);
+    var platformChannelSpecifics = new NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      notificationId,
+      notificationTitle,
+      notificationContent,
+      platformChannelSpecifics,
+      payload: payload,
+    );
   }
 }

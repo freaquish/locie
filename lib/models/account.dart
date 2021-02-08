@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart' show User;
 class Account {
   String uid;
   String name;
+  String password;
   String avatar;
   bool isStoreOwner;
   String phoneNumber;
@@ -17,7 +18,8 @@ class Account {
       this.avatar = "",
       this.isStoreOwner = false,
       this.lastLogin,
-      this.tokens,
+      this.password,
+      this.tokens = const [],
       this.name,
       this.phoneNumber});
 
@@ -31,6 +33,7 @@ class Account {
     uid = json['uid'];
     name = json['name'];
     avatar = json['avatar'];
+    password = json['password'];
     isStoreOwner = json['is_store_owner'];
     phoneNumber = json['phone_number'];
     tokens = json.containsKey("tokens")
@@ -46,6 +49,7 @@ class Account {
     data['is_store_owner'] = isStoreOwner;
     data['phone_number'] = phoneNumber;
     data['tokens'] = tokens == null ? [] : tokens;
+    data['password'] = password;
     return data;
   }
 }

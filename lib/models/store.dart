@@ -78,10 +78,12 @@ class Store {
         ? DateTime.parse(json['created'])
         : json['created'].toDate();
     gstin = json['gstin'];
-    noAvgRating = json['rating'];
+    noAvgRating = json['rating'] == null ? 0.0 : json['rating'];
     noOfReviews = json.containsKey("no_of_reviews") ? json['no_of_reviews'] : 0;
     rating = noAvgRating / (noOfReviews > 0 ? noOfReviews : 1);
-    location = StoreLocation.fromJson(json['location']);
+    location = json['location'] == null
+        ? null
+        : StoreLocation.fromJson(json['location']);
   }
 
   Map<String, dynamic> toJson({bool storage = false}) {
@@ -112,7 +114,7 @@ class Store {
     }
     data['gstin'] = this.gstin == null ? '' : this.gstin;
     data['no_of_reviews'] = this.noOfReviews == null ? 0 : this.noOfReviews;
-    data['rating'] = this.noAvgRating;
+    data['rating'] = this.noAvgRating == null ? 0.0 : this.noAvgRating;
     if (nGram != null) {
       data['n_gram'] = nGram;
     }

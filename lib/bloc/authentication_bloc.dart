@@ -29,7 +29,7 @@ class ShowingOtpPage extends AuthenticationState {
 
 class AuthenticatingUser extends AuthenticationState {}
 
-class AuthenticationFailed extends AuthenticationState {
+class AuthenticationFailed extends CommonAuthenticationError {
   final String msg;
   AuthenticationFailed({this.msg});
 }
@@ -143,14 +143,24 @@ class AuthenticationBloc
         // If no users exist than trigger registration process
         // else redirect to Home
         yield FetchingCurrentAccount();
-        var uid = localStorage.prefs.getString("uid");
-        var snapshot = await storeQuery.getAccountSnapshot(uid: uid);
+        // var uid = localStorage.prefs.getString("uid");
+        // String token = await fcm.getToken();
+        // PhoneAuthentication.updateToken(token, uid);
+        // var snapshot = await storeQuery.getAccountSnapshot(uid: uid);
 
-        bool exist = storeQuery.accountExist(snapshot);
-        // //('$snapshot $exist');
+        bool exist = localStorage.prefs.containsKey("uid");
         if (exist) {
-          Account account = Account.fromJson(snapshot.data());
-          localStorage.setAccount(account);
+          var uid = localStorage.prefs.getString("uid");
+
+          if (!localStorage.prefs.containsKey("name")) {
+            var snapshot = await storeQuery.getAccountSnapshot(uid: uid);
+            await localStorage.setAccount(Account.fromJson(snapshot.data()));
+          }
+          Account account = await localStorage.getAccount();
+          String token = await fcm.getToken();
+          PhoneAuthentication.updateToken(token, account.uid);
+
+          // localStorage.setAccount(account);
           this..add(SetupStore(account.uid));
         } else {
           this..add(InitiateRegistration());
@@ -165,9 +175,15 @@ class AuthenticationBloc
         yield AuthenticationCompleted();
       }
     } catch (e) {
-      //(e);
+      print(e);
       yield CommonAuthenticationError();
     }
+  }
+
+  void proceedAfterUserVerification(String phoneNumber, String uid) {
+    localStorage.prefs.setString("uid", uid);
+    localStorage.prefs.setString("phone_number", phoneNumber);
+    this..add(FetchCurrentAccount());
   }
 
   Stream<AuthenticationState> mapPhoneAuthentication(LoginEvent event) async* {
@@ -182,20 +198,18 @@ class AuthenticationBloc
     } else if (event is ProceedToOtpPage) {
       PhoneAuthentication auth =
           PhoneAuthentication(phoneNumber: event.phoneNumber);
-      auth.sendOTP();
+      auth.sendOTP((uid) {
+        proceedAfterUserVerification(auth.phoneNumber, uid);
+      });
       yield ShowingOtpPage(auth);
     } else if (event is AuthenticateUser) {
       yield AuthenticatingUser();
       try {
         await event.authentication.verifyOtp(event.otp);
-        // //('authenticated..');
-        // yield InitialState();
-        localStorage.prefs.setString("uid", event.authentication.user.uid);
-        localStorage.prefs
-            .setString("phone_number", event.authentication.phoneNumber);
-        this..add(FetchCurrentAccount());
+        proceedAfterUserVerification(
+            event.authentication.phoneNumber, event.authentication.user.uid);
       } catch (e) {
-        // //(e);
+        print(e);
         yield AuthenticationFailed();
       }
     } else if (event is CancelPhoneAuthentication) {
@@ -221,8 +235,6 @@ class AuthenticationBloc
     } else if (event is RegisterAccount) {
       yield RegisteringAccount();
       Account account = await PhoneAuthentication.createAccount(event.account);
-      String token = await fcm.getToken();
-      PhoneAuthentication.updateToken(token);
       localStorage.setAccount(account);
       yield AuthenticationCompleted();
     }

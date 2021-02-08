@@ -139,7 +139,6 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                         height: screen.vertical(40),
                       ),
                       SubmitButton(
-                        //TODO run a function for verifying
                         onPressed: () {
                           if (_formKey.currentState.validate() &&
                               widget.auth.verificationId != null) {

@@ -86,6 +86,7 @@ class _HomePageViewState extends State<HomePageView> {
 
   @override
   Widget build(BuildContext context) {
+    final FocusScopeNode currentScope = FocusScope.of(context);
     final screen = Scale(context);
     return Scaffold(
       key: _scaffoldKey,
@@ -110,35 +111,27 @@ class _HomePageViewState extends State<HomePageView> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 GestureDetector(
-                  onTap: () {
-                    NavigationController.of(context)
-                        .push<QuotationWidget>(route: QuotationWidget());
-                  },
-                  child: true
-                      ? Wrap(
-                          direction: Axis.vertical,
-                          children: [
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(left: screen.horizontal(2.5)),
-                              child: Icon(
-                                Icons.message_outlined,
-                                color: Colors.white,
-                              ),
-                            ),
-                            LatoText(
-                              "Quotations",
-                              size: 10,
-                            )
-                          ],
-                        )
-                      : SvgPicture.asset(
-                          'assets/images/Home_Icon.svg',
-                          height: screen.vertical(30),
-                          width: screen.horizontal(4),
-                          color: Colors.white,
+                    onTap: () {
+                      NavigationController.of(context)
+                          .push<QuotationWidget>(route: QuotationWidget());
+                    },
+                    child: Wrap(
+                      direction: Axis.vertical,
+                      children: [
+                        Padding(
+                          padding:
+                              EdgeInsets.only(left: screen.horizontal(2.5)),
+                          child: Icon(
+                            Icons.message_outlined,
+                            color: Colors.white,
+                          ),
                         ),
-                ),
+                        LatoText(
+                          "Quotations",
+                          size: 10,
+                        )
+                      ],
+                    )),
                 IconButton(
                   splashRadius: 1,
                   icon: Icon(
@@ -185,7 +178,9 @@ class _HomePageViewState extends State<HomePageView> {
       body: GestureDetector(
         onTap: () {
           // //('safe area is tapped');
-          FocusScope.of(context).unfocus();
+          if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+            FocusManager.instance.primaryFocus.unfocus();
+          }
         },
         child: SafeArea(
             child: ListView(
@@ -201,8 +196,13 @@ class _HomePageViewState extends State<HomePageView> {
                 children: [
                   GestureDetector(
                     onTap: () {
+                      final FocusScopeNode currentScope =
+                          FocusScope.of(context);
+                      if (!currentScope.hasPrimaryFocus &&
+                          currentScope.hasFocus) {
+                        FocusManager.instance.primaryFocus.unfocus();
+                      }
                       _scaffoldKey.currentState.openDrawer();
-                      FocusScope.of(context).unfocus();
                     },
                     child: Container(
                       height: screen.vertical(30),
@@ -408,7 +408,7 @@ class NavigationDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<NavigationBloc>(context);
     Scale scale = Scale(context);
-    FocusScope.of(context).unfocus();
+
     return Drawer(
       child: Container(
           padding: EdgeInsets.symmetric(
