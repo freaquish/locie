@@ -38,7 +38,7 @@ class _CategorySelectionState extends State<CategorySelection> {
     if (groupValue == null) {
       showNoCategorySelectedError(context);
     } else {
-      widget.bloc..add(InitiateAddNewCategory(groupValue.id));
+      widget.bloc..add(InitiateAddNewCategory(groupValue));
     }
   }
 

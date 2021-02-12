@@ -90,7 +90,10 @@ class MyInvoiceBuilder extends StatelessWidget {
       builder: (context, state) {
         //(state.toString() + "bu");
         if (state is ShowingTabInvoices) {
-          return MyInvoicesListWidget(state.invoices);
+          return MyInvoicesListWidget(
+            state.invoices,
+            sent: state.sent,
+          );
         } else if (state is CommonInvoiceError) {
           return ErrorScreen();
         }

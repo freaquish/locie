@@ -54,6 +54,7 @@ class StoreViewBuilder extends StatelessWidget {
             return WorkLoadingContainer();
           } else if (state is FetchedStore) {
             singleton.store = state.store;
+            // print(state.store.rating.toString() + "Store About widget");
             return StoreAboutWidget(
               singleton.store,
               isEditable: state.isStoreMine,
@@ -62,7 +63,12 @@ class StoreViewBuilder extends StatelessWidget {
             singleton.examples = state.examples;
             return StoreWorksWidget(singleton.examples);
           } else if (state is FetchedStoreProducts) {
-            return StoreProductWidget(state.listings);
+            return StoreProductWidget(
+              state.listings,
+              categories: state.categroies,
+              sid: state.sid,
+              current: state.current,
+            );
           } else if (state is FetchedStoreReviews) {
             return StoreReviewsWidget(state.reviews);
           }
@@ -102,6 +108,7 @@ class StoreWidgetBuilder extends StatelessWidget {
         cubit: BlocProvider.of<StoreViewBloc>(context),
         builder: (context, state) {
           if (state is ShowingStoreViewWidget) {
+            print(state.store.rating.toString() + " Showing Store View Widget");
             return StoreViewWidget(
               event: event,
               store: state.store,

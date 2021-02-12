@@ -124,14 +124,18 @@ class _MyInvoicesState extends State<MyInvoices> with TickerProviderStateMixin {
 
 class MyInvoicesListWidget extends StatelessWidget {
   final List<Invoice> invoices;
-  MyInvoicesListWidget(this.invoices);
+  final bool sent;
+  MyInvoicesListWidget(this.invoices, {this.sent});
   @override
   Widget build(BuildContext context) {
     return Container(
       child: ListView.builder(
         physics: BouncingScrollPhysics(),
         itemCount: invoices.length,
-        itemBuilder: (context, index) => InvoiceCard(invoices[index]),
+        itemBuilder: (context, index) => InvoiceCard(
+          invoices[index],
+          sent: sent,
+        ),
       ),
     );
   }
@@ -139,7 +143,8 @@ class MyInvoicesListWidget extends StatelessWidget {
 
 class InvoiceCard extends StatefulWidget {
   final Invoice invoice;
-  InvoiceCard(this.invoice) : super(key: Key(invoice.id));
+  final bool sent;
+  InvoiceCard(this.invoice, {this.sent}) : super(key: Key(invoice.id));
 
   @override
   _InvoiceCardState createState() => _InvoiceCardState();
@@ -168,6 +173,13 @@ class _InvoiceCardState extends State<InvoiceCard> {
     );
   }
 
+  String subtitleName() {
+    String name = widget.sent
+        ? widget.invoice.recipientName
+        : widget.invoice.generatorName;
+    return name.length > 14 ? name.substring(0, 14) + "..." : name;
+  }
+
   @override
   Widget build(BuildContext context) {
     Scale scale = Scale(context);
@@ -189,12 +201,25 @@ class _InvoiceCardState extends State<InvoiceCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               LatoText(nameText()),
-              // Icon(
-              //   Icons.cloud_download,
-              //   color: Colors.white,
-              // ),
             ],
           ),
+        ),
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            LatoText(
+              subtitleName(),
+              size: 12,
+            ),
+            LatoText(
+              widget.invoice.timestamp.day.toString() +
+                  "-" +
+                  (widget.invoice.timestamp.month + 1).toString() +
+                  "-" +
+                  widget.invoice.timestamp.year.toString(),
+              size: 12,
+            )
+          ],
         ),
         trailing: IconButton(
           splashRadius: 4,

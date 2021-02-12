@@ -6,7 +6,6 @@ import 'package:locie/bloc/store_view_bloc.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
-import 'package:locie/components/rich_image.dart';
 import 'package:locie/components/text_field.dart';
 import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/screen_size.dart';
@@ -135,7 +134,14 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
   }
 
   void onBackClick(BuildContext context) {
-    BlocProvider.of<NavigationBloc>(context).pop();
+    if (tabController.index == 1) {
+      bloc
+        ..add(JumpToLastProducts(onEmptyCallback: () {
+          BlocProvider.of<NavigationBloc>(context).pop();
+        }));
+    } else {
+      BlocProvider.of<NavigationBloc>(context).pop();
+    }
   }
 
   @override

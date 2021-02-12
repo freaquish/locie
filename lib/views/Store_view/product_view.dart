@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:locie/bloc/listing_bloc.dart';
 import 'package:locie/bloc/navigation_bloc.dart';
 import 'package:locie/bloc/navigation_event.dart';
-import 'package:locie/bloc/store_view_bloc.dart';
 import 'package:locie/components/appBar.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/dialogs_sheet.dart';
@@ -16,9 +15,7 @@ import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/listing.dart';
 import 'package:locie/pages/listing_widget.dart';
-import 'package:locie/pages/myQuotation.dart';
 import 'package:locie/pages/store_bloc_view.dart';
-import 'package:locie/views/Store_view/store_view.dart';
 import 'package:locie/workers/sharing_wrokers.dart';
 // import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 

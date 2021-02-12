@@ -10,7 +10,7 @@ import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/category.dart';
 
 class CreateNewCategoryWidget extends StatefulWidget {
-  final String current;
+  final Category current;
   final CategoryBloc bloc;
   CreateNewCategoryWidget({this.bloc, this.current});
   @override
@@ -29,12 +29,14 @@ class _CreateNewCategoryWidgetState extends State<CreateNewCategoryWidget> {
     if (widget.current != null && nameTextController.text.isNotEmpty) {
       var sid = localStorage.prefs.getString("sid");
       Category category = Category(
-        parent: widget.current,
-        store: sid,
-        isDefault: false,
-        name: nameTextController.value.text,
-        imageFile: image,
-      );
+          parent: widget.current.id,
+          store: sid,
+          isDefault: false,
+          name: nameTextController.value.text,
+          imageFile: image,
+          defaultParent: widget.current.defaultParent == null
+              ? widget.current.id
+              : widget.current.defaultParent);
       widget.bloc..add(CreateCategory(category));
     }
   }

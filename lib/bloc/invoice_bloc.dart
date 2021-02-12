@@ -21,7 +21,8 @@ class ShowingCustomerResultPage extends InvoiceState {
 
 class ShowingTabInvoices extends InvoiceState {
   final List<Invoice> invoices;
-  ShowingTabInvoices(this.invoices);
+  final bool sent;
+  ShowingTabInvoices(this.invoices, {this.sent = false});
 }
 
 class ShowingItemInputPage extends InvoiceState {
@@ -191,7 +192,7 @@ class MyInvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
         }
         invoices = recieved;
       }
-      yield ShowingTabInvoices(invoices);
+      yield ShowingTabInvoices(invoices, sent: event.sent);
     }
   }
 }

@@ -97,10 +97,10 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     var json = category.toJson();
     json["n_gram"] = nGram(category.name);
     await categoryReference.doc(cid).set(json);
-    await firestore
-        .collection('stores')
-        .doc(store.id)
-        .update({"n_gram": FieldValue.arrayUnion(trigramNGram(category.name))});
+    await firestore.collection('stores').doc(store.id).update({
+      "n_gram": FieldValue.arrayUnion(trigramNGram(category.name)),
+      "categories": FieldValue.arrayUnion([category.defaultParent])
+    });
 
     return category;
   }

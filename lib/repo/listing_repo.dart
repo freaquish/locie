@@ -4,6 +4,7 @@ import 'package:locie/helper/local_storage.dart';
 import 'package:locie/helper/minions.dart';
 import 'package:locie/helper/notification.dart';
 import 'package:locie/models/account.dart';
+import 'package:locie/models/category.dart';
 import 'package:locie/models/listing.dart';
 import 'package:locie/models/quotations.dart';
 import 'package:locie/models/store.dart';
@@ -43,6 +44,11 @@ class ListingQuery {
       var lid = generateId(text: 'item-${listing.name}-${store.name}');
       listing.id = lid;
       listing.nGram += trigramNGram(listing.parentName);
+      if (listing.category != null) {
+        await instance.collection("stores").doc(store.id).update({
+          "categories": FieldValue.arrayUnion([listing.category.defaultParent])
+        });
+      }
     }
     listingRef.doc(listing.id).set(listing.toJson());
   }
@@ -117,5 +123,11 @@ class ListingQuery {
 
   Future<void> deleteItem(String sid) async {
     await instance.collection("listings").doc(sid).delete();
+  }
+
+  Future<Category> fetchStoreCategory(
+      {String parent, bool isDefault = false}) async {
+    Query categoryQuery;
+    if (isDefault) {}
   }
 }

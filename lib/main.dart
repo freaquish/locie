@@ -40,7 +40,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
-    firebaseSetUp();
+    // firebaseSetUp();
     // Firebase.initializeApp();
 
     super.initState();
@@ -71,6 +71,7 @@ class _MainPageState extends State<MainPage> {
         },
         onResume: (Map<String, dynamic> message) async {},
         onLaunch: (Map<String, dynamic> message) async {});
+    return event;
   }
 
   @override
@@ -78,7 +79,7 @@ class _MainPageState extends State<MainPage> {
     // firebaseSetUp(context);
     return Scaffold(
       body: FutureBuilder(
-        future: Firebase.initializeApp(),
+        future: firebaseSetUp(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return SplashScreen();

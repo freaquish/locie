@@ -11,6 +11,7 @@ import 'package:locie/views/Store_view/product_view.dart';
 import 'package:locie/views/error_widget.dart';
 import 'package:locie/views/home_page.dart';
 import 'package:locie/views/not_internet_widget.dart';
+import 'package:locie/views/splash_screen.dart';
 
 class NavigationProvider extends StatelessWidget {
   final NavigationEvent event;
@@ -80,11 +81,7 @@ class NavigationBuilder extends StatelessWidget {
           } else if (state is NavigationUnknownError) {
             return ErrorScreen();
           }
-          return Center(
-            child: Container(
-              child: CircularProgressIndicator(),
-            ),
-          );
+          return SplashScreen();
         },
       ),
     );

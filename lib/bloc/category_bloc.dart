@@ -32,7 +32,7 @@ class ShowingCategoryViewInPage extends CategoryState {
 }
 
 class ShowingAddNewCategoryPage extends CategoryState {
-  final String current;
+  final Category current;
   ShowingAddNewCategoryPage([this.current]);
 }
 
@@ -58,7 +58,7 @@ class InitiateCategorySelection extends CategoryEvent {
 }
 
 class InitiateAddNewCategory extends CategoryEvent {
-  final String current;
+  final Category current;
   InitiateAddNewCategory(this.current);
 }
 
