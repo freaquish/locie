@@ -149,94 +149,100 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
   StoreViewGlobalStateSingleton singleton = StoreViewGlobalStateSingleton();
   final int cacheTime = 3;
   Store store;
+  Store myStore;
   StoreProductsMap productsMap = StoreProductsMap();
 
   StoreViewBloc() : super(LoadingState());
 
   bool storeIsSame(String sid) {
-    return store != null && sid == store.id;
+    return myStore != null && sid == myStore.id;
   }
 
   @override
   Stream<StoreViewState> mapEventToState(StoreViewEvent event) async* {
-    print(store == null);
-    // try {
-    // store = await localStorage.getStore();
-    if (event is FetchStore) {
-      // This event will show complete widget
-      yield LoadingState();
+    try {
+      myStore = await localStorage.getStore();
+      // store = await localStorage.getStore();
+      if (event is FetchStore) {
+        // This event will show complete widget
+        yield LoadingState();
 
-      // if (store == null) {
-      store = await repo.fetchStore(event.sid);
-      print(store.categories);
-      //   print(store.toJson());
-      // }
+        // if (store == null) {
+        store = await repo.fetchStore(event.sid);
+        //print((store.categories);
+        //   //print((store.toJson());
+        // }
 
-      yield ShowingStoreViewWidget(
-          store: store, isEditable: storeIsSame(event.sid));
-    } else if (event is FetchStoreProducts) {
-      /**
+        yield ShowingStoreViewWidget(
+            store: store, isEditable: storeIsSame(event.sid));
+      } else if (event is FetchStoreProducts) {
+        /**
          * Check if event.parent is not null, if it's null then check `default` in not null
          * if null then fetch all categories under `defaults` of store
          * similary check if `key` is present in product maps otherwise proceed to fetch it
          */
-      // print(store.categories);
-      yield LoadingState();
-      String mapKey = event.parent;
-      List<String> parents = [];
-      bool isDefault = false;
-      if (event.parent == null) {
-        mapKey = "default";
-        parents = store.categories;
-        isDefault = true;
-      } else {
-        parents = [event.parent];
-      }
+        // //print((store.categories);
+        yield LoadingState();
+        String mapKey = event.parent;
+        List<String> parents = [];
+        bool isDefault = false;
+        if (event.parent == null) {
+          mapKey = "default";
+          if (store == null) {
+            store = await repo.fetchStore(event.sid);
+          }
+          parents = store.categories;
+          isDefault = true;
+        } else {
+          parents = [event.parent];
+        }
 
-      if (!productsMap.containsKey(mapKey)) {
-        List<Listing> listings =
-            await repo.fetchStoreListing(event.sid, parents);
-        List<Category> categories = await repo.fetchStoreCategory(
-            sid: event.sid, parents: parents, isDefault: isDefault);
-        productsMap.insert(mapKey,
-            listings: listings, categories: categories, name: event.current);
+        if (!productsMap.containsKey(mapKey)) {
+          List<Listing> listings =
+              await repo.fetchStoreListing(event.sid, parents);
+          List<Category> categories = await repo.fetchStoreCategory(
+              sid: event.sid, parents: parents, isDefault: isDefault);
+          productsMap.insert(mapKey,
+              listings: listings, categories: categories, name: event.current);
+        }
+        ComplexProductMap products = productsMap.get(mapKey);
+        yield FetchedStoreProducts(products.listings, event.sid,
+            current: event.current,
+            categroies: products.categories,
+            isStoreMine: storeIsSame(event.sid));
+      } else if (event is JumpToLastProducts) {
+        productsMap.pop();
+        if (productsMap.isEmpty) {
+          event.onEmptyCallback();
+        } else {
+          String currentKey = productsMap.lastkey;
+          ComplexProductMap current = productsMap.get(currentKey);
+          this
+            ..add(FetchStoreProducts(store.id,
+                current: current.name, parent: currentKey));
+        }
+      } else if (event is FetchStoreWorks) {
+        yield LoadingState();
+        PreviousExamples examples = await repo.fetchWorks(event.sid);
+        //printexamples);
+        yield FetchedStoreWorks(examples, isStoreMine: storeIsSame(event.sid));
+      } else if (event is FetchStoreReviews) {
+        yield FetchingList();
+        List<Review> reviews =
+            await repo.fetchReviews(event.sid, event.startAt);
+        // //print((reviews);
+        yield FetchedStoreReviews(reviews, isStoreMine: storeIsSame(event.sid));
+      } else if (event is InjectStoreView) {
+        yield event.state;
+      } else if (event is FetchStoreView) {
+        yield LoadingState();
+        store = event.store;
+        yield FetchedStore(event.store,
+            isStoreMine: storeIsSame(event.store.id));
       }
-      ComplexProductMap products = productsMap.get(mapKey);
-      yield FetchedStoreProducts(products.listings, event.sid,
-          current: event.current,
-          categroies: products.categories,
-          isStoreMine: storeIsSame(event.sid));
-    } else if (event is JumpToLastProducts) {
-      productsMap.pop();
-      if (productsMap.isEmpty) {
-        event.onEmptyCallback();
-      } else {
-        String currentKey = productsMap.lastkey;
-        ComplexProductMap current = productsMap.get(currentKey);
-        this
-          ..add(FetchStoreProducts(store.id,
-              current: current.name, parent: currentKey));
-      }
-    } else if (event is FetchStoreWorks) {
-      yield LoadingState();
-      PreviousExamples examples = await repo.fetchWorks(event.sid);
-      //printexamples);
-      yield FetchedStoreWorks(examples, isStoreMine: storeIsSame(event.sid));
-    } else if (event is FetchStoreReviews) {
-      yield FetchingList();
-      List<Review> reviews = await repo.fetchReviews(event.sid, event.startAt);
-      // print(reviews);
-      yield FetchedStoreReviews(reviews, isStoreMine: storeIsSame(event.sid));
-    } else if (event is InjectStoreView) {
-      yield event.state;
-    } else if (event is FetchStoreView) {
-      yield LoadingState();
-      store = event.store;
-      yield FetchedStore(event.store, isStoreMine: storeIsSame(event.store.id));
+    } catch (e) {
+      // throw e;
+      yield CommonStoreViewError();
     }
-    // } catch (e) {
-    //   throw e;
-    //   yield CommonStoreViewError();
-    // }
   }
 }

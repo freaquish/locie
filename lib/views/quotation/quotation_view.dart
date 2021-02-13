@@ -201,8 +201,8 @@ class _QuotationCardState extends State<QuotationCard> {
               ),
               CustomTextField(
                 textAlignment: TextAlign.start,
-                hintText: "Price",
-                textController: priceController,
+                hintText: "Quantity",
+                textController: qunatityController,
               ),
               SizedBox(
                 height: scale.vertical(30),

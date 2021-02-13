@@ -7,11 +7,11 @@ import 'package:locie/components/primary_container.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/text_field.dart';
-import 'package:locie/views/authentication/verify_otp.dart';
 
 class PhoneAuthenticationWidget extends StatefulWidget {
   final AuthenticationBloc bloc;
-  PhoneAuthenticationWidget({this.bloc});
+  final bool error;
+  PhoneAuthenticationWidget({this.bloc, this.error = false});
   @override
   _PhoneAuthenticationWidgetState createState() =>
       _PhoneAuthenticationWidgetState();
@@ -53,7 +53,27 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: screen.vertical(200),
+                        height: screen.vertical(60),
+                      ),
+                      if (widget.error)
+                        Container(
+                          // color: Colors.red,
+                          width: screen.horizontal(100),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(8)),
+                          padding: EdgeInsets.symmetric(
+                              vertical: screen.vertical(20)),
+                          child: LatoText(
+                            'Phone Authentication failed',
+                            size: 16,
+                            fontColor: Colors.white,
+                            weight: FontWeight.bold,
+                          ),
+                        ),
+                      SizedBox(
+                        height: screen.vertical(100),
                       ),
                       RailwayText(
                         'Enter your \nPhone number',

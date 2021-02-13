@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'dart:typed_data';
-// import 'package:locie/constants.dart';
-import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:open_file/open_file.dart';
 import 'package:dio/dio.dart';
 import 'package:locie/models/invoice.dart';

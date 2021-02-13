@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "137228739986-lnmagcu330o5f65phs1qieqodn73dq4i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bytatigris.locie",
+            "certificate_hash": "7ff8f8f9ad8e9a6c3527238f8a465093831efe58"
+          }
+        },
+        {
           "client_id": "137228739986-kfdlbl7trl0bnbrs8ol2b38uadbop610.apps.googleusercontent.com",
           "client_type": 3
         }

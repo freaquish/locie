@@ -7,12 +7,13 @@ import 'package:locie/views/quotation/quotation_view.dart';
 
 class QuotationViewProvider extends StatelessWidget {
   final QuotationEvent event;
-  QuotationViewProvider(this.event);
+  final QuotationBloc bloc;
+  QuotationViewProvider({this.event, this.bloc});
   @override
   Widget build(BuildContext context) {
     return Container(
       child: BlocProvider<QuotationBloc>(
-        create: (context) => QuotationBloc()..add(event),
+        create: (context) => bloc..add(event),
         child: QuotationBuilder(),
       ),
     );

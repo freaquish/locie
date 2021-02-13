@@ -54,7 +54,7 @@ class StoreViewBuilder extends StatelessWidget {
             return WorkLoadingContainer();
           } else if (state is FetchedStore) {
             singleton.store = state.store;
-            // print(state.store.rating.toString() + "Store About widget");
+            // //print((state.store.rating.toString() + "Store About widget");
             return StoreAboutWidget(
               singleton.store,
               isEditable: state.isStoreMine,
@@ -108,7 +108,7 @@ class StoreWidgetBuilder extends StatelessWidget {
         cubit: BlocProvider.of<StoreViewBloc>(context),
         builder: (context, state) {
           if (state is ShowingStoreViewWidget) {
-            print(state.store.rating.toString() + " Showing Store View Widget");
+            //print((state.store.rating.toString() + " Showing Store View Widget");
             return StoreViewWidget(
               event: event,
               store: state.store,

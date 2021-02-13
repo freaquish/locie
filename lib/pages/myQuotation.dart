@@ -23,23 +23,27 @@ class _QuotationWidgetState extends State<QuotationWidget>
   LocalStorage localStorage;
   bool isStore = false;
   QuotationEvent event;
+  QuotationBloc bloc;
   Scale screen;
   @override
   void initState() {
     localStorage = LocalStorage();
-    event = FetchSentQuotations();
-    checkStoreExistance();
+    bloc = QuotationBloc();
     tabController = TabController(initialIndex: 0, length: 2, vsync: this);
     tabController.addListener(handleTabSelection);
-
     super.initState();
   }
 
-  checkStoreExistance() async {
+  Future<void> checkStoreExistance() async {
     await localStorage.init();
     setState(() {
       isStore = localStorage.prefs.containsKey("sid");
     });
+  }
+
+  Future<QuotationEvent> getInitialEvent() async {
+    await checkStoreExistance();
+    return getEvent();
   }
 
   @override
@@ -49,7 +53,8 @@ class _QuotationWidgetState extends State<QuotationWidget>
     super.dispose();
   }
 
-  handleTabSelection() {
+  QuotationEvent getEvent() {
+    QuotationEvent event;
     final events = [FetchSentQuotations(), FetchReceivedQuotations()];
     switch (tabController.index) {
       case 0:
@@ -59,6 +64,12 @@ class _QuotationWidgetState extends State<QuotationWidget>
         event = isStore ? events[0] : events[1];
         break;
     }
+    return event;
+  }
+
+  handleTabSelection() {
+    event = getEvent();
+    bloc..add(event);
     setState(() {});
   }
 
@@ -121,7 +132,22 @@ class _QuotationWidgetState extends State<QuotationWidget>
         body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: PrimaryContainer(
-              widget: QuotationViewProvider(event),
+              widget: FutureBuilder<QuotationEvent>(
+                future: getInitialEvent(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: Container(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  } else {
+                    //print((snapshot.data);
+                    return QuotationViewProvider(
+                        bloc: bloc, event: snapshot.data);
+                  }
+                },
+              ),
             )),
       ),
     );

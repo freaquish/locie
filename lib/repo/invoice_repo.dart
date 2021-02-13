@@ -73,7 +73,7 @@ class InvoiceRepo {
     QuerySnapshot snapshots;
     await localStorage.init();
     CollectionReference ref = instance.collection("invoices");
-    // print(localStorage.prefs.containsKey("sid"));
+    // //print((localStorage.prefs.containsKey("sid"));
     if (received || !localStorage.prefs.containsKey("sid")) {
       snapshots = await ref
           .where("recipient_phone_number",
@@ -87,10 +87,10 @@ class InvoiceRepo {
               isEqualTo: localStorage.prefs.getString("phone_number"))
           .orderBy("timestamp", descending: true)
           .get();
-      // print(snap);
+      // //print((snap);
     }
     return snapshots.docs.map((e) {
-      print(e['generator_phone_number']);
+      //print((e['generator_phone_number']);
       return Invoice.fromJson(e.data());
     }).toList();
   }

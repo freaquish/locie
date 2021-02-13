@@ -40,7 +40,10 @@ class AuthenticationBuilder extends StatelessWidget {
           if (state is InitialState) {
             return CircularLoading();
           } else if (state is ShowingPhoneAuthenticationPage) {
-            return PhoneAuthenticationWidget(bloc: bloc);
+            return PhoneAuthenticationWidget(
+              bloc: bloc,
+              error: state.error,
+            );
           } else if (state is ShowingOtpPage) {
             return VerifyOtpScreen(
               bloc: bloc,

@@ -20,7 +20,10 @@ class AccountRegistrationFailed extends AuthenticationState {}
 
 class AuthenticationCompleted extends AuthenticationState {}
 
-class ShowingPhoneAuthenticationPage extends AuthenticationState {}
+class ShowingPhoneAuthenticationPage extends AuthenticationState {
+  final bool error;
+  ShowingPhoneAuthenticationPage({this.error = false});
+}
 
 class ShowingOtpPage extends AuthenticationState {
   PhoneAuthentication authentication;
@@ -66,6 +69,8 @@ class LoginEvent extends AuthenticationEvent {}
 
 // This event will trigger Bloc to show Phone Number input page
 class InitiateLogin extends LoginEvent {}
+
+class PhoneAuthenticationFailed extends LoginEvent {}
 
 // This event will trigger Bloc to store PhoneAuthentication state for further action
 // and proceeds to OTP page, this event will call the verify function
@@ -175,7 +180,7 @@ class AuthenticationBloc
         yield AuthenticationCompleted();
       }
     } catch (e) {
-      print(e);
+      //print((e);
       yield CommonAuthenticationError();
     }
   }
@@ -209,11 +214,13 @@ class AuthenticationBloc
         proceedAfterUserVerification(
             event.authentication.phoneNumber, event.authentication.user.uid);
       } catch (e) {
-        print(e);
-        yield AuthenticationFailed();
+        //print((e);
+        this..add(PhoneAuthenticationFailed());
       }
     } else if (event is CancelPhoneAuthentication) {
       yield ShowingPhoneAuthenticationPage();
+    } else if (event is PhoneAuthenticationFailed) {
+      yield ShowingPhoneAuthenticationPage(error: true);
     }
   }
 

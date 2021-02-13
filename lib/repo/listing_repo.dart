@@ -77,7 +77,7 @@ class ListingQuery {
         text: quotation.storeName +
             DateTime.now().microsecondsSinceEpoch.toString());
     Account account = await localStorage.getAccount();
-    print(account.name);
+    //print((account.name);
 
     quotation.user = account.uid;
     quotation.userName = account.name;
@@ -105,6 +105,7 @@ class ListingQuery {
 
   Future<List<Quotation>> fetchQuotations({bool sent = false}) async {
     CollectionReference ref = instance.collection("quotations");
+    //print((sent);
     Query query;
     if (!sent) {
       Store store = await localStorage.getStore();
@@ -123,11 +124,5 @@ class ListingQuery {
 
   Future<void> deleteItem(String sid) async {
     await instance.collection("listings").doc(sid).delete();
-  }
-
-  Future<Category> fetchStoreCategory(
-      {String parent, bool isDefault = false}) async {
-    Query categoryQuery;
-    if (isDefault) {}
   }
 }
