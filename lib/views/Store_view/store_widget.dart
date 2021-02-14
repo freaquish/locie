@@ -179,7 +179,8 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                 toolbarHeight: 50,
                 floating: false,
                 leading: IconButton(
-                    icon: Icon(Icons.keyboard_backspace, color: Colors.white),
+                    icon:
+                        Icon(Icons.keyboard_backspace, color: Colors.grey[600]),
                     onPressed: () {
                       onBackClick(context);
                     }),

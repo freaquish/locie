@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -35,9 +37,10 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   DynamicLinksService dynmaicLinksService = DynamicLinksService();
   NavigationEvent event = NavigateToHome();
+  Timer _timerLink;
   SendNotification notification;
 
   @override
@@ -46,13 +49,14 @@ class _MainPageState extends State<MainPage> {
     // Firebase.initializeApp();
 
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   final FirebaseMessaging fcm = FirebaseMessaging();
 
-  Future<void> firebaseSetUp() async {
+  Future<bool> firebaseSetUp(BuildContext context) async {
     await Firebase.initializeApp();
-    event = await dynmaicLinksService.getDynamicEvent();
+    await dynmaicLinksService.handleDynamicLink(context);
     notification = SendNotification();
     var initializationSettingsAndroid =
         new AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -73,7 +77,26 @@ class _MainPageState extends State<MainPage> {
         },
         onResume: (Map<String, dynamic> message) async {},
         onLaunch: (Map<String, dynamic> message) async {});
-    return event;
+    return true;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _timerLink = new Timer(const Duration(milliseconds: 1000), () {
+        dynmaicLinksService.handleDynamicLink(context);
+      });
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    if (_timerLink != null) {
+      _timerLink.cancel();
+    }
+    super.dispose();
   }
 
   @override
@@ -81,7 +104,7 @@ class _MainPageState extends State<MainPage> {
     // firebaseSetUp(context);
     return Scaffold(
       body: FutureBuilder(
-        future: firebaseSetUp(),
+        future: firebaseSetUp(context),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return SplashScreen();

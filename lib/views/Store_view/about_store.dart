@@ -17,7 +17,7 @@ class StoreAboutWidget extends StatelessWidget {
     BlocProvider.of<NavigationBloc>(context).push(NavigateToEditStore(store));
   }
 
-  ratingIcon(dynamic rating) {
+  Icon ratingIcon(double rating) {
     if (rating >= 0 && rating <= 1.0) {
       return Icon(
         Icons.sentiment_very_dissatisfied,
@@ -94,7 +94,7 @@ class StoreAboutWidget extends StatelessWidget {
             height: screen.vertical(20),
           ),
           Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            ratingIcon(2),
+            ratingIcon(store.rating),
             SizedBox(
               width: screen.horizontal(2),
             ),
