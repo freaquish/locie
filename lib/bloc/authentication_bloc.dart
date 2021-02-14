@@ -135,7 +135,8 @@ class AuthenticationBloc
         // verify that account exist and then redirect to home
         // otherwise initiate login page
         yield ShowSplashScreen();
-        if (localStorage.prefs.containsKey("uid")) {
+        if (localStorage.prefs.containsKey("uid") &&
+            localStorage.prefs.containsKey("name")) {
           yield AuthenticationCompleted();
         } else {
           this..add(InitiateLogin());
@@ -153,7 +154,7 @@ class AuthenticationBloc
         // PhoneAuthentication.updateToken(token, uid);
         // var snapshot = await storeQuery.getAccountSnapshot(uid: uid);
 
-        bool exist = localStorage.prefs.containsKey("uid");
+        bool exist = localStorage.prefs.containsKey("name");
         if (exist) {
           var uid = localStorage.prefs.getString("uid");
 

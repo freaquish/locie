@@ -56,7 +56,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
   Future<bool> firebaseSetUp(BuildContext context) async {
     await Firebase.initializeApp();
-    await dynmaicLinksService.handleDynamicLink(context);
+    handleLinkInAppLifeCycle(context);
     notification = SendNotification();
     var initializationSettingsAndroid =
         new AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -80,12 +80,18 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     return true;
   }
 
+  void handleLinkInAppLifeCycle(BuildContext context) {
+    _timerLink = new Timer(const Duration(milliseconds: 1000), () {
+      dynmaicLinksService.handleDynamicLink(context);
+    });
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _timerLink = new Timer(const Duration(milliseconds: 1000), () {
-        dynmaicLinksService.handleDynamicLink(context);
-      });
+      handleLinkInAppLifeCycle(context);
+    } else if (state == AppLifecycleState.inactive) {
+      handleLinkInAppLifeCycle(context);
     }
     super.didChangeAppLifecycleState(state);
   }

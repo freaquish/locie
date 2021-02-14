@@ -6,6 +6,7 @@ import 'package:locie/components/color.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/helper/screen_size.dart';
+import 'package:locie/pages/navigation_track.dart';
 
 class ErrorScreen extends StatelessWidget {
   @override
@@ -49,9 +50,7 @@ class ErrorScreen extends StatelessWidget {
                 horizontal: screen.horizontal(25)),
             child: SubmitButton(
                 onPressed: () {
-                  BlocProvider.of<NavigationBloc>(context).clear();
-                  BlocProvider.of<NavigationBloc>(context)
-                      .push(NavigateToHome());
+                  BlocProvider.of<NavigationBloc>(context).entryRoute();
                 },
                 buttonName: 'Try Again',
                 buttonColor: Colour.submitButtonColor),

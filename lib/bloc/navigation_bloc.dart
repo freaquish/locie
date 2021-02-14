@@ -85,6 +85,12 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
     route.clear();
   }
 
+  void entryRoute() {
+    route.clear();
+    route.pushList([NavigateToHome(), NavigateToAuthentication()]);
+    this..add(NavigateToAuthentication());
+  }
+
   void replace(NavigationEvent event) {
     route.replace(event);
     this..add(route.current());
