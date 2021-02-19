@@ -279,4 +279,13 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     }
     return snapshots.docs.map((e) => Store.fromJson(e.data())).toList()[0];
   }
+
+  Future<Account> fetchSystemAccount(String uid) async {
+    DocumentSnapshot snapshot =
+        await firestore.collection("accounts").doc(uid).get();
+    if (!snapshot.exists) {
+      return null;
+    }
+    return Account.fromJson(snapshot.data());
+  }
 }

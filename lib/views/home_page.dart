@@ -450,8 +450,9 @@ class NavigationDrawer extends StatelessWidget {
                       height: scale.vertical(30),
                     ),
                     Container(
+                      alignment: Alignment.center,
                       child: Container(
-                        // alignment: Alignment.center,
+                        alignment: Alignment.center,
                         child: LatoText(
                           account.name,
                           size: 18,

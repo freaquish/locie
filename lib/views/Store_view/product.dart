@@ -78,6 +78,12 @@ class _StoreProductWidgetState extends State<StoreProductWidget> {
       ..add(FetchStoreProducts(widget.sid, parent: category.id));
   }
 
+  Widget noContentPresentWidget() {
+    return Container(
+      child: LatoText("No listing to show.", size: 18, fontColor: Colors.white),
+    );
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -92,60 +98,64 @@ class _StoreProductWidgetState extends State<StoreProductWidget> {
           horizontal: screen.horizontal(6), vertical: screen.vertical(5)),
       child: Container(
         padding: EdgeInsets.only(bottom: screen.vertical(50)),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              childAspectRatio: screen.horizontal(50) / screen.vertical(470),
-              crossAxisCount: 2),
-          physics: BouncingScrollPhysics(),
-          // controller: _scrollController,
-          shrinkWrap: true,
-          itemCount: widget.listings.length + widget.categories.length,
-          itemBuilder: (context, index) {
-            var element = getElementFromCompsitieList(index);
-            bool isCategory = element is Category;
-            Key key = Key(element.id);
-            return GestureDetector(
-              key: key,
-              onTap: () {
-                onClick(context, element);
-                // onItemClick(context, widget.listings[index].id);
-              },
-              child: Container(
-                key: key,
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Flexible(
-                      child: Container(
-                        key: key,
-                        width: screen.horizontal(50),
-                        height: screen.vertical(390),
-                        child: RichImage(
-                          image: element.image,
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                        ),
+        child: widget.listings == null && widget.categories.isEmpty
+            ? noContentPresentWidget()
+            : GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    childAspectRatio:
+                        screen.horizontal(50) / screen.vertical(470),
+                    crossAxisCount: 2),
+                physics: BouncingScrollPhysics(),
+                // controller: _scrollController,
+                shrinkWrap: true,
+                itemCount: widget.listings.length + widget.categories.length,
+                itemBuilder: (context, index) {
+                  var element = getElementFromCompsitieList(index);
+                  bool isCategory = element is Category;
+                  Key key = Key(element.id);
+                  return GestureDetector(
+                    key: key,
+                    onTap: () {
+                      onClick(context, element);
+                      // onItemClick(context, widget.listings[index].id);
+                    },
+                    child: Container(
+                      key: key,
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Container(
+                              key: key,
+                              width: screen.horizontal(50),
+                              height: screen.vertical(390),
+                              child: RichImage(
+                                image: element.image,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15)),
+                              ),
+                            ),
+                          ),
+                          ListTile(
+                              title: RailwayText(
+                                element.name,
+                                key: key,
+                              ),
+                              subtitle: isCategory
+                                  ? null
+                                  : LatoText(
+                                      '$rupeeSign ${element.priceMax} - $rupeeSign ${element.priceMin}',
+                                      fontColor: Color(0xffFF7A00),
+                                      key: key,
+                                      size: 12,
+                                    )),
+                        ],
                       ),
                     ),
-                    ListTile(
-                        title: RailwayText(
-                          element.name,
-                          key: key,
-                        ),
-                        subtitle: isCategory
-                            ? null
-                            : LatoText(
-                                '$rupeeSign ${element.priceMax} - $rupeeSign ${element.priceMin}',
-                                fontColor: Color(0xffFF7A00),
-                                key: key,
-                                size: 12,
-                              )),
-                  ],
-                ),
+                  );
+                },
               ),
-            );
-          },
-        ),
       ),
     );
   }
