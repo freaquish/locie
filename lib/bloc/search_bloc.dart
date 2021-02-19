@@ -50,7 +50,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         yield SearchResults(stores: stores);
       }
     } catch (e) {
-      //print((e);
       yield CommonSearchError();
     }
   }

@@ -142,7 +142,6 @@ class _QuotationWidgetState extends State<QuotationWidget>
                       ),
                     );
                   } else {
-                    //print((snapshot.data);
                     return QuotationViewProvider(
                         bloc: bloc, event: snapshot.data);
                   }

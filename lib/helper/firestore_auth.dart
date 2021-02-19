@@ -85,9 +85,7 @@ class PhoneAuthentication {
   }
 
   verificationFailed(FirebaseAuthException e) {
-    //print((e.message);
-    //print(('crus');
-    // throw e;
+    throw e;
   }
 
   Future<void> codeSent(String verificationId, int resendToken) async {
@@ -100,9 +98,7 @@ class PhoneAuthentication {
       PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
           verificationId: verificationId, smsCode: otp);
       await signInWithPhoneNumber(phoneAuthCredential);
-    } catch (e) {
-      //print((e);
-    }
+    } catch (e) {}
   }
 
   Future<User> getUser() async {

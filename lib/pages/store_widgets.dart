@@ -39,7 +39,6 @@ class CreateOrEditStoreBuilder extends StatelessWidget {
       widget: BlocBuilder<CreateOrEditStoreBloc, StoreState>(
         cubit: bloc,
         builder: (context, state) {
-          //(state);
           if (state is InitializingCreateOrEditStore) {
             return CreateStoreWidget(
               bloc: bloc,

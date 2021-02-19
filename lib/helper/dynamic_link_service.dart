@@ -65,7 +65,6 @@ class DynamicLinksService {
       event = LaunchItemView(lid);
     }
     if (event != null) {
-      print(event);
       Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => NavigationProvider(
                 event: event,

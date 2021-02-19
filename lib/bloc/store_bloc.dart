@@ -166,13 +166,17 @@ class CreateOrEditStoreBloc extends Bloc<StoreEvent, StoreState> {
         yield UploadingStore();
         // FireStoreQuery storeQuery = FireStoreQuery();
         var account = await localStorage.getAccount();
-        Store store = await storeQuery.createStore(event.store, account);
-        yield ShowMyStorePage(store);
+        if (event.store.id != null) {
+          this..add(EditStore(event.store));
+        } else {
+          Store store = await storeQuery.createStore(event.store, account);
+          yield ShowMyStorePage(store);
+        }
       } else if (event is EditStore) {
         events.add(event);
         // Fetch store data using shared prefs
         yield UploadingStore();
-        FireStoreQuery storeQuery = FireStoreQuery();
+        // FireStoreQuery storeQuery = FireStoreQuery();
         Store store = await storeQuery.editStore(event.store);
         yield ShowMyStorePage(store, afterEdit: true);
       } else if (event is ProceedToAddressPage) {

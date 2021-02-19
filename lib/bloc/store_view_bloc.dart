@@ -169,9 +169,6 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
 
         // if (store == null) {
         store = await repo.fetchStore(event.sid);
-        //print((store.categories);
-        //   //print((store.toJson());
-        // }
 
         yield ShowingStoreViewWidget(
             store: store, isEditable: storeIsSame(event.sid));
@@ -181,7 +178,6 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
          * if null then fetch all categories under `defaults` of store
          * similary check if `key` is present in product maps otherwise proceed to fetch it
          */
-        // //print((store.categories);
         yield LoadingState();
         String mapKey = event.parent;
         List<String> parents = [];
@@ -230,7 +226,6 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
         yield FetchingList();
         List<Review> reviews =
             await repo.fetchReviews(event.sid, event.startAt);
-        // //print((reviews);
         yield FetchedStoreReviews(reviews, isStoreMine: storeIsSame(event.sid));
       } else if (event is InjectStoreView) {
         yield event.state;

@@ -77,8 +77,6 @@ class ListingQuery {
         text: quotation.storeName +
             DateTime.now().microsecondsSinceEpoch.toString());
     Account account = await localStorage.getAccount();
-    //print((account.name);
-
     quotation.user = account.uid;
     quotation.userName = account.name;
     quotation.userContact = account.phoneNumber;
@@ -105,7 +103,6 @@ class ListingQuery {
 
   Future<List<Quotation>> fetchQuotations({bool sent = false}) async {
     CollectionReference ref = instance.collection("quotations");
-    //print((sent);
     Query query;
     if (!sent) {
       Store store = await localStorage.getStore();

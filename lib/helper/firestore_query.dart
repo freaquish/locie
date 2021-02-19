@@ -132,7 +132,7 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     store.id = generateId(text: 'store_${user.phoneNumber}');
     CollectionReference storeReference = firestore.collection('stores');
     Map<String, dynamic> json = store.toJson();
-    json['n_gram'] = nGram(store.name).sublist(3);
+    json['n_gram'] = nGram(store.name).sublist(2);
 
     storeReference.doc(store.id).set(json);
     firestore
@@ -236,6 +236,9 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     }
     Map<String, dynamic> changes = stateStore.compare(newStore);
     CollectionReference storeReference = firestore.collection('stores');
+    if (newStore.name != stateStore.name) {
+      changes['n_gram'] = FieldValue.arrayUnion(nGram(newStore.name));
+    }
     await storeReference.doc(stateStore.id).update(changes);
     await localStorage.setStore(newStore);
     if (stateStore.name != newStore.name) {
@@ -245,9 +248,12 @@ class FireStoreQuery implements AbstractFireStoreQuery {
           .where("store", isEqualTo: newStore.id)
           .get();
       listingSnapshots.docs.forEach((element) {
-        batch.update(element.reference,
-            {"n_gram": FieldValue.arrayUnion(trigramNGram(newStore.name))});
+        batch.update(element.reference, {
+          "n_gram": FieldValue.arrayUnion(trigramNGram(newStore.name)),
+          "store_name": newStore.name
+        });
       });
+      batch.commit();
     }
     return newStore;
   }

@@ -32,7 +32,6 @@ class StoreViewRepo {
   Future<List<Category>> fetchStoreCategory(
       {List<String> parents, bool isDefault = false, String sid}) async {
     List<Category> categories = [];
-    //print((parents.toString() + "cate");
     Query query = instance
         .collection("category")
         .where("parent", whereIn: parents)
@@ -53,7 +52,6 @@ class StoreViewRepo {
     List<Listing> listings = [];
     QuerySnapshot snapshot;
     Query query;
-    //print((parents.toString() + " listing");
     query = instance
         .collection("listings")
         .where("parent", whereIn: parents)

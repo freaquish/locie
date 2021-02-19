@@ -158,60 +158,59 @@ class AuthenticationBloc
       AuthenticationEvent event) async* {
     await localStorage.init();
 
-    // try {
-    if (event is TriggerSplashScreen) {
-      // Show splash screen untill we check internet connection
-      // verify that account exist and then redirect to home
-      // otherwise initiate login page
-      yield ShowSplashScreen();
-      if (await authObject.isAccountExist()) {
-        yield AuthenticationCompleted();
-      } else {
-        this..add(InitiateLogin());
-      }
-    } else if (event is LoginEvent) {
-      // Login Event mapping to another function for handling
-      yield* mapPhoneAuthentication(event);
-    } else if (event is FetchCurrentAccount) {
-      // This handle will fetch current user by uid
-      // If no users exist than trigger registration process
-      // else redirect to Home
-      yield FetchingCurrentAccount();
-      // First check account exist in system if yes then proceed to next step
-      // else
-      // Check if account exist in db, else launch Registration
-      if (await authObject.isAccountExist()) {
-        // Account exist in db then update token and move forward
-        Account account = await localStorage.getAccount();
-        processFcmToken(account.uid);
-        this..add(SetupStore(account.uid));
-      } else {
-        Account account = await storeQuery
-            .fetchSystemAccount(localStorage.prefs.getString("uid"));
-
-        if (account == null) {
-          // move to Registration page because user is not registered
-          this..add(InitiateRegistration());
+    try {
+      if (event is TriggerSplashScreen) {
+        // Show splash screen untill we check internet connection
+        // verify that account exist and then redirect to home
+        // otherwise initiate login page
+        yield ShowSplashScreen();
+        if (await authObject.isAccountExist()) {
+          yield AuthenticationCompleted();
         } else {
-          // Account has been fetched
-          await localStorage.setAccount(account);
+          this..add(InitiateLogin());
+        }
+      } else if (event is LoginEvent) {
+        // Login Event mapping to another function for handling
+        yield* mapPhoneAuthentication(event);
+      } else if (event is FetchCurrentAccount) {
+        // This handle will fetch current user by uid
+        // If no users exist than trigger registration process
+        // else redirect to Home
+        yield FetchingCurrentAccount();
+        // First check account exist in system if yes then proceed to next step
+        // else
+        // Check if account exist in db, else launch Registration
+        if (await authObject.isAccountExist()) {
+          // Account exist in db then update token and move forward
+          Account account = await localStorage.getAccount();
           processFcmToken(account.uid);
           this..add(SetupStore(account.uid));
+        } else {
+          Account account = await storeQuery
+              .fetchSystemAccount(localStorage.prefs.getString("uid"));
+
+          if (account == null) {
+            // move to Registration page because user is not registered
+            this..add(InitiateRegistration());
+          } else {
+            // Account has been fetched
+            await localStorage.setAccount(account);
+            processFcmToken(account.uid);
+            this..add(SetupStore(account.uid));
+          }
         }
+      } else if (event is RegisteringEvents) {
+        yield* mapAccountRegistration(event);
+      } else if (event is SetupStore) {
+        Store store = await storeQuery.fetchStore(event.accountId);
+        if (store != null) {
+          await localStorage.setStore(store);
+        }
+        yield AuthenticationCompleted();
       }
-    } else if (event is RegisteringEvents) {
-      yield* mapAccountRegistration(event);
-    } else if (event is SetupStore) {
-      Store store = await storeQuery.fetchStore(event.accountId);
-      if (store != null) {
-        await localStorage.setStore(store);
-      }
-      yield AuthenticationCompleted();
+    } catch (e) {
+      yield CommonAuthenticationError();
     }
-    // } catch (e) {
-    //print((e);
-    // yield CommonAuthenticationError();
-    // }
   }
 
   void proceedAfterUserVerification(String phoneNumber, String uid) {
@@ -243,7 +242,6 @@ class AuthenticationBloc
         proceedAfterUserVerification(
             event.authentication.phoneNumber, event.authentication.user.uid);
       } catch (e) {
-        //print((e);
         this..add(PhoneAuthenticationFailed());
       }
     } else if (event is CancelPhoneAuthentication) {

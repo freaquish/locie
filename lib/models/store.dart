@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:locie/helper/minions.dart';
 
 class StoreLocation {
   double lat;
@@ -66,7 +67,6 @@ class Store {
         json['address'] != null ? new Address.fromJson(json['address']) : null;
     image = json['image'];
     if (json.containsKey("categories")) {
-      // //print((json["categories"]);
       categories = [];
       json['categories'].forEach((v) {
         categories.add(v);
@@ -83,7 +83,6 @@ class Store {
     noAvgRating = json['rating'] == null ? 0.0 : json['rating'];
     noOfReviews = json.containsKey("no_of_reviews") ? json['no_of_reviews'] : 0;
     rating = noAvgRating / (noOfReviews > 0 ? noOfReviews : 1);
-    // //print((rating.toString() + "From Class");
     location = json['location'] == null
         ? null
         : StoreLocation.fromJson(json['location']);

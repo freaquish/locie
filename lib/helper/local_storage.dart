@@ -29,8 +29,8 @@ class LocalStorage {
         DateTime.now()
                 .difference(
                     DateTime.parse(prefs.getString("last_stores_fetch")))
-                .inDays <=
-            1;
+                .inMinutes <=
+            30;
   }
 
   Future<List<Store>> unFreezeStoresForHome() async {
