@@ -142,11 +142,12 @@ class _InvoiceItemBillingState extends State<InvoiceItemBilling> {
                           return ListTile(
                             tileColor: Colors.black,
                             leading: Padding(
-                              padding: EdgeInsets.only(
-                                  left: screen.horizontal(6),
-                                  top: screen.vertical(5)),
-                              child: LatoText(items[i].name),
-                            ),
+                                padding: EdgeInsets.only(
+                                    left: screen.horizontal(6),
+                                    top: screen.vertical(5)),
+                                child: LatoText(items[i].name.length > 9
+                                    ? items[i].name.substring(0, 8)
+                                    : items[i].name)),
                             title: Center(
                               child: LatoText('${items[i].quantity}'),
                             ),

@@ -43,11 +43,11 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
       });
     }
     if (widget.invoice.discount != null) {
-      widget.invoice.grandTotal -= widget.invoice.discount.value;
+      totalSum -= widget.invoice.discount.value;
     }
 
     if (widget.invoice.amountPaid != null) {
-      widget.invoice.grandTotal -= widget.invoice.amountPaid;
+      totalSum -= widget.invoice.amountPaid;
     }
     widget.invoice.grandTotal = totalSum;
   }
@@ -211,7 +211,6 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
                       showDialog(
                         context: context,
                         builder: (context) => AddTaxDialog(
-                          //TODO pass the value from bloc
                           subTotal: widget.invoice.subTotal,
                           onPressed: (item) {
                             setState(() {
@@ -251,7 +250,6 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
                         ),
                       ),
                       Center(
-                        //TODO pass invoice discount
                         child: LatoText(
                           widget.invoice.discount == null
                               ? ''
@@ -277,6 +275,7 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
                                         onPressed: (discount) {
                                           setState(() {
                                             widget.invoice.discount = discount;
+                                            // print(discount.value);
                                             widget.invoice.grandTotal -=
                                                 discount.value;
                                           });
@@ -436,7 +435,6 @@ class _TaxesAndDiscountWidgetState extends State<TaxesAndDiscountWidget> {
                         padding: EdgeInsets.only(
                             right: screen.horizontal(3),
                             top: screen.vertical(5)),
-                        //TODO insert grand total value;
                         child: LatoText(
                             '$rupeeSign ${widget.invoice.grandTotal.toStringAsFixed(2)}'),
                       )

@@ -49,6 +49,8 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
     if (widget.account != null) {
       invoice.recipient = widget.account.uid;
       invoice.recipientName = widget.account.name;
+      invoice.recipentStoreName = widget.account.storeName;
+      invoice.recipientGstin = widget.account.gstin;
     } else {
       invoice.recipientName = nameTextController.text;
     }
@@ -157,10 +159,13 @@ class _SearchInVoiceResultState extends State<SearchInVoiceResult> {
               leading: CircleAvatar(
                 radius: screen.horizontal(12),
                 backgroundColor: Colors.white,
-                backgroundImage: AssetImage('assets/images/user.png'),
+                backgroundImage: widget.account.avatar != null &&
+                        widget.account.avatar.length > 0
+                    ? NetworkImage(widget.account.avatar)
+                    : AssetImage('assets/images/user.png'),
               ),
               title: LatoText(
-                'Piyush Jaiswal',
+                widget.account.name,
                 size: 18,
               ),
             ),

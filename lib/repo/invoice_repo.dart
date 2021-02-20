@@ -59,13 +59,13 @@ class InvoiceRepo {
         .collection("accounts")
         .where("phone_number", isEqualTo: phoneNumber)
         .get();
-    // //(snapshot.docs.length);
     if (snapshot.docs.length == 0) {
       return null;
     }
     List<Account> accountSnaps =
         snapshot.docs.map((e) => Account.fromJson(e.data())).toList();
-    // //(accountSnaps);
+    print(accountSnaps[0].name);
+
     return accountSnaps[0];
   }
 

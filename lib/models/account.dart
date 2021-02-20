@@ -12,13 +12,13 @@ class Account {
   DateTime lastLogin;
   List<String> tokens;
   File imageFile;
+  String sid, storeName, gstin;
 
   Account(
       {this.uid,
       this.avatar = "",
       this.isStoreOwner = false,
       this.lastLogin,
-      // this.password,
       this.tokens = const [],
       this.name,
       this.phoneNumber});
@@ -39,6 +39,9 @@ class Account {
     tokens = json.containsKey("tokens")
         ? (json['tokens'] as List<dynamic>).map((e) => e.toString()).toList()
         : [];
+    sid = json.containsKey("sid") ? json['sid'] : "";
+    storeName = json.containsKey("store_name") ? json['store_name'] : "";
+    gstin = json.containsKey("gstin") ? json['gstin'] : "";
   }
 
   Map<String, dynamic> toJson() {
@@ -49,7 +52,9 @@ class Account {
     data['is_store_owner'] = isStoreOwner;
     data['phone_number'] = phoneNumber;
     data['tokens'] = tokens == null ? [] : tokens;
-    // data['password'] = password;
+    data['sid'] = sid == null ? "" : sid;
+    data['store_name'] = storeName == null ? "" : storeName;
+    data['gstin'] = gstin == null ? "" : gstin;
     return data;
   }
 }

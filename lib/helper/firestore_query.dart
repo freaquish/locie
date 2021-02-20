@@ -135,10 +135,12 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     json['n_gram'] = nGram(store.name).sublist(2);
 
     storeReference.doc(store.id).set(json);
-    firestore
-        .collection('accounts')
-        .doc(user.uid)
-        .update({"is_store_owner": true});
+    firestore.collection('accounts').doc(user.uid).update({
+      "is_store_owner": true,
+      "sid": store.id,
+      "store_name": store.name,
+      "gstin": store.gstin
+    });
     firestore
         .collection("works")
         .doc(store.id)
@@ -162,16 +164,13 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     CollectionReference ref = firestore.collection('category');
     QuerySnapshot snapshot;
     if (current != null && store != null) {
-      ////'1 ${current != null && store != null}');
       snapshot = await ref
           .where("parent", isEqualTo: current)
           .where("store", isEqualTo: store)
           .get();
     } else if (categories != null && categories.isNotEmpty) {
-      ////'21 ${categories != null && categories.isNotEmpty}');
       snapshot = await ref.where("id", whereIn: categories).get();
     } else {
-      ////'3');
       snapshot = await ref.where("is_default", isEqualTo: true).get();
     }
     var docs = snapshot.docs;
@@ -247,6 +246,10 @@ class FireStoreQuery implements AbstractFireStoreQuery {
           .collection("listings")
           .where("store", isEqualTo: newStore.id)
           .get();
+      firestore
+          .collection("accounts")
+          .doc(newStore.owner)
+          .update({"store_name": newStore.name, "gstin": newStore.gstin});
       listingSnapshots.docs.forEach((element) {
         batch.update(element.reference, {
           "n_gram": FieldValue.arrayUnion(trigramNGram(newStore.name)),

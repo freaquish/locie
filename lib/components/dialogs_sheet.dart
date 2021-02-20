@@ -182,9 +182,7 @@ class _AddItemInvoiceDialogueState extends State<AddItemInvoiceDialogue> {
 
                         if (_formKey.currentState.validate()) {
                           Items item = Items(
-                              name: name.length > 8
-                                  ? name.substring(0, 9) + '...'
-                                  : name,
+                              name: name,
                               price: double.parse(
                                   textEditingControllerItemPrice.text),
                               quantity: double.parse(
@@ -425,9 +423,7 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
                           Taxes taxes = Taxes(
                               factor: double.parse(
                                   textEditingControllerFactor.text),
-                              taxName: name.length > 8
-                                  ? name.substring(0, 9) + '...'
-                                  : name,
+                              taxName: name.toUpperCase(),
                               value: double.parse(percentageValue()));
                           widget.onPressed(taxes);
                           textEditingControllerFactor.clear();

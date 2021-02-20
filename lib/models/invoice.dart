@@ -14,6 +14,8 @@ class Invoice {
   Discount discount;
   double grandTotal;
   double amountPaid;
+  String recipentStoreName;
+  String recipientGstin;
 
   Invoice(
       {this.recipient,
@@ -62,6 +64,11 @@ class Invoice {
         : null;
     grandTotal = double.parse(json['grand_total'].toString());
     amountPaid = double.parse(json['amount_paid'].toString());
+    recipentStoreName = json.containsKey("recipient_store_name")
+        ? json['recipient_store_name']
+        : "";
+    recipientGstin =
+        json.containsKey("recipient_gstin") ? json['recipient_gstin'] : "";
   }
 
   Map<String, dynamic> toJson() {
@@ -90,6 +97,9 @@ class Invoice {
     }
     data['grand_total'] = this.grandTotal == null ? 0.0 : this.grandTotal;
     data['amount_paid'] = this.amountPaid == null ? 0.0 : this.amountPaid;
+    data['recipient_store_name'] =
+        recipentStoreName == null ? "" : recipentStoreName;
+    data['recipient_gstin'] = recipientGstin == null ? "" : recipientGstin;
     return data;
   }
 }
