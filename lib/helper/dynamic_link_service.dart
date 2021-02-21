@@ -24,7 +24,7 @@ class DynamicLinksService {
         link: generateLink(store: store, listing: listing),
         androidParameters: AndroidParameters(
             packageName: "com.bytatigris.locie", minimumVersion: 1));
-    return await parameters.buildUrl();
+    return (await parameters.buildUrl());
   }
 
   Future<void> handleDynamicLink(BuildContext context) async {
@@ -74,7 +74,7 @@ class DynamicLinksService {
 
   static Future<Uri> generateListingLink(String lid) async {
     DynamicLinksService service = DynamicLinksService();
-    return await service.createDynamicLink(listing: lid);
+    return (await service.createDynamicLink(listing: lid));
   }
 
   static Future<Uri> generateStoreLink(String sid) async {

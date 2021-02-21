@@ -145,8 +145,8 @@ class _InvoiceItemBillingState extends State<InvoiceItemBilling> {
                                 padding: EdgeInsets.only(
                                     left: screen.horizontal(6),
                                     top: screen.vertical(5)),
-                                child: LatoText(items[i].name.length > 9
-                                    ? items[i].name.substring(0, 8)
+                                child: LatoText(items[i].name.length > 25
+                                    ? items[i].name.substring(0, 25)
                                     : items[i].name)),
                             title: Center(
                               child: LatoText('${items[i].quantity}'),

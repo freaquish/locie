@@ -141,7 +141,7 @@ class _QuotationCardState extends State<QuotationCard> {
           " " +
           widget.quotation.listingUnit;
       text +=
-          "\nPlease checkout ${DynamicLinksService.generateListingLink(widget.quotation.listing)}";
+          "\nPlease checkout ${(await DynamicLinksService.generateListingLink(widget.quotation.listing)).toString()}";
       await WorkerClient.sendMessage(widget.quotation.userContact, text);
       Navigator.of(context).pop();
     }
