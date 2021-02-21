@@ -6,6 +6,7 @@ import 'package:locie/bloc/navigation_event.dart';
 import 'package:locie/components/color.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/rich_image.dart';
+import 'package:locie/constants.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/listing.dart';
 import 'package:locie/models/store.dart';
@@ -34,7 +35,7 @@ class ListingCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8)),
         child: ListTile(
           leading: Container(
-            width: scale.horizontal(8),
+            width: scale.horizontal(16),
             child: RichImage(
               image: listing.image,
             ),
@@ -46,8 +47,8 @@ class ListingCard extends StatelessWidget {
               LatoText(listing.name, weight: FontWeight.bold),
               RailwayText(listing.storeName),
               RailwayText(
-                "INR ${listing.priceMax.toStringAsFixed(2)} - INR ${listing.priceMin.toStringAsFixed(2)}",
-                size: 12,
+                "$rupeeSign ${listing.priceMax.toStringAsFixed(2)}/${listing.unit} - $rupeeSign ${listing.priceMin.toStringAsFixed(2)}/${listing.unit}",
+                size: 14,
                 fontColor: Colors.amberAccent[700],
               )
             ],

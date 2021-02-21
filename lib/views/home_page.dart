@@ -28,6 +28,8 @@ import 'package:locie/pages/store_bloc_view.dart';
 import 'package:locie/pages/store_widgets.dart';
 import 'package:locie/views/contact.dart';
 
+import '../singleton.dart';
+
 class HomePageView extends StatefulWidget {
   final bool isStoreExists;
   HomePageView({this.isStoreExists = false});
@@ -40,6 +42,8 @@ class _HomePageViewState extends State<HomePageView> {
   LocalStorage localStorage = LocalStorage();
   Store store;
   Account account;
+  StoreViewGlobalStateSingleton singleton = StoreViewGlobalStateSingleton();
+  TextEditingController searchController;
 
   int currentTabIndex = 1;
   String searchText = '';
@@ -59,6 +63,13 @@ class _HomePageViewState extends State<HomePageView> {
   void initState() {
     getStoreAndAccount();
     bloc = SearchBloc();
+
+    searchController = TextEditingController(text: singleton.searchedString);
+    if (!(singleton.searchedListings != null ||
+        singleton.searchedStores != null)) {
+      fireEvent();
+    }
+
     super.initState();
   }
 
@@ -81,6 +92,12 @@ class _HomePageViewState extends State<HomePageView> {
   void textInput(String value) {
     setState(() {
       searchText = value;
+      singleton.searchedString = value;
+      if (value.length == 1) {
+        setState(() {
+          currentTabIndex = 0;
+        });
+      }
       fireEvent();
     });
   }
@@ -225,6 +242,7 @@ class _HomePageViewState extends State<HomePageView> {
                       onChanged: (value) {
                         textInput(value);
                       },
+                      textController: searchController,
                       textAlignment: TextAlign.start,
                       hintText: 'Search',
                       preffixWidget: Container(

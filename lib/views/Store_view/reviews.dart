@@ -4,7 +4,7 @@ import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/review.dart';
 
 class StoreReviewsWidget extends StatelessWidget {
-  final List<Review> reviews;
+  List<Review> reviews;
   StoreReviewsWidget(this.reviews);
 
   ratingIcon(dynamic rating) {

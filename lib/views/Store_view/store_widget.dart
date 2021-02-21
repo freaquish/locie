@@ -274,8 +274,9 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
       userImage: account.avatar,
       userName: account.name,
     );
-    StoreViewRepo().createReview(review);
+    textEditingControllerReview.clear();
     Navigator.of(context).pop();
+    bloc..add(CreateReview(review));
   }
 
   showBottomReviewSheet(BuildContext parentContext, Scale screen) {

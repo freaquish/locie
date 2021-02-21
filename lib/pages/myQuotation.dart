@@ -142,8 +142,10 @@ class _QuotationWidgetState extends State<QuotationWidget>
                       ),
                     );
                   } else {
-                    return QuotationViewProvider(
-                        bloc: bloc, event: snapshot.data);
+                    return SingleChildScrollView(
+                      child: QuotationViewProvider(
+                          bloc: bloc, event: snapshot.data),
+                    );
                   }
                 },
               ),

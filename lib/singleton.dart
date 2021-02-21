@@ -24,8 +24,19 @@ class StoreViewGlobalStateSingleton {
   PreviousExamples _examples;
   Store _store;
 
+  List<Listing> searchedListings;
+  List<Store> searchedStores;
+  String searchedString;
+
   Map<String, StoreCache<Store>> storeCache = {};
   Map<String, StoreCache<PreviousExamples>> worksCache = {};
+
+  void clear() {
+    _listings = [];
+    _reviews = [];
+    _examples = null;
+    _store = null;
+  }
 
   final int listingLimit = 10;
   final int reviewLimit = 5;
@@ -59,5 +70,9 @@ class StoreViewGlobalStateSingleton {
   void appendListing(Listing lst) => _listings.add(lst);
   void concatListings(List<Listing> lsts) => _listings += lsts;
   void appendReview(Review rvw) => _reviews.add(rvw);
+  void joinReview(Review rvw) {
+    _reviews = [rvw] + _reviews;
+  }
+
   void concatReviews(List<Review> rvws) => _reviews += rvws;
 }

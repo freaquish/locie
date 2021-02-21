@@ -98,6 +98,11 @@ class FetchStoreReviews extends StoreViewEvent {
   FetchStoreReviews(this.sid, {this.startAt});
 }
 
+class CreateReview extends StoreViewEvent {
+  final Review review;
+  CreateReview(this.review);
+}
+
 class ComplexProductMap {
   final List<Listing> listings;
   final List<Category> categories;
@@ -164,12 +169,13 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
       myStore = await localStorage.getStore();
       // store = await localStorage.getStore();
       if (event is FetchStore) {
+        singleton.clear();
         // This event will show complete widget
         yield LoadingState();
 
         // if (store == null) {
         store = await repo.fetchStore(event.sid);
-
+        singleton.store = store;
         yield ShowingStoreViewWidget(
             store: store, isEditable: storeIsSame(event.sid));
       } else if (event is FetchStoreProducts) {
@@ -226,7 +232,14 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
         yield FetchingList();
         List<Review> reviews =
             await repo.fetchReviews(event.sid, event.startAt);
-        yield FetchedStoreReviews(reviews, isStoreMine: storeIsSame(event.sid));
+        singleton.reviews = reviews;
+        yield FetchedStoreReviews(singleton.reviews,
+            isStoreMine: storeIsSame(event.sid));
+      } else if (event is CreateReview) {
+        await repo.createReview(event.review);
+        singleton.joinReview(event.review);
+        yield FetchedStoreReviews(singleton.reviews,
+            isStoreMine: storeIsSame(singleton.store.id));
       } else if (event is InjectStoreView) {
         yield event.state;
       } else if (event is FetchStoreView) {

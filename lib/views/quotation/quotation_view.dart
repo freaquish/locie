@@ -152,68 +152,70 @@ class _QuotationCardState extends State<QuotationCard> {
       context: context,
       builder: (context) => Dialog(
         backgroundColor: Colour.bgColor,
-        child: Container(
-          height: scale.vertical(530),
-          padding: EdgeInsets.symmetric(horizontal: scale.horizontal(4)),
-          child: Column(
-            children: [
-              Container(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                    icon: Icon(
-                      Icons.clear,
-                      color: Colors.red,
-                    ),
+        child: SingleChildScrollView(
+          child: Container(
+            height: scale.vertical(530),
+            padding: EdgeInsets.symmetric(horizontal: scale.horizontal(4)),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                      icon: Icon(
+                        Icons.clear,
+                        color: Colors.red,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }),
+                ),
+                SizedBox(
+                  height: scale.vertical(30),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: LatoText(
+                    "Price",
+                    size: 16,
+                  ),
+                ),
+                SizedBox(
+                  height: scale.vertical(15),
+                ),
+                CustomTextField(
+                  textAlignment: TextAlign.start,
+                  hintText: "Price",
+                  textController: priceController,
+                ),
+                SizedBox(
+                  height: scale.vertical(30),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: LatoText(
+                    "Quantity",
+                    size: 16,
+                  ),
+                ),
+                SizedBox(
+                  height: scale.vertical(15),
+                ),
+                CustomTextField(
+                  textAlignment: TextAlign.start,
+                  hintText: "Quantity",
+                  textController: qunatityController,
+                ),
+                SizedBox(
+                  height: scale.vertical(30),
+                ),
+                SubmitButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
-                    }),
-              ),
-              SizedBox(
-                height: scale.vertical(30),
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: LatoText(
-                  "Price",
-                  size: 16,
-                ),
-              ),
-              SizedBox(
-                height: scale.vertical(15),
-              ),
-              CustomTextField(
-                textAlignment: TextAlign.start,
-                hintText: "Price",
-                textController: priceController,
-              ),
-              SizedBox(
-                height: scale.vertical(30),
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: LatoText(
-                  "Quantity",
-                  size: 16,
-                ),
-              ),
-              SizedBox(
-                height: scale.vertical(15),
-              ),
-              CustomTextField(
-                textAlignment: TextAlign.start,
-                hintText: "Quantity",
-                textController: qunatityController,
-              ),
-              SizedBox(
-                height: scale.vertical(30),
-              ),
-              SubmitButton(
-                  onPressed: () {
-                    sendMessage();
-                  },
-                  buttonName: "Send",
-                  buttonColor: Colour.submitButtonColor)
-            ],
+                      sendMessage();
+                    },
+                    buttonName: "Send",
+                    buttonColor: Colour.submitButtonColor)
+              ],
+            ),
           ),
         ),
       ),
