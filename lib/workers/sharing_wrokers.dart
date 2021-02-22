@@ -19,5 +19,12 @@ class SharingWorkers {
     return Share.share(text, subject: store.name + "- Shared");
   }
 
-  Future<void> sendQuotation(Listing lid) async {}
+  static Future<String> sendQuotationText(
+      {String lid, String name, double price, double amount}) async {
+    String link =
+        (await DynamicLinksService.generateListingLink(lid)).toString();
+    String text =
+        "$name is available at INR ${price.toStringAsFixed(2)} for ${amount.toStringAsFixed(2)}.\n Please check $link";
+    return text;
+  }
 }

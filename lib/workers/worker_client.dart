@@ -9,9 +9,14 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:pdf/pdf.dart';
 
 class WorkerClient {
-  static Future<void> sendMessage(String phoneNumber, String data) async {
+  static Future<void> sendMessage(String phoneNumber, String data,
+      {String unencoded}) async {
     String encoded = Uri.encodeFull(data);
-    String url = "https://wa.me/${phoneNumber}?text=$encoded";
+    if (unencoded != null) {
+      encoded += "%20$unencoded";
+    }
+    // print(encoded);
+    String url = "https://wa.me/$phoneNumber?text=$encoded";
     //(url);
     if (await canLaunch(url)) {
       await launch(url);

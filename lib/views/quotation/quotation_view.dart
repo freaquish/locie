@@ -132,17 +132,20 @@ class _QuotationCardState extends State<QuotationCard> {
   void sendMessage() async {
     if (priceController.text.isNotEmpty && qunatityController.text.isNotEmpty) {
       String text = widget.quotation.listingName +
-          "is available at " +
+          " is available at " +
           priceController.text +
-          " " +
+          " /" +
           widget.quotation.listingUnit +
           " for " +
           widget.quotation.quantity.toStringAsFixed(2) +
           " " +
-          widget.quotation.listingUnit;
-      text +=
-          "\nPlease checkout ${(await DynamicLinksService.generateListingLink(widget.quotation.listing)).toString()}";
-      await WorkerClient.sendMessage(widget.quotation.userContact, text);
+          widget.quotation.listingUnit +
+          "\n  - " +
+          widget.quotation.storeName;
+      await WorkerClient.sendMessage(
+        widget.quotation.userContact,
+        text,
+      );
       Navigator.of(context).pop();
     }
   }
