@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class Category {
   String name;
   String image;
@@ -5,6 +7,8 @@ class Category {
   String parent;
   bool isDefault;
   String store;
+  File imageFile;
+  String defaultParent;
 
   Category(
       {this.name,
@@ -12,6 +16,8 @@ class Category {
       this.id,
       this.parent = "",
       this.store = "",
+      this.defaultParent,
+      this.imageFile,
       this.isDefault = false});
 
   Category.fromJson(Map<String, dynamic> json) {
@@ -21,6 +27,11 @@ class Category {
     parent = json['parent'];
     isDefault = json['is_default'];
     store = json['store'];
+    defaultParent = json['default_parent'];
+  }
+
+  toString() {
+    return 'Catgeory(name:$name, id: $id, parent $parent)';
   }
 
   Map<String, dynamic> toJson() {
@@ -31,6 +42,7 @@ class Category {
     data['parent'] = this.parent;
     data['is_default'] = this.isDefault;
     data['store'] = this.store;
+    data['default_parent'] = this.defaultParent;
     return data;
   }
 }

@@ -1,3 +1,4 @@
+const String rupeeSign = '\u20B9';
 const List<List<String>> countryCodes = [
   ['Afghanistan', '93'],
   ['Aland Islands', '358-18'],

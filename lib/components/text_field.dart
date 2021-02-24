@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:locie/components/color.dart';
 
-class TextBox extends StatelessWidget {
+class CustomTextField extends StatelessWidget {
   final TextEditingController textController;
   final Function validator;
   final String hintText;
@@ -10,58 +11,80 @@ class TextBox extends StatelessWidget {
   final textAlignment;
   final TextInputType keyboard;
   final Widget preffixWidget;
-
-  TextBox(
+  final bool readOnly;
+  final Function onChanged;
+  final String label;
+  final int maxLines;
+  final int maxLength;
+  final int minLines;
+  final Color fillColor;
+  final double borderWidth;
+  final BorderStyle borderStyle;
+  final Color borderColor;
+  CustomTextField(
       {@required this.textAlignment,
+      this.onChanged,
+      this.maxLines = 1,
+      this.maxLength,
+      this.minLines = 1,
+      this.readOnly = false,
       this.preffixWidget,
       this.helperText,
       @required this.hintText,
-      @required this.textController,
+      this.textController,
       this.validator,
-      @required this.keyboard});
+      this.label,
+      this.fillColor = Colour.textfieldColor,
+      this.borderWidth = 0,
+      this.borderColor = Colors.transparent,
+      this.borderStyle = BorderStyle.none,
+      this.keyboard = TextInputType.name});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: onChanged,
       keyboardType: keyboard,
       textAlign: textAlignment,
+      maxLength: maxLength,
+      maxLines: maxLines,
+      minLines: minLines,
       validator: validator,
       controller: textController,
       cursorColor: Colors.white,
       autofocus: false,
-      style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+      style: GoogleFonts.lato(
+          fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
       decoration: InputDecoration(
         prefixIcon: preffixWidget,
-        prefixStyle:  GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.grey),
+        prefixStyle: GoogleFonts.lato(
+            fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
         filled: true,
-        fillColor: Color(0xff5c5c5c),
+        fillColor: fillColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(12),
           ),
           borderSide: BorderSide(
-            width: 0,
-            style: BorderStyle.none,
-          ),
+              width: borderWidth, style: borderStyle, color: borderColor),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide(
-            width: 0,
-            style: BorderStyle.none,
-          ),
+              width: borderWidth, style: borderStyle, color: borderColor),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide(
-            width: 0,
-            style: BorderStyle.none,
-          ),
+              width: borderWidth, style: borderStyle, color: borderColor),
         ),
+        labelText: label,
+        labelStyle: GoogleFonts.lato(
+            fontSize: 16, fontWeight: FontWeight.normal, color: Colors.grey),
         hintText: hintText,
-        hintStyle: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.bold,color: Colors.grey),
+        hintStyle: GoogleFonts.lato(
+            fontSize: 16, fontWeight: FontWeight.normal, color: Colors.grey),
       ),
-      
     );
   }
 }

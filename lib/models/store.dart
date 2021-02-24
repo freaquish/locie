@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:locie/models/category.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:locie/helper/minions.dart';
 
 class StoreLocation {
   double lat;
@@ -27,24 +28,32 @@ class Store {
   String contact;
   Address address;
   String image;
-  List<Category> categories;
+  List<String> categories;
   String description;
-  List<PreviousExamples> previousExamples;
+  List<String> nGram;
+  // List<PreviousExamples> previousExamples;
   String owner;
   DateTime created;
   String gstin;
   StoreLocation location;
+  int noOfReviews;
   File imageFile;
+  String logo;
+  dynamic rating;
+  dynamic noAvgRating;
 
   Store(
       {this.id,
       this.name,
+      this.logo,
+      this.rating,
       this.contact,
       this.address,
       this.image,
       this.categories,
+      this.noOfReviews,
       this.description,
-      this.previousExamples,
+      this.noAvgRating,
       this.owner,
       this.created,
       this.gstin,
@@ -57,26 +66,29 @@ class Store {
     address =
         json['address'] != null ? new Address.fromJson(json['address']) : null;
     image = json['image'];
-    if (json['categories'] != null) {
-      categories = new List<Category>();
+    if (json.containsKey("categories")) {
+      categories = [];
       json['categories'].forEach((v) {
-        categories.add(new Category.fromJson(v));
+        categories.add(v);
       });
     }
     description = json['description'];
-    if (json['previous_examples'] != null) {
-      previousExamples = new List<PreviousExamples>();
-      json['previous_examples'].forEach((v) {
-        previousExamples.add(new PreviousExamples.fromJson(v));
-      });
-    }
+    nGram = (json['n_gram'] as List<dynamic>).map((e) => e.toString()).toList();
+    logo = json["logo"];
     owner = json['owner'];
-    created = json['created'].toDate();
+    created = json['created'] is String
+        ? DateTime.parse(json['created'])
+        : json['created'].toDate();
     gstin = json['gstin'];
-    location = StoreLocation.fromJson(json['location']);
+    noAvgRating = json['rating'] == null ? 0.0 : json['rating'];
+    noOfReviews = json.containsKey("no_of_reviews") ? json['no_of_reviews'] : 0;
+    rating = noAvgRating / (noOfReviews > 0 ? noOfReviews : 1);
+    location = json['location'] == null
+        ? null
+        : StoreLocation.fromJson(json['location']);
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({bool storage = false}) {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.id != null) {
       data['id'] = this.id;
@@ -89,19 +101,40 @@ class Store {
     data['image'] = this.image;
     data['categories'] = [];
     if (this.categories != null) {
-      data['categories'] = this.categories.map((v) => v.toJson()).toList();
+      data['categories'] = this.categories;
     }
     data['description'] = this.description;
-    if (this.previousExamples != null) {
-      data['previous_examples'] =
-          this.previousExamples.map((v) => v.toJson()).toList();
-    }
+    // if (this.previousExamples != null) {
+    //   data['previous_examples'] =
+    //       this.previousExamples.map((v) => v.toJson()).toList();
+    // }
     data['owner'] = this.owner;
-    data['created'] = this.created;
-    data['gstin'] = this.gstin;
+    data['logo'] = this.logo == null ? "" : this.logo;
+    data['created'] = this.created == null ? DateTime.now() : this.created;
+    if (storage) {
+      data['created'] = data['created'].toIso8601String();
+    }
+    data['gstin'] = this.gstin == null ? '' : this.gstin;
+    data['no_of_reviews'] = this.noOfReviews == null ? 0 : this.noOfReviews;
+    data['rating'] = this.noAvgRating == null ? 0.0 : this.noAvgRating;
+    if (nGram != null) {
+      data['n_gram'] = nGram;
+    }
     if (location != null) {
       data['location'] = this.location.toJson();
     }
+    return data;
+  }
+
+  Map<String, dynamic> compare(Store store) {
+    Map<String, dynamic> json = store.toJson();
+    Map<String, dynamic> myJson = this.toJson();
+    Map<String, dynamic> data = Map<String, dynamic>();
+    json.forEach((key, value) {
+      if (!myJson.containsKey(key) || myJson[key] != value) {
+        data[key] = value;
+      }
+    });
     return data;
   }
 }
@@ -126,15 +159,22 @@ class Address {
     data['pin_code'] = this.pinCode;
     return data;
   }
+
+  @override
+  String toString() {
+    return '$body,$city,$pinCode';
+  }
 }
 
-class PreviousExamples {
+class PreviousExample {
   String text;
   String image;
+  File imageFile;
+  DocumentSnapshot snapshot;
 
-  PreviousExamples({this.text, this.image});
+  PreviousExample({this.text, this.snapshot, this.image, this.imageFile});
 
-  PreviousExamples.fromJson(Map<String, dynamic> json) {
+  PreviousExample.fromJson(Map<String, dynamic> json) {
     text = json['text'];
     image = json['image'];
   }
@@ -143,6 +183,28 @@ class PreviousExamples {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['text'] = this.text;
     data['image'] = this.image;
+    return data;
+  }
+}
+
+class PreviousExamples {
+  String sid;
+  List<PreviousExample> examples;
+
+  PreviousExamples({this.sid, this.examples});
+
+  PreviousExamples.fromJson(Map<String, dynamic> json) {
+    sid = json['sid'];
+    examples = [];
+    (json['examples'] as List).forEach((element) {
+      examples.add(PreviousExample.fromJson(element));
+    });
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['sid'] = this.sid;
+    data['examples'] = this.examples.map((e) => e.toJson());
     return data;
   }
 }

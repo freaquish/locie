@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:locie/bloc/authentication_bloc.dart';
+import 'package:locie/components/color.dart';
 import 'package:locie/components/country_codes.dart';
 import 'package:locie/components/flatActionButton.dart';
 import 'package:locie/components/primary_container.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/components/font_text.dart';
 import 'package:locie/components/text_field.dart';
-import 'package:locie/views/verify_otp.dart';
 
 class PhoneAuthenticationWidget extends StatefulWidget {
   final AuthenticationBloc bloc;
-  PhoneAuthenticationWidget({this.bloc});
+  final bool error;
+  PhoneAuthenticationWidget({this.bloc, this.error = false});
   @override
   _PhoneAuthenticationWidgetState createState() =>
       _PhoneAuthenticationWidgetState();
@@ -32,7 +33,7 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
   Widget build(BuildContext context) {
     final screen = Scale(context);
     return Scaffold(
-      backgroundColor: Color(0xff1f1e2c),
+      backgroundColor: Colour.bgColor,
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -52,7 +53,27 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: screen.vertical(200),
+                        height: screen.vertical(60),
+                      ),
+                      if (widget.error)
+                        Container(
+                          // color: Colors.red,
+                          width: screen.horizontal(100),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(8)),
+                          padding: EdgeInsets.symmetric(
+                              vertical: screen.vertical(20)),
+                          child: LatoText(
+                            'Phone Authentication failed',
+                            size: 16,
+                            fontColor: Colors.white,
+                            weight: FontWeight.bold,
+                          ),
+                        ),
+                      SizedBox(
+                        height: screen.vertical(100),
                       ),
                       RailwayText(
                         'Enter your \nPhone number',
@@ -70,33 +91,63 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
                       SizedBox(
                         height: screen.vertical(35),
                       ),
-                      TextBox(
-                        preffixWidget: Padding(
-                          padding: EdgeInsets.only(
-                              left: screen.horizontal(3),
-                              right: screen.horizontal(3),
-                              top: screen.horizontal(2.91),
-                              bottom: screen.horizontal(2.91)),
-                          child: InkWell(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => CountryCodeModel(
-                                        onChange: (value) {
-                                          setState(() {
-                                            countryCode = value;
-                                          });
+                      CustomTextField(
+                        preffixWidget: Wrap(
+                          spacing: screen.horizontal(1),
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: screen.horizontal(3),
+                                  right: screen.horizontal(1),
+                                  top: screen.horizontal(2.91),
+                                  bottom: screen.horizontal(2.91)),
+                              child: InkWell(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => CountryCodeModel(
+                                            onChange: (value) {
+                                              setState(() {
+                                                countryCode = value;
+                                              });
 
-                                          Navigator.of(context).pop();
-                                        },
-                                      ));
-                            },
-                            child: LatoText(
-                              '+$countryCode',
-                              size: 18,
-                              fontColor: Colors.grey,
+                                              Navigator.of(context).pop();
+                                            },
+                                          ));
+                                },
+                                child: LatoText(
+                                  '+$countryCode',
+                                  size: 18,
+                                  fontColor: Colors.grey,
+                                ),
+                              ),
                             ),
-                          ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  right: screen.horizontal(3),
+                                  top: screen.horizontal(2.91),
+                                  bottom: screen.horizontal(2.91)),
+                              child: InkWell(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => CountryCodeModel(
+                                            onChange: (value) {
+                                              setState(() {
+                                                countryCode = value;
+                                              });
+
+                                              Navigator.of(context).pop();
+                                            },
+                                          ));
+                                },
+                                child: Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          ],
                         ),
                         validator: (phoneNumber) {
                           if (phoneNumber == null || phoneNumber.isEmpty) {
@@ -122,7 +173,7 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
                             var phoneNumber = textEditingController.value.text;
 
                             textEditingController.clear();
-                            // print(countryCode + phoneNumber);
+                            // //printcountryCode + phoneNumber);
                             widget.bloc
                               ..add(ProceedToOtpPage(
                                   '+$countryCode$phoneNumber'));

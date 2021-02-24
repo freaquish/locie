@@ -39,3 +39,33 @@ String generateId({String text}) {
   }
   return uuid.v4();
 }
+
+List<String> _nGram(String data) {
+  List<String> grams = List<String>();
+  for (var index = 0; index < data.length; index++) {
+    grams.add(data.substring(0, index + 1));
+  }
+  return grams;
+}
+
+List<String> nGram(String data) {
+  return _nGram(data.toLowerCase().split(" ").join(""));
+}
+
+List<String> _trigramNGram(String data) {
+  List<String> grams = [];
+  int currentIndex = 0;
+  if (data.length > 3) {
+    currentIndex = 4;
+    grams.add(data.substring(0, 4));
+  }
+  while (currentIndex < data.length) {
+    grams.add(data.substring(0, currentIndex));
+    currentIndex++;
+  }
+  return grams;
+}
+
+List<String> trigramNGram(String data) {
+  return _trigramNGram(data.toLowerCase().split(" ").join(""));
+}
