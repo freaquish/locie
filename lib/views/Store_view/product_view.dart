@@ -75,7 +75,7 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
   Future<bool> doesStoreBelongToCurrentUser() async {
     await localStorage.init();
     return (localStorage.prefs.containsKey("sid") &&
-        widget.listing.store != localStorage.prefs.getString("sid"));
+        widget.listing.store == localStorage.prefs.getString("sid"));
   }
 
   @override
@@ -231,11 +231,13 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
                             ),
                           );
                         } else {
-                          return snapshot.data
+                          return !snapshot.data
                               ? QuotationDialoge(widget.listing)
-                              : Center(
-                                  child: Container(
-                                    child: LatoText("You cannot quote"),
+                              : Dialog(
+                                  child: Center(
+                                    child: Container(
+                                      child: LatoText("You cannot quote"),
+                                    ),
                                   ),
                                 );
                         }
