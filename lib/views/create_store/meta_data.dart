@@ -118,7 +118,6 @@ class _MetaDataWidgetState extends State<MetaDataWidget> {
                     height: screen.vertical(380),
                   ),
                   SubmitButton(
-                    //TODO run a function for next page
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         debugPrint('submit');

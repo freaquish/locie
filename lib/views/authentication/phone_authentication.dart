@@ -166,7 +166,6 @@ class _PhoneAuthenticationWidgetState extends State<PhoneAuthenticationWidget> {
                         height: screen.vertical(40),
                       ),
                       SubmitButton(
-                        //TODO run a function for send OTP
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
                             debugPrint('submit');

@@ -30,6 +30,12 @@ class SearchStore extends SearchEvent {
   SearchStore(this.text);
 }
 
+class ShowSearchResults extends SearchEvent {
+  final List<Store> stores;
+  final List<Listing> listings;
+  ShowSearchResults({this.listings, this.stores});
+}
+
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc() : super(SearchLoading());
   SearchRepository repository = SearchRepository();
@@ -44,9 +50,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
                 singleton.searchedString.length > 0) &&
             (singleton.searchedListings != null ||
                 singleton.searchedStores != null)) {
-          yield SearchResults(
-              listings: singleton.searchedListings,
-              stores: singleton.searchedStores);
+          // yield SearchResults(
+          //     listings: singleton.searchedListings,
+          //     stores: singleton.searchedStores);
+          this
+            ..add(ShowSearchResults(
+                listings: singleton.searchedListings,
+                stores: singleton.searchedStores));
         } else {
           List<Store> stores = await repository.fetchTopStoresForHome();
           singleton.searchedStores = stores;
@@ -58,14 +68,23 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           List<Listing> listings = await repository.searchListing(event.text);
           singleton.searchedListings = listings;
         }
-        yield SearchResults(listings: singleton.searchedListings);
+        // yield SearchResults(listings: singleton.searchedListings);
+        this..add(ShowSearchResults(listings: singleton.searchedListings));
       } else if (event is SearchStore) {
         yield SearchLoading();
         if (event.text.length > 0) {
           List<Store> stores = await repository.searchStore(event.text);
           singleton.searchedStores = stores;
         }
-        yield SearchResults(stores: singleton.searchedStores);
+        // yield SearchResults(stores: singleton.searchedStores);
+        this..add(ShowSearchResults(stores: singleton.searchedStores));
+      } else if (event is ShowSearchResults) {
+        if ((event.stores == null || event.stores.isEmpty) &&
+            (event.listings == null || event.listings.isEmpty)) {
+          this..add(SearchDefaultStoresForHome());
+        } else {
+          yield SearchResults(stores: event.stores, listings: event.listings);
+        }
       }
     } catch (e) {
       yield CommonSearchError();

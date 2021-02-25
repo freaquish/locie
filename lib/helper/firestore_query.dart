@@ -133,6 +133,7 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     CollectionReference storeReference = firestore.collection('stores');
     Map<String, dynamic> json = store.toJson();
     json['n_gram'] = nGram(store.name).sublist(2);
+    json['n_gram'] += trigramNGram(user.name);
 
     storeReference.doc(store.id).set(json);
     firestore.collection('accounts').doc(user.uid).update({
@@ -225,18 +226,28 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     // LocalStorage localStorage = LocalStorage();
     Store stateStore = await localStorage.getStore();
     if (newStore.nGram != null && !newStore.nGram.contains(newStore.name)) {
-      List<String> oldNameNgram = nGram(stateStore.name);
+      List<String> oldNameNgram = nGram(stateStore.name).sublist(2);
       List<String> newNGram =
           newStore.nGram == null ? stateStore.nGram : newStore.nGram;
       oldNameNgram.forEach((element) {
         newNGram.remove(element);
       });
-      newNGram += nGram(newStore.name);
+      newNGram += nGram(newStore.name).sublist(2);
     }
     Map<String, dynamic> changes = stateStore.compare(newStore);
     CollectionReference storeReference = firestore.collection('stores');
     if (newStore.name != stateStore.name) {
-      changes['n_gram'] = FieldValue.arrayUnion(nGram(newStore.name));
+      List<String> nGrams = nGram(newStore.name);
+      changes['n_gram'] = FieldValue.arrayUnion(nGrams);
+      // print(nGrams);
+    }
+    // print(newStore.imageFile);
+    if (newStore.imageFile != null) {
+      CloudStorage cloudStorage = CloudStorage();
+      var task = cloudStorage.uploadFile(newStore.imageFile);
+      newStore.image = await cloudStorage.getDownloadUrl(task);
+      newStore.imageFile = null;
+      changes["image"] = newStore.image;
     }
     await storeReference.doc(stateStore.id).update(changes);
     await localStorage.setStore(newStore);
@@ -246,10 +257,10 @@ class FireStoreQuery implements AbstractFireStoreQuery {
           .collection("listings")
           .where("store", isEqualTo: newStore.id)
           .get();
-      firestore
-          .collection("accounts")
-          .doc(newStore.owner)
-          .update({"store_name": newStore.name, "gstin": newStore.gstin});
+      firestore.collection("accounts").doc(newStore.owner).update({
+        "store_name": newStore.name,
+        "gstin": newStore.gstin == null ? "" : newStore.gstin
+      });
       listingSnapshots.docs.forEach((element) {
         batch.update(element.reference, {
           "n_gram": FieldValue.arrayUnion(trigramNGram(newStore.name)),

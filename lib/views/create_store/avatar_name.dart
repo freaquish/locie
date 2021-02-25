@@ -227,7 +227,6 @@ class _CreateStoreWidgetState extends State<CreateStoreWidget> {
                       height: screen.vertical(200),
                     ),
                     SubmitButton(
-                      //TODO run a function for next page
                       onPressed: () {
                         if (_formKey.currentState.validate() &&
                             image != null &&

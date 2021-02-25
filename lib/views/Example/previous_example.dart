@@ -194,7 +194,6 @@ class _PreviousExampleWidgetState extends State<PreviousExampleWidget> {
                     height: screen.vertical(100),
                   ),
                   SubmitButton(
-                    //TODO run a function for next page
                     onPressed: () {
                       if (_formKey.currentState.validate() && image != null) {
                         debugPrint('submit');

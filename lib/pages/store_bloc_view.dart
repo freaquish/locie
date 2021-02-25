@@ -6,6 +6,7 @@ import 'package:locie/components/primary_container.dart';
 import 'package:locie/models/listing.dart';
 import 'package:locie/singleton.dart';
 import 'package:locie/views/Store_view/about_store.dart';
+import 'package:locie/views/Store_view/no_store_exist.dart';
 import 'package:locie/views/Store_view/product.dart';
 import 'package:locie/views/Store_view/reviews.dart';
 import 'package:locie/views/Store_view/store_view.dart';
@@ -107,6 +108,9 @@ class StoreWidgetBuilder extends StatelessWidget {
         cubit: BlocProvider.of<StoreViewBloc>(context),
         builder: (context, state) {
           if (state is ShowingStoreViewWidget) {
+            if (state.store.id == null) {
+              return NoStoreExists();
+            }
             return StoreViewWidget(
               event: event,
               store: state.store,

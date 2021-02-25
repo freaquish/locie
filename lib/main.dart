@@ -77,6 +77,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
         },
         onResume: (Map<String, dynamic> message) async {},
         onLaunch: (Map<String, dynamic> message) async {});
+    await Future.delayed(Duration(seconds: 2));
     return true;
   }
 

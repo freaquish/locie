@@ -81,7 +81,11 @@ class NavigationBuilder extends StatelessWidget {
           } else if (state is NavigationUnknownError) {
             return ErrorScreen();
           }
-          return SplashScreen();
+          return Center(
+            child: Container(
+              child: CircularProgressIndicator(),
+            ),
+          );
         },
       ),
     );

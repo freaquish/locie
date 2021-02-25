@@ -57,14 +57,8 @@ class StoreAboutWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              LatoText(
-                store.name,
-                size: 28,
-                style: FontStyle.normal,
-                weight: FontWeight.w900,
-              ),
               Wrap(
                 children: [
                   IconButton(
@@ -89,6 +83,15 @@ class StoreAboutWidget extends StatelessWidget {
                 ],
               )
             ],
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          LatoText(
+            store.name,
+            size: 28,
+            style: FontStyle.normal,
+            weight: FontWeight.w900,
           ),
           SizedBox(
             height: screen.vertical(20),

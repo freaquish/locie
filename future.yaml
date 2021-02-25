@@ -1,0 +1,7 @@
+Release:
+   - v1.0.0+3 `Feb 24 2021`
+
+v1.0.0+3:
+   - GSTIN setup error is set to null, fix that to empty string as default [Fixed]
+   - Store Name overflow [Fixed]
+   - Reload on  [Fixed]

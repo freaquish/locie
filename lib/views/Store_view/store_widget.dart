@@ -186,16 +186,17 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                     }),
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
-                  background:
-                      widget.store.image != null || widget.store.image != ''
-                          ? Image.network(
-                              widget.store.image,
-                              fit: BoxFit.cover,
-                            )
-                          : Image.asset(
-                              'assets/images/store_placeholder.png',
-                              fit: BoxFit.cover,
-                            ),
+                  background: widget.store != null &&
+                          widget.store.image != null &&
+                          widget.store.image != ''
+                      ? Image.network(
+                          widget.store.image,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.asset(
+                          'assets/images/store_placeholder.png',
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
               SliverPersistentHeader(
