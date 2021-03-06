@@ -188,6 +188,7 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
         String mapKey = event.parent;
         List<String> parents = [];
         bool isDefault = false;
+        // print(event.parent);
         if (event.parent == null) {
           mapKey = "default";
           if (store == null) {
@@ -198,10 +199,20 @@ class StoreViewBloc extends Bloc<StoreViewEvent, StoreViewState> {
         } else {
           parents = [event.parent];
         }
+        // print(mapKey);
 
         if (!productsMap.containsKey(mapKey)) {
+          // print(productsMap.containsKey(mapKey));
+          // parents = parents.where((element) => element != null) as List<String>;
+          for (int index = 0; index < parents.length; index++) {
+            if (parents[index] == null) {
+              parents.removeAt(index);
+            }
+          }
+          // print(parents);
           List<Listing> listings =
               await repo.fetchStoreListing(event.sid, parents);
+          // print(listings);
           List<Category> categories = await repo.fetchStoreCategory(
               sid: event.sid, parents: parents, isDefault: isDefault);
           productsMap.insert(mapKey,

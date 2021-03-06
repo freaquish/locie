@@ -31,7 +31,8 @@ class ListingQuery {
     Store store = await localStorage.getStore();
     if (listing.imageFile != null) {
       CloudStorage storage = CloudStorage();
-      var task = storage.uploadFile(listing.imageFile);
+      var imageBytes = await compressImage(listing.imageFile);
+      var task = storage.uploadBytes(imageBytes);
       listing.image = await storage.getDownloadUrl(task);
       listing.imageFile = null;
     }
@@ -44,7 +45,7 @@ class ListingQuery {
       var lid = generateId(text: 'item-${listing.name}-${store.name}');
       listing.id = lid;
       listing.nGram += trigramNGram(listing.parentName);
-      if (listing.category != null) {
+      if (listing.category != null && listing.category.defaultParent != null) {
         await instance.collection("stores").doc(store.id).update({
           "categories": FieldValue.arrayUnion([listing.category.defaultParent])
         });

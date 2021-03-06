@@ -5,3 +5,7 @@ v1.0.0+3:
    - GSTIN setup error is set to null, fix that to empty string as default [Fixed]
    - Store Name overflow [Fixed]
    - Reload on  [Fixed]
+
+v1.0.0+4:
+   - Loading Screen in listing creation
+   - Delete image on delete listings

@@ -78,6 +78,18 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
         widget.listing.store == localStorage.prefs.getString("sid"));
   }
 
+  String getPriceTag() {
+    String ret = '';
+    if (widget.listing.priceMax > 0) {
+      ret = rupeeSign + " " + widget.listing.priceMax.toStringAsFixed(2);
+    }
+    if (widget.listing.priceMin > 0) {
+      ret +=
+          " - " + rupeeSign + " " + widget.listing.priceMin.toStringAsFixed(2);
+    }
+    return ret.isEmpty ? "Flexible Price" : ret;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
@@ -157,13 +169,7 @@ class _SingleProductViewWidgetState extends State<SingleProductViewWidget> {
                   height: screen.vertical(30),
                 ),
                 LatoText(
-                  rupeeSign +
-                      widget.listing.priceMax.toStringAsFixed(2) +
-                      ' - ' +
-                      rupeeSign +
-                      widget.listing.priceMin.toStringAsFixed(2) +
-                      ' per ' +
-                      widget.listing.unit,
+                  getPriceTag() + ' per ' + widget.listing.unit,
                   size: 16,
                   fontColor: Colors.amberAccent[700],
                 ),

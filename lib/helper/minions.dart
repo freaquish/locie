@@ -1,5 +1,9 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 /// Determine the current position of the device.
 ///
@@ -68,4 +72,15 @@ List<String> _trigramNGram(String data) {
 
 List<String> trigramNGram(String data) {
   return _trigramNGram(data.toLowerCase().split(" ").join(""));
+}
+
+Future<Uint8List> compressImage(File file) async {
+  var result;
+  if (file.lengthSync() > 5000000) {
+    result =
+        FlutterImageCompress.compressWithFile(file.absolute.path, quality: 80);
+  } else {
+    result = file.readAsBytesSync();
+  }
+  return result;
 }

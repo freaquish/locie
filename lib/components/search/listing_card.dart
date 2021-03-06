@@ -20,6 +20,26 @@ class ListingCard extends StatelessWidget {
     BlocProvider.of<NavigationBloc>(context).push(LaunchItemView(listing.id));
   }
 
+  String getPriceTag() {
+    String ret = '';
+    if (listing.priceMax > 0) {
+      ret = rupeeSign +
+          " " +
+          listing.priceMax.toStringAsFixed(2) +
+          "/" +
+          listing.unit;
+    }
+    if (listing.priceMin > 0) {
+      ret += " - " +
+          rupeeSign +
+          " " +
+          listing.priceMin.toStringAsFixed(2) +
+          "/" +
+          listing.unit;
+    }
+    return ret.isEmpty ? "Flexible Price" : ret;
+  }
+
   @override
   Widget build(BuildContext context) {
     Scale scale = Scale(context);
@@ -47,7 +67,7 @@ class ListingCard extends StatelessWidget {
               LatoText(listing.name, weight: FontWeight.bold),
               RailwayText(listing.storeName),
               RailwayText(
-                "$rupeeSign ${listing.priceMax.toStringAsFixed(2)}/${listing.unit} - $rupeeSign ${listing.priceMin.toStringAsFixed(2)}/${listing.unit}",
+                getPriceTag(),
                 size: 14,
                 fontColor: Colors.amberAccent[700],
               )

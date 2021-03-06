@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:locie/helper/firestore_storage.dart';
 import 'package:locie/helper/local_storage.dart';
+import 'package:locie/helper/minions.dart';
 import 'package:locie/models/account.dart';
 import 'package:locie/models/invoice.dart';
 import 'package:locie/models/store.dart';
@@ -24,7 +25,8 @@ class InvoiceRepo {
     CollectionReference storeRef = instance.collection("stores");
     await localStorage.init();
     var sid = localStorage.prefs.getString("sid");
-    var task = cloudStorage.uploadFile(image);
+    var imageBytes = await compressImage(image);
+    var task = cloudStorage.uploadBytes(imageBytes);
     String url = await cloudStorage.getDownloadUrl(task);
     storeRef.doc(sid).update({"logo": url});
     localStorage.prefs.setString("store_logo", url);
@@ -64,7 +66,7 @@ class InvoiceRepo {
     }
     List<Account> accountSnaps =
         snapshot.docs.map((e) => Account.fromJson(e.data())).toList();
-    print(accountSnaps[0].name);
+    // print(accountSnaps[0].name);
 
     return accountSnaps[0];
   }

@@ -211,12 +211,18 @@ class _ItemMetaDataWidgetState extends State<ItemMetaDataWidget> {
                       ),
                       SubmitButton(
                         onPressed: () {
-                          if (_formKey.currentState.validate()) {
+                          {
                             debugPrint('submit');
-                            widget.listing.priceMax = double.parse(
-                                textEditingControllerMax.value.text);
-                            widget.listing.priceMin = double.parse(
-                                textEditingControllerMin.value.text);
+                            widget.listing.priceMax =
+                                textEditingControllerMax.text.isEmpty
+                                    ? 0.0
+                                    : double.parse(
+                                        textEditingControllerMax.value.text);
+                            widget.listing.priceMin =
+                                textEditingControllerMin.text.isEmpty
+                                    ? 0.0
+                                    : double.parse(
+                                        textEditingControllerMin.value.text);
                             widget.listing.unit = unit;
                             widget.listing.inStock = inStockSwitch;
                             widget.bloc..add(CreateListing(widget.listing));

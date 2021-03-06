@@ -92,7 +92,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
   handleTabSelection() {
     setState(() {
       event = getEvent();
-      debugPrint('$event, ${tabController.index}');
+      // debugPrint('$event, ${tabController.index}');
       bloc..add(event);
     });
     // bloc..add(event);
@@ -180,7 +180,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget>
                 floating: false,
                 leading: IconButton(
                     icon:
-                        Icon(Icons.keyboard_backspace, color: Colors.grey[600]),
+                        Icon(Icons.keyboard_backspace, color: Colors.grey[700]),
                     onPressed: () {
                       onBackClick(context);
                     }),

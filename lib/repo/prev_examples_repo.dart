@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:locie/helper/firestore_storage.dart';
 import 'package:locie/helper/local_storage.dart';
+import 'package:locie/helper/minions.dart';
 import 'package:locie/models/store.dart';
 
 class PreviousExamplesRepo {
@@ -40,8 +41,10 @@ class PreviousExamplesRepo {
     await localStorage.init();
     var sid = localStorage.prefs.getString("sid");
     if (example.imageFile != null) {
+      // print(example.imageFile.lengthSync());
       CloudStorage cloudStorage = CloudStorage();
-      var task = cloudStorage.uploadFile(example.imageFile);
+      var imageBytes = await compressImage(example.imageFile);
+      var task = cloudStorage.uploadBytes(imageBytes);
       example.image = await cloudStorage.getDownloadUrl(task);
       example.imageFile = null;
     }

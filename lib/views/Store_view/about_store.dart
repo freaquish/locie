@@ -6,6 +6,7 @@ import 'package:locie/components/font_text.dart';
 import 'package:locie/helper/screen_size.dart';
 import 'package:locie/models/store.dart';
 import 'package:locie/workers/sharing_wrokers.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StoreAboutWidget extends StatelessWidget {
   final Store store;
@@ -46,15 +47,22 @@ class StoreAboutWidget extends StatelessWidget {
     }
   }
 
+  Future<void> callStore() async {
+    if (await canLaunch("tel:${store.contact}")) {
+      await launch("tel:${store.contact}");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: screen.horizontal(4), vertical: screen.vertical(5)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
+        shrinkWrap: true,
+        // mainAxisAlignment: MainAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -111,7 +119,7 @@ class StoreAboutWidget extends StatelessWidget {
             size: 18,
           ),
           SizedBox(
-            height: screen.vertical(25),
+            height: screen.vertical(30),
           ),
           LatoText(
             'Contact',
@@ -122,19 +130,35 @@ class StoreAboutWidget extends StatelessWidget {
           SizedBox(
             height: screen.vertical(25),
           ),
-          Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            Container(
-              height: 26,
-              width: 26,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/images/whatsapp_icon.png'))),
-            ),
-            SizedBox(
-              width: screen.horizontal(2),
-            ),
-            LatoText(store.contact, size: 20)
-          ]),
+          LatoText(
+            store.address.body +
+                ", " +
+                store.address.city +
+                "\n" +
+                store.address.pinCode,
+            size: 18,
+          ),
+          SizedBox(
+            height: screen.vertical(25),
+          ),
+          InkWell(
+            onTap: () {
+              callStore();
+            },
+            child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+              Container(
+                height: 26,
+                width: 26,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('assets/images/whatsapp_icon.png'))),
+              ),
+              SizedBox(
+                width: screen.horizontal(2),
+              ),
+              LatoText(store.contact, size: 20)
+            ]),
+          ),
         ],
       ),
     );

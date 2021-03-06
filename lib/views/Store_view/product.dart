@@ -90,6 +90,18 @@ class _StoreProductWidgetState extends State<StoreProductWidget> {
     super.dispose();
   }
 
+  String getPriceTag(Listing item) {
+    String ret = '';
+    if (item.priceMax > 0.0) {
+      ret = rupeeSign + " " + item.priceMax.toStringAsFixed(2);
+    }
+
+    if (item.priceMin > 0) {
+      ret += " - " + rupeeSign + " " + item.priceMin.toStringAsFixed(2);
+    }
+    return ret.isEmpty ? "Flexible Price" : ret;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screen = Scale(context);
@@ -145,7 +157,7 @@ class _StoreProductWidgetState extends State<StoreProductWidget> {
                               subtitle: isCategory
                                   ? null
                                   : LatoText(
-                                      '$rupeeSign ${element.priceMax} - $rupeeSign ${element.priceMin}',
+                                      getPriceTag(element),
                                       fontColor: Color(0xffFF7A00),
                                       key: key,
                                       size: 12,

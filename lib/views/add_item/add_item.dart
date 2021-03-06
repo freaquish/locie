@@ -251,7 +251,7 @@ class _AddItemWidgetState extends State<AddItemWidget> {
                     SubmitButton(
                       onPressed: () {
                         if (_formKey.currentState.validate() &&
-                            textEditingController.text.length > 3) {
+                            textEditingController.text.length > 0) {
                           debugPrint('submit');
                           Listing listing = Listing();
                           if (widget.listing != null) {

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:locie/helper/firestore_storage.dart';
 import 'package:locie/helper/local_storage.dart';
+import 'package:locie/helper/minions.dart';
 import 'package:locie/models/account.dart';
 import 'package:pdf/widgets.dart';
 // import 'package:firebase_core/firebase_core.dart';
@@ -63,7 +64,8 @@ class PhoneAuthentication {
 
     if (account.imageFile != null) {
       CloudStorage storage = CloudStorage();
-      var task = storage.uploadFile(account.imageFile);
+      var imageBytes = await compressImage(account.imageFile);
+      var task = storage.uploadBytes(imageBytes);
       account.avatar = await storage.getDownloadUrl(task);
       account.imageFile = null;
     }

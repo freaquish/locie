@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -74,17 +75,19 @@ class FireStoreQuery implements AbstractFireStoreQuery {
   Future<void> addDefaultCategoryToStore(Store store, Category category) async {
     CollectionReference storeReference = firestore.collection("stores");
     var nGrams = nGram(category.name);
-    await storeReference.doc(store.id).update({
-      "categories": FieldValue.arrayUnion([category.id]),
-      "n_gram": FieldValue.arrayUnion(nGrams)
-    });
+    if (category != null && category.id != null && category.id.isNotEmpty) {
+      await storeReference.doc(store.id).update({
+        "categories": FieldValue.arrayUnion([category.id]),
+        "n_gram": FieldValue.arrayUnion(nGrams)
+      });
+    }
   }
 
   @override
   Future<Category> createNewCategory(Category category) async {
     if (category.imageFile != null) {
       CloudStorage storage = CloudStorage();
-      var task = storage.uploadFile(category.imageFile);
+      var task = storage.uploadBytes(await compressImage(category.imageFile));
       category.image = await storage.getDownloadUrl(task);
       category.imageFile = null;
     }
@@ -120,7 +123,8 @@ class FireStoreQuery implements AbstractFireStoreQuery {
       storage = CloudStorage();
     }
     if (store.imageFile != null) {
-      var task = storage.uploadFile(store.imageFile);
+      Uint8List imageBytes = await compressImage(store.imageFile);
+      var task = storage.uploadBytes(imageBytes);
       store.image = await storage.getDownloadUrl(task);
       store.imageFile = null;
     }
@@ -244,7 +248,8 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     // print(newStore.imageFile);
     if (newStore.imageFile != null) {
       CloudStorage cloudStorage = CloudStorage();
-      var task = cloudStorage.uploadFile(newStore.imageFile);
+      var task =
+          cloudStorage.uploadBytes(await compressImage(newStore.imageFile));
       newStore.image = await cloudStorage.getDownloadUrl(task);
       newStore.imageFile = null;
       changes["image"] = newStore.image;

@@ -87,7 +87,7 @@ class ListingBloc extends Bloc<ListingEvent, ListingState> {
         yield ShowingMetaDataPage(listing: event.listing);
       } else if (event is CreateListing) {
         yield CreatingListing();
-        listingQuery.createOrEditListing(event.listing);
+        await listingQuery.createOrEditListing(event.listing);
         yield CreatedListing();
       } else if (event is FetchItems) {
         List<Listing> listings =
