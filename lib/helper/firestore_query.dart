@@ -221,7 +221,6 @@ class FireStoreQuery implements AbstractFireStoreQuery {
     exampleReference.doc(sid).update({
       "examples": FieldValue.arrayUnion([example.toJson()])
     });
-    LocalStorage storage = LocalStorage();
     return example;
   }
 
