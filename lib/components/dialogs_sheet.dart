@@ -713,8 +713,12 @@ class _QuotationDialogeState extends State<QuotationDialoge> {
       listingName: widget.listing.name,
       listingUnit: widget.listing.unit,
       storeName: widget.listing.storeName,
-      price: double.parse(textEditingControllerPrice.text),
-      quantity: double.parse(textEditingControllerQuantity.text),
+      price: double.parse(textEditingControllerPrice.text.isEmpty
+          ? '0.0'
+          : textEditingControllerPrice.text),
+      quantity: double.parse(textEditingControllerQuantity.text.isEmpty
+          ? '0.0'
+          : textEditingControllerQuantity.text),
     );
     await query.createQuotation(quotation);
     setState(() {

@@ -31,10 +31,12 @@ class _QuotationCardState extends State<QuotationCard> {
 
   @override
   void initState() {
-    priceController =
-        TextEditingController(text: widget.quotation.price.toStringAsFixed(2));
-    qunatityController = TextEditingController(
-        text: widget.quotation.quantity.toStringAsFixed(2));
+    if (widget.quotation.price > 0.0) {
+      priceController = TextEditingController(
+          text: widget.quotation.price.toStringAsFixed(2));
+      qunatityController = TextEditingController(
+          text: widget.quotation.quantity.toStringAsFixed(2));
+    }
     scale = Scale(context);
     super.initState();
   }
@@ -98,20 +100,22 @@ class _QuotationCardState extends State<QuotationCard> {
               ),
               title: Wrap(
                 children: [
-                  RailwayText(
-                    rupeeSign +
-                        widget.quotation.price.toStringAsFixed(2) +
-                        "/ ${widget.quotation.listingUnit}",
-                    fontColor: Colors.amberAccent[700],
-                    size: 17,
-                  ),
+                  if (widget.quotation.price > 0.0)
+                    RailwayText(
+                      rupeeSign +
+                          widget.quotation.price.toStringAsFixed(2) +
+                          "/ ${widget.quotation.listingUnit}",
+                      fontColor: Colors.amberAccent[700],
+                      size: 17,
+                    ),
                   SizedBox(
                     width: scale.horizontal(4),
                   ),
-                  RailwayText(
-                    widget.quotation.quantity.toStringAsFixed(2),
-                    size: 17,
-                  ),
+                  if (widget.quotation.quantity > 0.0)
+                    RailwayText(
+                      widget.quotation.quantity.toStringAsFixed(2),
+                      size: 17,
+                    ),
                 ],
               )),
           if (!widget.isSent)
@@ -137,7 +141,7 @@ class _QuotationCardState extends State<QuotationCard> {
           " /" +
           widget.quotation.listingUnit +
           " for " +
-          widget.quotation.quantity.toStringAsFixed(2) +
+          qunatityController.text +
           " " +
           widget.quotation.listingUnit +
           "\n  - " +
