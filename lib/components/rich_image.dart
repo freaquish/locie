@@ -9,9 +9,10 @@ class RichImage extends StatelessWidget {
   final BorderRadius borderRadius;
 
   const RichImage({this.image, this.borderRadius});
-  final String placeholder = 'assets/images/item_placeholder.png';
+  static String placeholder = 'assets/images/item_placeholder.png';
 
-  ImageProvider getImage() {
+  static ImageProvider getImage_(dynamic image) {
+    // final String placeholder = 'assets/images/item_placeholder.png';
     if (image is String && image.length > 0) {
       return NetworkImage(
         image,
@@ -19,7 +20,11 @@ class RichImage extends StatelessWidget {
     } else if (image is File) {
       return FileImage(image);
     }
-    return AssetImage(placeholder);
+    return AssetImage(RichImage.placeholder);
+  }
+
+  ImageProvider getImage() {
+    return RichImage.getImage_(image);
   }
 
   @override
